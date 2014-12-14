@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.polimi.meteocal.client;
+package it.polimi.meteocal.gui.security;
 
-import it.polimi.meteocal.business.logic.UserManager;
+import it.polimi.meteocal.business.security.boundary.UserManager;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
@@ -16,7 +16,7 @@ import javax.enterprise.context.RequestScoped;
  */
 @Named
 @RequestScoped
-public class UserBean{
+public class UserBean {
 
     @EJB
     UserManager um;

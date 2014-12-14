@@ -3,11 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.polimi.meteocal.business.logic;
+package it.polimi.meteocal.business.security.boundary;
 
-import it.polimi.meteocal.business.entity.Group;
-import it.polimi.meteocal.business.entity.User;
+import it.polimi.meteocal.business.security.entity.Group;
+import it.polimi.meteocal.business.security.entity.User;
 import java.security.Principal;
+import javax.annotation.Resource;
+import javax.ejb.EJBContext;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -21,7 +23,7 @@ import javax.persistence.PersistenceContext;
 public class UserManager {
 
     @PersistenceContext
-    EntityManager em;
+    private EntityManager em;
     
     @Inject
     Principal principal;
@@ -38,5 +40,4 @@ public class UserManager {
     public User getLoggedUser() {
         return em.find(User.class, principal.getName());
     }
-    
 }

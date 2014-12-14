@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.polimi.meteocal.client;
+package it.polimi.meteocal.gui.security;
 
-import it.polimi.meteocal.business.entity.User;
-import it.polimi.meteocal.business.logic.UserManager;
+import it.polimi.meteocal.business.security.boundary.UserManager;
+import it.polimi.meteocal.business.security.entity.User;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
@@ -15,7 +15,7 @@ import javax.enterprise.context.RequestScoped;
  *
  * @author Andrea
  */
-@Named
+@Named(value = "registrationBean")
 @RequestScoped
 public class RegistrationBean {
 
@@ -40,8 +40,7 @@ public class RegistrationBean {
 
     public String register() {
         um.save(user);
-        return "home/index?faces-redirect=true";
+        return "user/home?faces-redirect=true";
     }
 
-    
 }
