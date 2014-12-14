@@ -40,7 +40,7 @@ public class RegistrationBean {
 
     public String register() {
         um.save(user);
-        return "user/home?faces-redirect=true";
+        return "home/index?faces-redirect=true";
     }
 
     
