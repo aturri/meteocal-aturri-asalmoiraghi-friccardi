@@ -52,7 +52,10 @@ public class User implements Serializable {
     private String photo;
  
     @NotNull(message = "May not be empty")
-    private Boolean privateCalendar;
+    private int privateCalendar;
+    
+    @NotNull(message = "May not be empty")
+    private String groupName;
 
     /**
      * @return the email
@@ -183,15 +186,29 @@ public class User implements Serializable {
     /**
      * @return the privateCalendar
      */
-    public Boolean getPrivateCalendar() {
+    public int getPrivateCalendar() {
         return privateCalendar;
     }
 
     /**
      * @param privateCalendar the privateCalendar to set
      */
-    public void setPrivateCalendar(Boolean privateCalendar) {
+    public void setPrivateCalendar(int privateCalendar) {
         this.privateCalendar = privateCalendar;
+    }
+
+    /**
+     * @return the groupname
+     */
+    public String getGroupName() {
+        return groupName;
+    }
+
+    /**
+     * @param groupname the groupname to set
+     */
+    public void setGroupName(String groupname) {
+        this.groupName = groupname;
     }
     
 
