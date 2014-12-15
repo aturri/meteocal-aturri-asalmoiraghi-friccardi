@@ -10,10 +10,12 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
@@ -23,7 +25,6 @@ import javax.validation.constraints.Pattern;
  */
 @Entity
 public class User implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -33,33 +34,27 @@ public class User implements Serializable {
     private String email;
     @NotNull(message = "May not be empty")
     private String password;
+    
     @NotNull(message = "May not be empty")
     private String groupName;
     
     @NotNull(message = "May not be empty")
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date birthdate;
+    @NotNull(message = "May not be empty")
     private String name;
+    @NotNull(message = "May not be empty")
+    private String surname;
+    @NotNull(message = "May not be empty")
+    private char gender;
+    @NotNull(message = "May not be empty")
+    private String address;
+    @NotNull(message = "May not be empty")
+    private String city;
+    @NotNull(message = "May not be empty")
+    private Boolean privateCalendar;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
-    }
-
-    public String getGroupName() {
-        return groupName;
-    }
     
-    
-    
-    
-
-
     public String getEmail() {
         return email;
     }
@@ -78,14 +73,72 @@ public class User implements Serializable {
             byte[] hash = digest.digest(password.getBytes("UTF-8"));
             BigInteger bigInt = new BigInteger(1, hash);
             this.password = bigInt.toString(16);
-//            StringBuilder hexString = new StringBuilder();
-//            for (int i = 0; i < hash.length; i++) {
-//                hexString.append(Integer.toHexString(0xFF & hash[i]));
-//            }
-//            this.password = hexString.toString();
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
             Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+    
+    public Date getBirthDate() {
+        return birthdate;
+    }
+
+    public void setBirthDate(Date birthdate) {
+        this.birthdate = birthdate;
+    }
+    
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }    
+    
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }      
+        
+    public char getGender() {
+        return gender;
+    }
+
+    public void setGender(char gender) {
+        this.gender = gender;
+    }    
+    
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }    
+    
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }    
+     
+    public Boolean getPrivateCalendar() {
+        return privateCalendar;
+    }
+
+    public void setPrivateCalendar(Boolean privateCalendar) {
+        this.privateCalendar = privateCalendar;
+    }    
 }
