@@ -8,10 +8,12 @@ package it.polimi.meteocal.business.security.entity;
 import java.io.Serializable;
 import java.sql.Time;
 import java.util.Date;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.validation.constraints.NotNull;
 
@@ -24,12 +26,16 @@ public class Event implements Serializable {
     private static final long serialVersionUID = 1L;
     
     @Id
+    @Column(name = "EVENT_ID")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer eventId;
+    private Integer id;
     
-    //@NotNull(message = "May not be empty")
-    //private User creator;
-    //private Waether weather;
+    @NotNull(message = "May not be empty")
+    @ManyToOne
+    //Unidirectional relationship, many events have one creator
+    private User creator;
+    @ManyToOne
+    private Weather weather;
     
     @NotNull(message = "May not be empty")
     private String title;
@@ -58,11 +64,27 @@ public class Event implements Serializable {
     private Boolean indoor;
        
     public Integer getId() {
-        return eventId;
+        return id;
     }
 
     public void setId(Integer id) {
-        this.eventId = id;
+        this.id = id;
+    }
+
+    public User getCreator() {
+        return creator;
+    }
+
+    public void setCreator(User creator) {
+        this.creator = creator;
+    }
+
+    public Weather getWeather() {
+        return weather;
+    }
+
+    public void setWeather(Weather weather) {
+        this.weather = weather;
     }
 
     public String getTitle() {
