@@ -8,12 +8,14 @@ package it.polimi.meteocal.business.security.entity;
 import java.io.Serializable;
 import java.sql.Time;
 import java.util.Date;
-import javax.persistence.Column;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.validation.constraints.NotNull;
 
@@ -26,7 +28,6 @@ public class Event implements Serializable {
     private static final long serialVersionUID = 1L;
     
     @Id
-    @Column(name = "EVENT_ID")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     
@@ -41,7 +42,6 @@ public class Event implements Serializable {
     private String title;
     
     private String description;
-
     
     private String city;
     private String address;
@@ -62,6 +62,9 @@ public class Event implements Serializable {
     private Boolean publicEvent;
     @NotNull(message = "May not be empty")
     private Boolean indoor;
+    
+    //@OneToMany(mappedBy = "event")
+    //private Set<UserEvent> userEvents = new HashSet<>();
        
     public Integer getId() {
         return id;
@@ -175,5 +178,12 @@ public class Event implements Serializable {
         this.indoor = indoor;
     }
 
-  
+    /*public Set<UserEvent> getUserEvents() {
+        return userEvents;
+    }
+
+    public void setUserEvents(Set<UserEvent> userEvents) {
+        this.userEvents = userEvents;
+    }*/
+    
 }

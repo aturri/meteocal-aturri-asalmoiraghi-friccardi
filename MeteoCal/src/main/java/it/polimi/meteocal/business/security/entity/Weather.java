@@ -8,7 +8,6 @@ package it.polimi.meteocal.business.security.entity;
 import java.io.Serializable;
 import java.sql.Time;
 import java.util.Date;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,7 +24,6 @@ public class Weather implements Serializable {
     private static final long serialVersionUID = 1L;
     
     @Id
-    @Column(name = "WEATHER_ID")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     

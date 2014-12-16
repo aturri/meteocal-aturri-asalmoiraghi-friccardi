@@ -17,6 +17,30 @@
                     </p:inputText>
                     <p:message id="namemsg" for="name" />
                     
+                    <h:outputLabel for="surname">Surname:</h:outputLabel>
+                    <p:inputText id="surname" value="#{registrationBean.user.surname}">
+                        <p:ajax update="surnamemsg"/>
+                    </p:inputText>
+                    <p:message id="surnamemsg" for="surname" />
+
+                    <h:outputLabel for="gender">Gender:</h:outputLabel>
+                    <p:inputText id="gender" value="#{registrationBean.user.gender}">
+                        <p:ajax update="gendermsg"/>
+                    </p:inputText>
+                    <p:message id="gendermsg" for="gender" /> 
+                    
+                    <h:outputLabel for="address">Address:</h:outputLabel>
+                    <p:inputText id="address" value="#{registrationBean.user.address}">
+                        <p:ajax update="addressmsg"/>
+                    </p:inputText>
+                    <p:message id="addressmsg" for="address" />    
+                    
+                    <h:outputLabel for="city">City:</h:outputLabel>
+                    <p:inputText id="city" value="#{registrationBean.user.city}">
+                        <p:ajax update="citymsg"/>
+                    </p:inputText>
+                    <p:message id="citymsg" for="city" />                        
+                    
                     <h:outputLabel for="email">Email:</h:outputLabel>
                     <p:inputText id="email" value="#{registrationBean.user.email}" >
                         <p:ajax update="emailmsg"/>
@@ -29,7 +53,10 @@
                     <p:message for="password" />
 
                     <h:outputLabel for="pwd2">Confirm Password:</h:outputLabel>
-                    <p:password id="pwd2" label="Confirm Password"/>
+                    <p:password id="pwd2" label="Confirm Password"/> 
+                    
+                    <h:outputLabel for="birthdate">Date of birth:</h:outputLabel>
+                    <p:calendar id="birthdate" value="#{registrationBean.user.birthDate}" mode="inline" />
                 </h:panelGrid>
                 <p:commandButton value="Register" update="regGrid"
                                  action="#{registrationBean.register()}" />

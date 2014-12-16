@@ -11,10 +11,13 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -40,7 +43,7 @@ public class User implements Serializable {
     
     @NotNull(message = "May not be empty")
     @Temporal(javax.persistence.TemporalType.DATE)
-    private Date birthdate;
+    private Date birthDate;
     @NotNull(message = "May not be empty")
     private String name;
     @NotNull(message = "May not be empty")
@@ -52,8 +55,10 @@ public class User implements Serializable {
     @NotNull(message = "May not be empty")
     private String city;
     @NotNull(message = "May not be empty")
-    private Boolean privateCalendar;
-
+    private Boolean privateCalendar = true;
+    
+    //@OneToMany(mappedBy = "user_email")
+    //private Set<UserEvent> userEvents;
     
     public String getEmail() {
         return email;
@@ -87,11 +92,11 @@ public class User implements Serializable {
     }
     
     public Date getBirthDate() {
-        return birthdate;
+        return birthDate;
     }
 
-    public void setBirthDate(Date birthdate) {
-        this.birthdate = birthdate;
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
     }
     
     public String getName() {
@@ -141,4 +146,12 @@ public class User implements Serializable {
     public void setPrivateCalendar(Boolean privateCalendar) {
         this.privateCalendar = privateCalendar;
     }    
+
+    /*public Set<UserEvent> getUserEvents() {
+        return userEvents;
+    }
+
+    public void setUserEvents(Set<UserEvent> userEvents) {
+        this.userEvents = userEvents;
+    }*/
 }
