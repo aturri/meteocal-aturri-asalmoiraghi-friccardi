@@ -11,20 +11,21 @@
         <h:form>
             <p:panel header="Registration Form">
                 <h:panelGrid columns="3" id="regGrid">
-                    <h:outputLabel for="name">Name:</h:outputLabel>
-                    <p:inputText id="name" value="#{registrationBean.user.name}">
+                    <p:outputLabel for="name" value="Name:" />
+                    <p:inputText id="name"  required="true" value="#{registrationBean.user.name}">
                         <p:ajax update="namemsg"/>
                     </p:inputText>
                     <p:message id="namemsg" for="name" />
                     
-                    <h:outputLabel for="surname">Surname:</h:outputLabel>
-                    <p:inputText id="surname" value="#{registrationBean.user.surname}">
+                    <p:outputLabel for="surname" value="Surname" />
+                    <p:inputText id="surname" value="#{registrationBean.user.surname}" required="true">
                         <p:ajax update="surnamemsg"/>
                     </p:inputText>
                     <p:message id="surnamemsg" for="surname" />
 
-                    <h:outputLabel for="gender">Gender:</h:outputLabel>
+                    <p:outputLabel for="gender" value="Gender" />
                     <p:selectOneMenu id="gender" value="#{registrationBean.user.gender}" style="width: 210px">
+                        <f:selectItem itemLabel="" itemValue="" />
                         <f:selectItem itemLabel="Man" itemValue="M" />
                         <f:selectItem itemLabel="Woman" itemValue="F" />
                         <p:ajax update="gendermsg"/>
@@ -32,31 +33,31 @@
                     <p:message id="gendermsg" for="gender" /> 
 
                                         
-                    <h:outputLabel for="address">Address:</h:outputLabel>
-                    <p:inputText id="address" value="#{registrationBean.user.address}">
+                    <p:outputLabel for="address" value="Address" />
+                    <p:inputText id="address" value="#{registrationBean.user.address}" required="false">
                         <p:ajax update="addressmsg"/>
                     </p:inputText>
                     <p:message id="addressmsg" for="address" />    
                     
-                    <h:outputLabel for="city">City:</h:outputLabel>
-                    <p:inputText id="city" value="#{registrationBean.user.city}">
+                    <p:outputLabel for="city" value="City"/>
+                    <p:inputText id="city" value="#{registrationBean.user.city}" required="false">
                         <p:ajax update="citymsg"/>
                     </p:inputText>
                     <p:message id="citymsg" for="city" />                        
                     
-                    <h:outputLabel for="email">Email:</h:outputLabel>
-                    <p:inputText id="email" value="#{registrationBean.user.email}" >
+                    <p:outputLabel for="email" value="Email" />
+                    <p:inputText id="email" value="#{registrationBean.user.email}" required="true">
                         <p:ajax update="emailmsg"/>
                     </p:inputText>
                     <p:message id="emailmsg" for="email" />
                     
-                    <h:outputLabel for="password">Password:</h:outputLabel>
+                    <p:outputLabel for="password" value="Password" />
                     <p:password id="password" value="#{registrationBean.user.password}"
-                                feedback="true" match="pwd2" label="Password"/>
+                                feedback="true" match="pwd2" label="Password" required="true" />
                     <p:message for="password" />
 
-                    <h:outputLabel for="pwd2">Confirm Password:</h:outputLabel>
-                    <p:password id="pwd2" label="Confirm Password"/> 
+                    <p:outputLabel for="pwd2" value="Confirm Password" />
+                    <p:password id="pwd2" label="Confirm Password" required="true"/> 
                     <p:message for="pwd2" />
                     
                     <h:outputLabel for="birthdate">Date of birth:</h:outputLabel>
@@ -67,7 +68,8 @@
                 </h:panelGrid>
                 <p:commandButton value="Register" update="regGrid"
                                  action="#{registrationBean.register()}" />
-
+                <br /> 
+                * I campi con l'asterisco sono obbligatori
             </p:panel>
         </h:form>
     </h:body>

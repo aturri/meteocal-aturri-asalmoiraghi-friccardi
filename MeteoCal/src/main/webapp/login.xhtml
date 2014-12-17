@@ -8,7 +8,7 @@
         <title>Login Page</title>
     </h:head>
     <h:body>
-        <h:form>
+        <h:form style="width: 500px; margin: auto; ">
             <p:panel header="Login Form">
                 <p:panelGrid columns="2">
                     <p:outputLabel for="usernameInput" value="Username"/>
@@ -16,7 +16,7 @@
                                  required="true" />
                     <p:outputLabel for="passwordInput" value="Password"/>
                     <p:password id="passwordInput" value="#{loginBean.password}" 
-                                required="true" />
+                                required="false" />
                     <p:commandButton value="Login" 
                                      action="#{loginBean.login()}" />
                 </p:panelGrid>
