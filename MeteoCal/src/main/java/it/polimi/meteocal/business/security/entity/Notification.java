@@ -9,10 +9,14 @@ import java.io.Serializable;
 import java.sql.Time;
 import java.util.Date;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.Temporal;
 
 /**
@@ -23,40 +27,45 @@ import javax.persistence.Temporal;
 public class Notification implements Serializable {
     private static final long serialVersionUID = 1L;
     
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "NOTIF_ID")
-    private Integer id;
+    @EmbeddedId
+    private NotificationId id;
+ 
+    @ManyToOne
+    @MapsId("userId")
+    @JoinColumn(name = "USER_EMAIL")
+    private User user;
     
-    @Temporal(javax.persistence.TemporalType.DATE)
-    private Date genDate;
-    private Time genTime;
+    @ManyToOne
+    @MapsId("eventId")
+    @JoinColumn(name = "EVENT_ID")
+    private Event event;
+        
     private String text;
     private char type;
     private Boolean readByUser = false;
 
-    public Integer getId() {
+    public NotificationId getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(NotificationId id) {
         this.id = id;
     }
 
-    public Date getGenDate() {
-        return genDate;
+    public User getUser() {
+        return user;
     }
 
-    public void setGenDate(Date genDate) {
-        this.genDate = genDate;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public Time getGenTime() {
-        return genTime;
+    public Event getEvent() {
+        return event;
     }
 
-    public void setGenTime(Time genTime) {
-        this.genTime = genTime;
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
     public String getText() {
@@ -82,4 +91,6 @@ public class Notification implements Serializable {
     public void setReadByUser(Boolean readByUser) {
         this.readByUser = readByUser;
     }
+    
+
 }

@@ -79,11 +79,7 @@ public class Event implements Serializable {
     @ManyToMany
     @JoinTable(name="INVITATION")
     private Set<User> invitedUsers;
-    
-    //@ManyToMany(mappedBy = "eventNotifications")
-    //@JoinTable(name = "NOTIFICATION", joinColumns = {@JoinColumn(name = "Event_ID", referencedColumnName = "ID", nullable = false)})
-    //private Set<User> userNotifications;
-    
+      
     public Integer getId() {
         return id;
     }
