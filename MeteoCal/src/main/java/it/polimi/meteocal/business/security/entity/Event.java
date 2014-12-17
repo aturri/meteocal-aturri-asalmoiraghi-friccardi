@@ -13,9 +13,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.validation.constraints.NotNull;
 
@@ -77,6 +79,10 @@ public class Event implements Serializable {
     @ManyToMany
     @JoinTable(name="INVITATION")
     private Set<User> invitedUsers;
+    
+    @OneToMany(mappedBy = "event")
+    @JoinTable(name = "NOTIFICATION", joinColumns = {@JoinColumn(name = "Event_ID", referencedColumnName = "ID", nullable = false)})
+    private Set<Notification> notifications;
     
     public Integer getId() {
         return id;
@@ -205,5 +211,12 @@ public class Event implements Serializable {
     public void setInvitedUsers(Set<User> invitedUsers) {
         this.invitedUsers = invitedUsers;
     }
-    
+
+    public Set<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(Set<Notification> notifications) {
+        this.notifications = notifications;
+    }
 }
