@@ -24,11 +24,14 @@
                     <p:message id="surnamemsg" for="surname" />
 
                     <h:outputLabel for="gender">Gender:</h:outputLabel>
-                    <p:inputText id="gender" value="#{registrationBean.user.gender}">
+                    <p:selectOneMenu id="gender" value="#{registrationBean.user.gender}" style="width: 210px">
+                        <f:selectItem itemLabel="Man" itemValue="M" />
+                        <f:selectItem itemLabel="Woman" itemValue="F" />
                         <p:ajax update="gendermsg"/>
-                    </p:inputText>
+                    </p:selectOneMenu>                    
                     <p:message id="gendermsg" for="gender" /> 
-                    
+
+                                        
                     <h:outputLabel for="address">Address:</h:outputLabel>
                     <p:inputText id="address" value="#{registrationBean.user.address}">
                         <p:ajax update="addressmsg"/>
@@ -54,9 +57,13 @@
 
                     <h:outputLabel for="pwd2">Confirm Password:</h:outputLabel>
                     <p:password id="pwd2" label="Confirm Password"/> 
+                    <p:message for="pwd2" />
                     
                     <h:outputLabel for="birthdate">Date of birth:</h:outputLabel>
-                    <p:calendar id="birthdate" value="#{registrationBean.user.birthDate}" mode="inline" />
+                    <p:calendar id="birthdate" value="#{registrationBean.user.birthDate}" navigator="true" maxdate="#{registrationBean.user.today}">
+                         <p:ajax update="birthdatemsg"/>                       
+                    </p:calendar>
+                    <p:message id="birthdatemsg" for="birthdate" />
                 </h:panelGrid>
                 <p:commandButton value="Register" update="regGrid"
                                  action="#{registrationBean.register()}" />

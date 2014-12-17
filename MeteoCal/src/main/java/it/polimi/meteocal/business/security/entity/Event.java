@@ -13,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
@@ -70,8 +71,13 @@ public class Event implements Serializable {
     private Boolean indoor;
     
     @ManyToMany
+    @JoinTable(name="EVENT_IN_CALENDAR")
     private Set<User> users;
-       
+  
+    @ManyToMany
+    @JoinTable(name="INVITATION")
+    private Set<User> invitedUsers;
+    
     public Integer getId() {
         return id;
     }
@@ -190,6 +196,14 @@ public class Event implements Serializable {
 
     public void setUsers(Set<User> users) {
         this.users = users;
+    }
+
+    public Set<User> getInvitedUsers() {
+        return invitedUsers;
+    }
+
+    public void setInvitedUsers(Set<User> invitedUsers) {
+        this.invitedUsers = invitedUsers;
     }
     
 }

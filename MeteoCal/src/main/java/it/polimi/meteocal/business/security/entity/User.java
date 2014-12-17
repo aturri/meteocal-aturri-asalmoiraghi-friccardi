@@ -11,14 +11,14 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -66,7 +66,18 @@ public class User implements Serializable {
     private Boolean privateCalendar = true;
     
     @ManyToMany(mappedBy = "users")
+    @JoinTable(name="EVENT_IN_CALENDAR")
     private Set<Event> events;
+
+    @ManyToMany(mappedBy = "invitedUsers")
+    @JoinTable(name="INVITATION")
+    private Set<Event> invitations;
+    
+    @ManyToMany
+    @JoinTable(name = "CONTACTS", joinColumns = {
+        @JoinColumn(name = "User_EMAIL", referencedColumnName = "EMAIL", nullable = false)}, inverseJoinColumns = {
+        @JoinColumn(name = "Contact_EMAIL", referencedColumnName = "EMAIL", nullable = false)})
+    private Set<User> contacts;
     
     public String getEmail() {
         return email;
@@ -161,5 +172,25 @@ public class User implements Serializable {
 
     public void setUserEvents(Set<Event> events) {
         this.events = events;
+    }
+    
+    public Date getToday() {
+        return new Date();
+    }
+
+    public Set<Event> getInvitations() {
+        return invitations;
+    }
+
+    public void setInvitations(Set<Event> invitations) {
+        this.invitations = invitations;
+    }
+
+    public Set<User> getContacts() {
+        return contacts;
+    }
+
+    public void setContacts(Set<User> contacts) {
+        this.contacts = contacts;
     }
 }
