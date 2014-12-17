@@ -80,9 +80,9 @@ public class Event implements Serializable {
     @JoinTable(name="INVITATION")
     private Set<User> invitedUsers;
     
-    @OneToMany(mappedBy = "event")
-    @JoinTable(name = "NOTIFICATION", joinColumns = {@JoinColumn(name = "Event_ID", referencedColumnName = "ID", nullable = false)})
-    private Set<Notification> notifications;
+    //@ManyToMany(mappedBy = "eventNotifications")
+    //@JoinTable(name = "NOTIFICATION", joinColumns = {@JoinColumn(name = "Event_ID", referencedColumnName = "ID", nullable = false)})
+    //private Set<User> userNotifications;
     
     public Integer getId() {
         return id;
@@ -210,13 +210,5 @@ public class Event implements Serializable {
 
     public void setInvitedUsers(Set<User> invitedUsers) {
         this.invitedUsers = invitedUsers;
-    }
-
-    public Set<Notification> getNotifications() {
-        return notifications;
-    }
-
-    public void setNotifications(Set<Notification> notifications) {
-        this.notifications = notifications;
     }
 }

@@ -19,7 +19,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -80,10 +79,9 @@ public class User implements Serializable {
         @JoinColumn(name = "Contact_EMAIL", referencedColumnName = "EMAIL", nullable = false)})
     private Set<User> contacts;
     
-    @OneToMany(mappedBy = "user")
-    @JoinTable(name = "NOTIFICATION", joinColumns = {
-        @JoinColumn(name = "User_EMAIL", referencedColumnName = "EMAIL", nullable = false)})
-    private Set<Notification> notifications;
+    //@ManyToMany
+    //@JoinTable(name = "NOTIFICATION", joinColumns = {@JoinColumn(name = "User_EMAIL", referencedColumnName = "EMAIL", nullable = false)})
+    //private Set<Event> eventNotifications;
     
     public String getEmail() {
         return email;
@@ -198,13 +196,5 @@ public class User implements Serializable {
 
     public void setContacts(Set<User> contacts) {
         this.contacts = contacts;
-    }
-
-    public Set<Notification> getNotifications() {
-        return notifications;
-    }
-
-    public void setNotifications(Set<Notification> notifications) {
-        this.notifications = notifications;
     }
 }
