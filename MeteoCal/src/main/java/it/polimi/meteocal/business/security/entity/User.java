@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.validation.constraints.NotNull;
@@ -35,6 +36,7 @@ public class User implements Serializable {
             message = "invalid email")
     @NotNull(message = "May not be empty")
     private String email;
+    
     @NotNull(message = "May not be empty")
     private String password;
     
@@ -44,21 +46,27 @@ public class User implements Serializable {
     @NotNull(message = "May not be empty")
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date birthDate;
+    
     @NotNull(message = "May not be empty")
     private String name;
+    
     @NotNull(message = "May not be empty")
     private String surname;
+    
     @NotNull(message = "May not be empty")
     private char gender;
+    
     @NotNull(message = "May not be empty")
     private String address;
+    
     @NotNull(message = "May not be empty")
     private String city;
+    
     @NotNull(message = "May not be empty")
     private Boolean privateCalendar = true;
     
-    //@OneToMany(mappedBy = "user_email")
-    //private Set<UserEvent> userEvents;
+    @ManyToMany(mappedBy = "users")
+    private Set<Event> events;
     
     public String getEmail() {
         return email;
@@ -147,11 +155,11 @@ public class User implements Serializable {
         this.privateCalendar = privateCalendar;
     }    
 
-    /*public Set<UserEvent> getUserEvents() {
-        return userEvents;
+    public Set<Event> getEvents() {
+        return events;
     }
 
-    public void setUserEvents(Set<UserEvent> userEvents) {
-        this.userEvents = userEvents;
-    }*/
+    public void setUserEvents(Set<Event> events) {
+        this.events = events;
+    }
 }

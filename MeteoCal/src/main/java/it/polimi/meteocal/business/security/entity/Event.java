@@ -8,14 +8,13 @@ package it.polimi.meteocal.business.security.entity;
 import java.io.Serializable;
 import java.sql.Time;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.validation.constraints.NotNull;
 
@@ -35,6 +34,7 @@ public class Event implements Serializable {
     @ManyToOne
     //Unidirectional relationship, many events have one creator
     private User creator;
+    
     @ManyToOne
     private Weather weather;
     
@@ -44,27 +44,33 @@ public class Event implements Serializable {
     private String description;
     
     private String city;
+    
     private String address;
+    
     private String locationInfo;
     
     @Temporal(javax.persistence.TemporalType.DATE)
     @NotNull(message = "May not be empty")
     private Date beginDate;
+    
     @NotNull(message = "May not be empty")
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date endDate;
+    
     @NotNull(message = "May not be empty")
     private Time beginTime;
+    
     @NotNull(message = "May not be empty")
     private Time endTime;
 
     @NotNull(message = "May not be empty")
     private Boolean publicEvent;
+    
     @NotNull(message = "May not be empty")
     private Boolean indoor;
     
-    //@OneToMany(mappedBy = "event")
-    //private Set<UserEvent> userEvents = new HashSet<>();
+    @ManyToMany
+    private Set<User> users;
        
     public Integer getId() {
         return id;
@@ -178,12 +184,12 @@ public class Event implements Serializable {
         this.indoor = indoor;
     }
 
-    /*public Set<UserEvent> getUserEvents() {
-        return userEvents;
+    public Set<User> getUsers() {
+        return users;
     }
 
-    public void setUserEvents(Set<UserEvent> userEvents) {
-        this.userEvents = userEvents;
-    }*/
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
     
 }
