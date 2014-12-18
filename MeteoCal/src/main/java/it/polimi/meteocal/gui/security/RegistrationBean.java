@@ -24,6 +24,7 @@ public class RegistrationBean {
     private UserManager um;
 
     private User user;
+    
     private String message;
 
     public RegistrationBean() {
@@ -50,7 +51,7 @@ public class RegistrationBean {
             message = "";
             return "user/home?faces-redirect=true";
         } catch (Exception e){
-            message = "Error: mail already exists";
+            message = "Eail already registered";
         }
         return null;
     }
