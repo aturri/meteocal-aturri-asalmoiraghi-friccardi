@@ -44,7 +44,6 @@ public class User implements Serializable {
     @NotNull(message = "May not be empty")
     private String groupName;
     
-    @NotNull(message = "May not be empty")
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date birthDate;
     
@@ -57,10 +56,8 @@ public class User implements Serializable {
     @NotNull(message = "May not be empty")
     private char gender;
     
-    @NotNull(message = "May not be empty")
     private String address;
     
-    @NotNull(message = "May not be empty")
     private String city;
     
     @NotNull(message = "May not be empty")

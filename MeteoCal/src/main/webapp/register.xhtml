@@ -32,15 +32,20 @@
                     </p:selectOneMenu>                    
                     <p:message id="gendermsg" for="gender" /> 
 
-                                        
+                    <h:outputLabel for="birthdate" value="Date of birth" />
+                    <p:calendar id="birthdate" value="#{registrationBean.user.birthDate}" navigator="true" maxdate="#{registrationBean.user.today}">
+                         <p:ajax update="birthdatemsg"/>                       
+                    </p:calendar>
+                    <p:message id="birthdatemsg" for="birthdate" />
+                                                           
                     <p:outputLabel for="address" value="Address" />
-                    <p:inputText id="address" value="#{registrationBean.user.address}" required="true">
+                    <p:inputText id="address" value="#{registrationBean.user.address}" required="false">
                         <p:ajax update="addressmsg"/>
                     </p:inputText>
                     <p:message id="addressmsg" for="address" />    
                     
                     <p:outputLabel for="city" value="City"/>
-                    <p:inputText id="city" value="#{registrationBean.user.city}" required="true">
+                    <p:inputText id="city" value="#{registrationBean.user.city}" required="false">
                         <p:ajax update="citymsg"/>
                     </p:inputText>
                     <p:message id="citymsg" for="city" />                        
@@ -59,12 +64,6 @@
                     <p:outputLabel for="pwd2" value="Confirm Password" />
                     <p:password id="pwd2" label="Confirm Password" required="true"/> 
                     <p:message for="pwd2" />
-                    
-                    <h:outputLabel for="birthdate" value="Date of birth" />
-                    <p:calendar id="birthdate" value="#{registrationBean.user.birthDate}" navigator="true" maxdate="#{registrationBean.user.today}">
-                         <p:ajax update="birthdatemsg"/>                       
-                    </p:calendar>
-                    <p:message id="birthdatemsg" for="birthdate" />
                     
                     <h:outputText style="color: #ff0000" id="errorMsg" value="#{registrationBean.message}" />
                 </h:panelGrid>
