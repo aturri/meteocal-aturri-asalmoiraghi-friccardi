@@ -24,7 +24,7 @@
                     <p:message id="surnamemsg" for="surname" />
 
                     <p:outputLabel for="gender" value="Gender" />
-                    <p:selectOneMenu id="gender" value="#{registrationBean.user.gender}" style="width: 210px">
+                    <p:selectOneMenu id="gender" value="#{registrationBean.user.gender}" style="width: 210px" required="true">
                         <f:selectItem itemLabel="" itemValue="" />
                         <f:selectItem itemLabel="Man" itemValue="M" />
                         <f:selectItem itemLabel="Woman" itemValue="F" />
@@ -34,13 +34,13 @@
 
                                         
                     <p:outputLabel for="address" value="Address" />
-                    <p:inputText id="address" value="#{registrationBean.user.address}" required="false">
+                    <p:inputText id="address" value="#{registrationBean.user.address}" required="true">
                         <p:ajax update="addressmsg"/>
                     </p:inputText>
                     <p:message id="addressmsg" for="address" />    
                     
                     <p:outputLabel for="city" value="City"/>
-                    <p:inputText id="city" value="#{registrationBean.user.city}" required="false">
+                    <p:inputText id="city" value="#{registrationBean.user.city}" required="true">
                         <p:ajax update="citymsg"/>
                     </p:inputText>
                     <p:message id="citymsg" for="city" />                        
@@ -60,17 +60,18 @@
                     <p:password id="pwd2" label="Confirm Password" required="true"/> 
                     <p:message for="pwd2" />
                     
-                    <h:outputLabel for="birthdate">Date of birth:</h:outputLabel>
+                    <h:outputLabel for="birthdate" value="Date of birth" />
                     <p:calendar id="birthdate" value="#{registrationBean.user.birthDate}" navigator="true" maxdate="#{registrationBean.user.today}">
                          <p:ajax update="birthdatemsg"/>                       
                     </p:calendar>
                     <p:message id="birthdatemsg" for="birthdate" />
+                    
                     <h:outputText style="color: #ff0000" id="errorMsg" value="#{registrationBean.message}" />
                 </h:panelGrid>
                 <p:commandButton id="btnRegister" value="Register" update="regGrid"
                                  action="#{registrationBean.register()}" />
                 <br /> 
-                * I campi con l'asterisco sono obbligatori
+                * Mandatory fields
             </p:panel>
         </h:form>
     </h:body>
