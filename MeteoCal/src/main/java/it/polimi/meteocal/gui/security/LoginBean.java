@@ -23,9 +23,7 @@ public class LoginBean {
 
     private String username;
     private String password;
-    
-    public LoginBean() {
-    }
+    private String message="";
 
     public String getUsername() {
         return this.username;
@@ -43,6 +41,14 @@ public class LoginBean {
         this.password = password;
     }
 
+    public String getMessage(){
+        return this.message;
+    }
+    
+    public void setMessage(String message){
+        this.message=message;
+    }
+    
     public String login() {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
@@ -50,11 +56,14 @@ public class LoginBean {
             request.login(this.username, this.password);
         } catch (ServletException e) {
             context.addMessage(null, new FacesMessage("Login failed."));
+            message="Login failed";
             return "login";
         }
         return "/user/home";
     }
 
+
+    
     public String logout() {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();

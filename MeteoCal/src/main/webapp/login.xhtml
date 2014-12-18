@@ -5,20 +5,22 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui">
     <h:head>
-        <title>Login Page</title>
+        <title>Login | MeteoCal</title>
     </h:head>
     <h:body>
         <h:form style="width: 500px; margin: auto; ">
             <p:panel header="Login Form">
-                <p:panelGrid columns="2">
+                <p:panelGrid columns="2" id="loginGrid">
                     <p:outputLabel for="usernameInput" value="Username"/>
                     <p:inputText id="usernameInput" value="#{loginBean.username}" 
-                                 required="true" />
+                                 required="false" />
                     <p:outputLabel for="passwordInput" value="Password"/>
                     <p:password id="passwordInput" value="#{loginBean.password}" 
                                 required="false" />
                     <p:commandButton value="Login" 
-                                     action="#{loginBean.login()}" />
+                                     action="#{loginBean.login()}" update="loginGrid" />
+                    <h:outputText style="color: #ff0000" id="errorMsg" value="#{loginBean.message}" />
+
                 </p:panelGrid>
             </p:panel>
         </h:form>
