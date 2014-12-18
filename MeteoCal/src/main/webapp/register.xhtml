@@ -65,8 +65,9 @@
                          <p:ajax update="birthdatemsg"/>                       
                     </p:calendar>
                     <p:message id="birthdatemsg" for="birthdate" />
+                    <h:outputText id="errorMsg" value="#{registrationBean.message}" />
                 </h:panelGrid>
-                <p:commandButton value="Register" update="regGrid"
+                <p:commandButton id="btnRegister" value="Register" update="regGrid"
                                  action="#{registrationBean.register()}" />
                 <br /> 
                 * I campi con l'asterisco sono obbligatori

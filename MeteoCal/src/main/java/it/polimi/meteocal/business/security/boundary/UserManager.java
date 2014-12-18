@@ -14,6 +14,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 
 /**
  *
@@ -28,7 +29,7 @@ public class UserManager {
     @Inject
     Principal principal;
 
-    public void save(User user) {
+    public void save(User user) throws PersistenceException {
         user.setGroupName(Group.USER);
         em.persist(user);
     }
