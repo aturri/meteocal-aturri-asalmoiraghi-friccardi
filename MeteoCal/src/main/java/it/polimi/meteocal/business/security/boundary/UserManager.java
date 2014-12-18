@@ -29,7 +29,7 @@ public class UserManager {
     @Inject
     Principal principal;
 
-    public void save(User user) throws PersistenceException {
+    public void save(User user) {
         user.setGroupName(Group.USER);
         em.persist(user);
     }

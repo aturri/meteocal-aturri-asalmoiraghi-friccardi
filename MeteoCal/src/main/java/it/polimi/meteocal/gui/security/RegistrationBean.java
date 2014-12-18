@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.mail.BodyPart;
@@ -61,6 +62,13 @@ public class RegistrationBean {
     public String getMessage() {
         return message;
     }
+    
+    public void handleExistsUser() {
+        message = "";
+        if(um.existsUser(user.getEmail())) {
+            message = "Email already registered";
+        }
+    }
 
     public String register() {
         try {
@@ -94,8 +102,9 @@ public class RegistrationBean {
         }catch(MessagingException ex) {
             Logger.getLogger(RegistrationBean.class.getName()).log(Level.SEVERE, null, ex);
         }
-        catch (Exception e){
+        catch (EJBException e){
             message = "Email already registered";
+            Logger.getLogger(RegistrationBean.class.getName()).log(Level.SEVERE, null, e);
         }
         return null;
     }

@@ -53,6 +53,7 @@
                     <p:outputLabel for="email" value="Email" />
                     <p:inputText id="email" value="#{registrationBean.user.email}" required="true">
                         <p:ajax update="emailmsg"/>
+                        <p:ajax update="errorMsg" listener="#{registrationBean.handleExistsUser()}"/>
                     </p:inputText>
                     <p:message id="emailmsg" for="email" />
                     
