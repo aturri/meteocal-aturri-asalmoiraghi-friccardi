@@ -15,8 +15,6 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.Message.RecipientType;
@@ -57,9 +55,7 @@ public class RegistrationBean {
     public void setUser(User user) {
         this.user = user;
     }
-    
-    
-    
+   
     public void handleExistsUser() {
         if(um.existsUser(user.getEmail())) {
             MessageBean.addWarning("Email already registered");
@@ -93,7 +89,8 @@ public class RegistrationBean {
 
             Transport.send(msg);
             
-            return "user/home?faces-redirect=true";
+            return NavigationBean.redirectToLogin();
+            
         }catch(MessagingException ex) {
             Logger.getLogger(RegistrationBean.class.getName()).log(Level.SEVERE, null, ex);
         }

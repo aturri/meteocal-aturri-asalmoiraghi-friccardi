@@ -45,9 +45,9 @@ public class LoginBean {
             request.login(this.username, this.password);
         } catch (ServletException e) {
             MessageBean.addError("Login failed");
-            return "login";
+            return NavigationBean.toLogin();
         }
-        return "/user/home";
+        return NavigationBean.toHome();
     }
 
 
@@ -60,7 +60,7 @@ public class LoginBean {
         } catch (ServletException e) {
             MessageBean.addError("Logout failed");
         }
-        return "/index?faces-redirect=true";
+        return NavigationBean.redirectToIndex();
     }
 }
 

@@ -11,8 +11,8 @@
             <font style="font-size: 30px;font-weight: bold;">MeteoCal</font>
             <div id="logo"><h:link outcome="index"/></div>
             <ul id="rightButtons">
-                <li><h:link outcome="login" value="Login"/></li>
-                <li><h:link outcome="register" value="Registration"/></li>
+                <li><h:link outcome="#{navigationBean.toLogin()}" value="Login"/></li>
+                <li><h:link outcome="#{navigationBean.toRegister()}" value="Registration"/></li>
             </ul>
         </div>
         <div id="content">
