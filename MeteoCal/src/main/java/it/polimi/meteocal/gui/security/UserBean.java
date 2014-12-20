@@ -6,6 +6,7 @@
 package it.polimi.meteocal.gui.security;
 
 import it.polimi.meteocal.business.security.boundary.UserManager;
+import it.polimi.meteocal.business.security.entity.GroupEnumeration;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
@@ -30,6 +31,10 @@ public class UserBean {
     
     public String getSurname() {
         return um.getLoggedUser().getSurname();
+    }
+    
+    public GroupEnumeration getGroupName(){
+        return um.getLoggedUser().getGroupName();
     }
     
 }
