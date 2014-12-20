@@ -25,7 +25,7 @@ public class NavigationBean implements Serializable {
      * @return Login page name.
      */
     public static String redirectToIndex() {
-        return "index.xhtml?faces-redirect=true";
+        return "/index.xhtml?faces-redirect=true";
     }
      
     /**

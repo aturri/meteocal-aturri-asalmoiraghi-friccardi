@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Create Event | Meteocal</title>
+        <link href="css/createEvent.css" rel="stylesheet" type="text/css" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </h:head>
+    <h:body>
+        <h:form id="createEventForm">
+            <p:panel header="Create event">
+                <h:panelGrid columns="3" id="createEventGrid">
+                    <p:outputLabel for="title" value="Title:" />
+                    <p:inputText id="title"  required="true" value="#{registrationBean.user.name}">
+                        <p:ajax update="titlemsg"/>
+                    </p:inputText>
+                    <p:message id="titlemsg" for="title" />
+                    
+                    <p:outputLabel for="description" value="Description" />
+                    <p:inputTextarea cols="23" id="description" value="#{registrationBean.user.surname}" required="true">
+                        <p:ajax update="descriptionmsg"/>
+                    </p:inputTextarea>
+                    <p:message id="descriptionmsg" for="description" />
+
+                    <p:outputLabel for="visibility" value="Visibility" />
+                    <p:selectOneMenu id="visibility" value="#{registrationBean.user.gender}" style="width: 210px" required="true">
+                        <f:selectItem itemLabel="" itemValue="" />
+                        <f:selectItem itemLabel="Private" itemValue="0" />
+                        <f:selectItem itemLabel="Public" itemValue="1" />
+                        <p:ajax update="visibilitymsg"/>
+                    </p:selectOneMenu>                    
+                    <p:message id="visibilitymsg" for="visibility" /> 
+
+                    <h:outputLabel for="start" value="Starting time" />
+                    <p:calendar id="start" pattern="MM/dd/yyyy HH:mm:ss" value="#{registrationBean.user.birthDate}" navigator="true" maxdate="#{registrationBean.user.today}">
+                         <p:ajax update="startMsg"/>                       
+                    </p:calendar>
+                    <p:message id="startMsg" for="start" />
+                    
+                    <h:outputLabel for="end" value="Event end" />
+                    <p:calendar id="end" pattern="MM/dd/yyyy HH:mm:ss" value="#{registrationBean.user.birthDate}" navigator="true" maxdate="#{registrationBean.user.today}">
+                         <p:ajax update="endmsg"/>                       
+                    </p:calendar>
+                    <p:message id="endmsg" for="end" />
+                                                           
+                    <p:outputLabel for="address" value="Address" />
+                    <p:inputText id="address" value="#{registrationBean.user.address}" required="false">
+                        <p:ajax update="addressmsg"/>
+                    </p:inputText>
+                    <p:message id="addressmsg" for="address" />    
+                    
+                    <p:outputLabel for="city" value="City"/>
+                    <p:inputText id="city" value="#{registrationBean.user.city}" required="false">
+                        <p:ajax update="cityMsg"/>
+                    </p:inputText>
+                    <p:message id="cityMsg" for="city" />                        
+                    
+                    <p:outputLabel for="locationInfo" value="Location Info" />
+                    <p:inputText id="locationInfo" value="#{registrationBean.user.email}" required="true">
+                        <p:ajax update="emailMsg"/>
+                        <p:ajax update="errorMsg" listener="#{registrationBean.handleExistsUser()}"/>
+                    </p:inputText>
+                    <p:message id="emailMsg" for="locationInfo" />
+                    
+                </h:panelGrid>
+                <p:messages id="errorMsg" />
+                <p:commandButton id="btnCreateEvent" value="Create" update="createEventGrid"
+                                 action="#{registrationBean.register()}" />
+                <br /> 
+                * Mandatory fields
+            </p:panel>
+        </h:form>
+    </h:body>
+</html>
