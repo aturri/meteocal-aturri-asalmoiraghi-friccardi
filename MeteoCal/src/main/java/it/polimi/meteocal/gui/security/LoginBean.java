@@ -47,7 +47,8 @@ public class LoginBean {
             MessageBean.addError("Login failed");
             return NavigationBean.toLogin();
         }
-        return NavigationBean.toHome();
+        System.out.println("Is User = "+request.isUserInRole("USER"));
+        return "user/home?faces-redirect=true";
     }
 
 

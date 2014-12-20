@@ -45,4 +45,7 @@
             <role-name>USER</role-name>
         </auth-constraint>
     </security-constraint>
+    <security-role>
+        <role-name>USER</role-name>
+    </security-role>
 </web-app>
