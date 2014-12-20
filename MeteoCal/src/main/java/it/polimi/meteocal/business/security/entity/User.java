@@ -42,7 +42,7 @@ public class User implements Serializable {
     private String password;
     
     @NotNull(message = "May not be empty")
-    private String groupName;
+    private GroupEnumeration groupName;
     
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date birthDate;
@@ -100,11 +100,11 @@ public class User implements Serializable {
         }
     }
 
-    public void setGroupName(String groupName) {
+    public void setGroupName(GroupEnumeration groupName) {
         this.groupName = groupName;
     }
 
-    public String getGroupName() {
+    public GroupEnumeration getGroupName() {
         return groupName;
     }
     
