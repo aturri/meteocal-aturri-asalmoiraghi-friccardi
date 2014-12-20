@@ -66,8 +66,8 @@
                     <p:password id="pwd2" label="Confirm Password" required="true"/> 
                     <p:message for="pwd2" />
                     
-                    <h:outputText style="color: #ff0000" id="errorMsg" value="#{registrationBean.message}" />
                 </h:panelGrid>
+                <p:messages id="errorMsg" />
                 <p:commandButton id="btnRegister" value="Register" update="regGrid"
                                  action="#{registrationBean.register()}" />
                 <br /> 

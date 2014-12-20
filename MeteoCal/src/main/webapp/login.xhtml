@@ -19,8 +19,8 @@
                                 required="false" />
                     <p:commandButton value="Login" 
                                      action="#{loginBean.login()}" update="loginGrid" />
-                    <h:outputText style="color: #ff0000" id="errorMsg" value="#{loginBean.message}" />
-
+                    
+                    <p:messages/>
                 </p:panelGrid>
             </p:panel>
         </h:form>

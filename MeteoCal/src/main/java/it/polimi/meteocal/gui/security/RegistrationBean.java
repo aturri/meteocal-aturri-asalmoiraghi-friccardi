@@ -15,6 +15,8 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.Message.RecipientType;
@@ -26,7 +28,6 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import javax.persistence.PersistenceException;
 
 /**
  *
@@ -42,8 +43,6 @@ public class RegistrationBean {
     private UserManager um;
 
     private User user;
-    
-    private String message;
 
     public RegistrationBean() {
     }
@@ -59,21 +58,17 @@ public class RegistrationBean {
         this.user = user;
     }
     
-    public String getMessage() {
-        return message;
-    }
+    
     
     public void handleExistsUser() {
-        message = "";
         if(um.existsUser(user.getEmail())) {
-            message = "Email already registered";
+            MessageBean.addWarning("Email already registered");
         }
     }
 
     public String register() {
         try {
             um.save(user);
-            message = "";
             
             Message msg = new MimeMessage(mailSession);
             msg.setSubject("Confirm registration");
@@ -103,7 +98,8 @@ public class RegistrationBean {
             Logger.getLogger(RegistrationBean.class.getName()).log(Level.SEVERE, null, ex);
         }
         catch (EJBException e){
-            message = "Email already registered";
+            MessageBean.addWarning("Email already registered");
+            
             Logger.getLogger(RegistrationBean.class.getName()).log(Level.SEVERE, null, e);
         }
         return null;

@@ -6,9 +6,7 @@
 package it.polimi.meteocal.gui.security;
 
 import javax.inject.Named;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.context.RequestScoped;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +21,6 @@ public class LoginBean {
 
     private String username;
     private String password;
-    private String message="";
 
     public String getUsername() {
         return this.username;
@@ -40,14 +37,6 @@ public class LoginBean {
     public void setPassword(String password) {
         this.password = password;
     }
-
-    public String getMessage(){
-        return this.message;
-    }
-    
-    public void setMessage(String message){
-        this.message=message;
-    }
     
     public String login() {
         FacesContext context = FacesContext.getCurrentInstance();
@@ -55,8 +44,7 @@ public class LoginBean {
         try {
             request.login(this.username, this.password);
         } catch (ServletException e) {
-            context.addMessage(null, new FacesMessage("Login failed."));
-            message="Login failed";
+            MessageBean.addError("Login failed");
             return "login";
         }
         return "/user/home";
@@ -70,7 +58,7 @@ public class LoginBean {
         try {
             request.logout();
         } catch (ServletException e) {
-            context.addMessage(null, new FacesMessage("Logout failed."));
+            MessageBean.addError("Logout failed");
         }
         return "/index?faces-redirect=true";
     }

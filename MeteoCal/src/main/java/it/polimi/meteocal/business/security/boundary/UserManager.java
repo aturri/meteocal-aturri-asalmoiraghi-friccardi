@@ -8,13 +8,10 @@ package it.polimi.meteocal.business.security.boundary;
 import it.polimi.meteocal.business.security.entity.Group;
 import it.polimi.meteocal.business.security.entity.User;
 import java.security.Principal;
-import javax.annotation.Resource;
-import javax.ejb.EJBContext;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceException;
 
 /**
  *
