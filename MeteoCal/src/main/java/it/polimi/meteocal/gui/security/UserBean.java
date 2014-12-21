@@ -6,7 +6,8 @@
 package it.polimi.meteocal.gui.security;
 
 import it.polimi.meteocal.business.security.boundary.UserManager;
-import it.polimi.meteocal.business.security.entity.Notification;
+import it.polimi.meteocal.business.security.entity.*;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.inject.Named;
@@ -42,4 +43,7 @@ public class UserBean {
         return um.findAllNotifications();
     }
     
+    public List<Event> getEventsInCalendar() {
+        return new ArrayList<>(um.getLoggedUser().getEvents());
+    }
 }

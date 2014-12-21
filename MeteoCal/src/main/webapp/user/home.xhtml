@@ -17,7 +17,15 @@
         <ul>
             <ui:repeat value="#{userBean.notifications}" var="notification">
                 <li>
-                    <p>#{notification.text}</p>
+                    <p>[#{notification.event.title}] #{notification.text}</p>
+                </li>
+            </ui:repeat>
+        </ul>
+        <p>Participating events:</p>
+        <ul>
+            <ui:repeat value="#{userBean.eventsInCalendar}" var="event">
+                <li>
+                    <p>#{event.title}</p>
                 </li>
             </ui:repeat>
         </ul>
