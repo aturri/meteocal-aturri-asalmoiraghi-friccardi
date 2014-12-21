@@ -93,10 +93,10 @@ public class RegistrationBean {
             
         }catch(MessagingException ex) {
             Logger.getLogger(RegistrationBean.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            return NavigationBean.redirectToLogin();
+       }
         catch (EJBException e){
             MessageBean.addWarning("Email already registered");
-            
             Logger.getLogger(RegistrationBean.class.getName()).log(Level.SEVERE, null, e);
         }
         return null;

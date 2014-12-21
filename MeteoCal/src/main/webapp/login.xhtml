@@ -16,10 +16,8 @@
                     <p:outputLabel for="passwordInput" value="Password"/>
                     <p:password id="passwordInput" value="#{loginBean.password}" 
                                 required="false" />
-                    <p:commandButton value="Login" 
-                                     action="#{loginBean.login()}" update="loginGrid" />
-                    
-                    <p:messages/>
+                    <p:commandButton id="submit" action="#{loginBean.login()}" value="Login" ajax="true" update="@all"/>                    
+                    <p:messages style="color: red"/>
                 </p:panelGrid>
             </p:panel>
         </h:form>

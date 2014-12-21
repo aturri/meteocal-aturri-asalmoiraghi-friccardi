@@ -48,7 +48,7 @@ public class LoginBean {
             return NavigationBean.toLogin();
         }
         System.out.println("Is User = "+request.isUserInRole("USER"));
-        return "user/home?faces-redirect=true";
+        return NavigationBean.toHome();
     }
 
 
@@ -56,11 +56,7 @@ public class LoginBean {
     public String logout() {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-        try {
-            request.logout();
-        } catch (ServletException e) {
-            MessageBean.addError("Logout failed");
-        }
+        request.getSession().invalidate();
         return NavigationBean.redirectToIndex();
     }
 }

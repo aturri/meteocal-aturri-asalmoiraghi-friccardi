@@ -25,7 +25,7 @@ public class NavigationBean implements Serializable {
      * @return Login page name.
      */
     public static String redirectToIndex() {
-        return "/index.xhtml?faces-redirect=true";
+        return "/index?faces-redirect=true";
     }
      
     /**
@@ -33,7 +33,7 @@ public class NavigationBean implements Serializable {
      * @return Login page name.
      */
     public static String toIndex() {
-        return "index.xhtml";
+        return "/index";
     }
     
     /**
@@ -41,7 +41,7 @@ public class NavigationBean implements Serializable {
      * @return Login page name.
      */
     public static String redirectToLogin() {
-        return "login.xhtml?faces-redirect=true";
+        return "/login?faces-redirect=true";
     }
      
     /**
@@ -49,7 +49,7 @@ public class NavigationBean implements Serializable {
      * @return Login page name.
      */
     public static String toLogin() {
-        return "login.xhtml";
+        return "/login";
     }
     
     /**
@@ -57,7 +57,7 @@ public class NavigationBean implements Serializable {
      * @return Login page name.
      */
     public static String redirectToRegister() {
-        return "register.xhtml?faces-redirect=true";
+        return "/register?faces-redirect=true";
     }
      
     /**
@@ -65,7 +65,7 @@ public class NavigationBean implements Serializable {
      * @return Login page name.
      */
     public static String toRegister() {
-        return "register.xhtml";
+        return "/register";
     }
     
     /**
@@ -73,7 +73,7 @@ public class NavigationBean implements Serializable {
      * @return Login page name.
      */
     public static String redirectToHome() {
-        return "user/home.xhtml?faces-redirect=true";
+        return "/user/home?faces-redirect=true";
     }
      
     /**
@@ -81,6 +81,6 @@ public class NavigationBean implements Serializable {
      * @return Login page name.
      */
     public static String toHome() {
-        return "user/home.xhtml";
+        return "/user/home";
     }
 }

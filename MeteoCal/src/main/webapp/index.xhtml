@@ -1,7 +1,8 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
     <h:head>
         <title>MeteoCal | Home</title>
         <style src="css/style.css" type="text/css" media="screen" />
@@ -11,8 +12,8 @@
             <font style="font-size: 30px;font-weight: bold;">MeteoCal</font>
             <div id="logo"><h:link outcome="index"/></div>
             <ul id="rightButtons">
-                <li><h:link outcome="#{navigationBean.toLogin()}" value="Login"/></li>
-                <li><h:link outcome="#{navigationBean.toRegister()}" value="Registration"/></li>
+                <li><p:link outcome="#{navigationBean.toHome()}" value="Login"/></li>
+                <li><p:link outcome="#{navigationBean.toRegister()}" value="Registration"/></li>
             </ul>
         </div>
         <div id="content">

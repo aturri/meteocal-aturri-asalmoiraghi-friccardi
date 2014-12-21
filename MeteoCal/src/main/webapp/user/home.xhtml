@@ -8,10 +8,10 @@
     </h:head>
     <h:body>
         Welcome back #{userBean.name} #{userBean.surname}
-        <h:link outcome="/createEvent" value="Create event"/><br />
-        <h:link outcome="test.xhtml" value="Test"/><br />
-        <h:link outcome="#{loginBean.logout()}" value="logout"/>
-
+        <p:link outcome="test" value="Test"/>
+        <h:form>
+            <p:commandLink action="#{loginBean.logout()}" value="logout"/>
+        </h:form>
         
     </h:body>
 </html>
