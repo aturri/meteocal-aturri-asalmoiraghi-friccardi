@@ -5,13 +5,19 @@
  */
 package it.polimi.meteocal.business.security.boundary;
 
+import it.polimi.meteocal.business.security.entity.Event;
 import it.polimi.meteocal.business.security.entity.Group;
+import it.polimi.meteocal.business.security.entity.Notification;
 import it.polimi.meteocal.business.security.entity.User;
 import java.security.Principal;
+import java.util.List;
+import java.util.Set;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -30,6 +36,11 @@ public class UserManager {
         user.setGroupName(Group.USER);
         em.persist(user);
     }
+    
+    //New method
+    public void update(User user) {
+        em.merge(user);
+    }
 
     public void unregister() {
         em.remove(getLoggedUser());
@@ -41,5 +52,15 @@ public class UserManager {
     
     public Boolean existsUser(String email) {
         return em.find(User.class, email) != null;
+    }
+    
+    public List<Notification> findAllNotifications() {
+        TypedQuery<Notification> query = em.createQuery("SELECT n FROM Notification n WHERE n.user.email = :param_email", Notification.class).setParameter("param_email", principal.getName());
+        return query.getResultList();
+    }
+    
+    public int countNotReadNotifications() {
+        Query query = em.createQuery("SELECT COUNT(n) FROM Notification n WHERE n.user.email = :param_email AND n.readByUser = false").setParameter("param_email", principal.getName());
+        return ((Number)query.getSingleResult()).intValue();
     }
 }
