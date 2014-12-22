@@ -19,7 +19,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
@@ -50,6 +49,9 @@ public class User implements Serializable {
     
     @Temporal(TemporalType.TIMESTAMP)
     private Date registrationDate = new Date();
+  
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastAccess;
     
     @NotNull(message = "May not be empty")
     private String name;
@@ -126,6 +128,14 @@ public class User implements Serializable {
 
     public void setRegistrationDate(Date registrationDate) {
         this.registrationDate = registrationDate;
+    }
+
+    public Date getLastAccess() {
+        return lastAccess;
+    }
+
+    public void setLastAccess(Date lastAccess) {
+        this.lastAccess = lastAccess;
     }
     
     public String getName() {

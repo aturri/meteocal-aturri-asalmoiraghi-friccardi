@@ -33,7 +33,7 @@ public class UserManager {
     Principal principal;
 
     public void save(User user) {
-        user.setGroupName(Group.USER);
+        user.setGroupName(Group.USER.toString());
         em.persist(user);
     }
     

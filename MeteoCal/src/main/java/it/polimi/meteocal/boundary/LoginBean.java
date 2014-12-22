@@ -5,6 +5,10 @@
  */
 package it.polimi.meteocal.boundary;
 
+import it.polimi.meteocal.entity.User;
+import it.polimi.meteocal.entityManager.UserManager;
+import java.util.Date;
+import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
@@ -19,6 +23,9 @@ import javax.servlet.http.HttpServletRequest;
 @RequestScoped
 public class LoginBean {
 
+    @EJB
+    UserManager um;
+    
     private String username;
     private String password;
 
@@ -43,6 +50,9 @@ public class LoginBean {
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         try {
             request.login(this.username, this.password);
+            User user = um.getLoggedUser();
+            user.setLastAccess(new Date());
+            um.update(user);
         } catch (ServletException e) {
             MessageBean.addError("Login failed");
             return NavigationBean.toLogin();

@@ -9,6 +9,6 @@ package it.polimi.meteocal.entity;
  *
  * @author Andrea
  */
-public class Group {
-    public static final String USER = "USER";
+public enum Group {
+    USER
 }
