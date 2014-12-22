@@ -27,10 +27,8 @@ public class EventBean {
     @EJB
     UserManager userManager;
     
-    private Event event=new Event();
-    /**
-     * Creates a new instance of EventBean
-     */
+    private Event event = new Event();
+
     public EventBean() {
     }
 
@@ -46,9 +44,10 @@ public class EventBean {
         User user=userManager.getLoggedUser(); 
         this.event.setCreator(user);
         this.event.getUsers().add(user);
-        user.getEvents().add(this.event);
         this.eventManager.save(event);
-        return NavigationBean.toHome();
+        user.getEvents().add(event);
+        userManager.update(user);
+        return NavigationBean.redirectToHome();
     }
     
     
