@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.polimi.meteocal.gui.security;
+package it.polimi.meteocal.boundary;
 
-import it.polimi.meteocal.business.security.boundary.UserManager;
-import it.polimi.meteocal.business.security.entity.User;
+import it.polimi.meteocal.entityManager.UserManager;
+import it.polimi.meteocal.entity.User;
 import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 import java.util.logging.Logger;

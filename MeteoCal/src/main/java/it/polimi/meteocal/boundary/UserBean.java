@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.polimi.meteocal.gui.security;
+package it.polimi.meteocal.boundary;
 
-import it.polimi.meteocal.business.security.boundary.UserManager;
-import it.polimi.meteocal.business.security.entity.*;
+import it.polimi.meteocal.entity.Notification;
+import it.polimi.meteocal.entity.Event;
+import it.polimi.meteocal.entityManager.UserManager;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;

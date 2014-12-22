@@ -3,15 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.polimi.meteocal.business.security.boundary;
+package it.polimi.meteocal.entityManager;
 
-import it.polimi.meteocal.business.security.entity.Event;
-import it.polimi.meteocal.business.security.entity.Group;
-import it.polimi.meteocal.business.security.entity.Notification;
-import it.polimi.meteocal.business.security.entity.User;
+import it.polimi.meteocal.entity.User;
+import it.polimi.meteocal.entity.Notification;
+import it.polimi.meteocal.entity.Group;
 import java.security.Principal;
 import java.util.List;
-import java.util.Set;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -25,6 +23,8 @@ import javax.persistence.TypedQuery;
  */
 @Stateless
 public class UserManager {
+    
+    private static final int MAX_NOTIF = 20;
 
     @PersistenceContext
     private EntityManager em;
@@ -55,7 +55,7 @@ public class UserManager {
     }
     
     public List<Notification> findAllNotifications() {
-        TypedQuery<Notification> query = em.createQuery("SELECT n FROM Notification n WHERE n.user.email = :param_email", Notification.class).setParameter("param_email", principal.getName());
+        TypedQuery<Notification> query = em.createQuery("SELECT n FROM Notification n WHERE n.user.email = :param_email", Notification.class).setParameter("param_email", principal.getName()).setMaxResults(MAX_NOTIF);
         return query.getResultList();
     }
     

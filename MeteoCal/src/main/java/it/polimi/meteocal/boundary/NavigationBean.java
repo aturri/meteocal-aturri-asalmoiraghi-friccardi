@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.polimi.meteocal.gui.security;
+package it.polimi.meteocal.boundary;
 
 import java.io.Serializable;
 import javax.enterprise.context.RequestScoped;
