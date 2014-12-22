@@ -33,7 +33,7 @@
                     <p:message id="gendermsg" for="gender" /> 
 
                     <h:outputLabel for="birthdate" value="Date of birth" />
-                    <p:calendar id="birthdate" value="#{registrationBean.user.birthDate}" navigator="true" maxdate="#{registrationBean.user.today}">
+                    <p:calendar id="birthdate" value="#{registrationBean.user.birthDate}" navigator="true" maxdate="#{registrationBean.today}">
                          <p:ajax update="birthdatemsg"/>                       
                     </p:calendar>
                     <p:message id="birthdatemsg" for="birthdate" />

@@ -20,28 +20,19 @@
                     <p:message id="titlemsg" for="title" />
                     
                     <p:outputLabel for="description" value="Description" />
-                    <p:inputTextarea cols="23" id="description" value="#{eventBean.event.description}" required="true">
+                    <p:inputTextarea cols="23" id="description" value="#{eventBean.event.description}" required="false">
                         <p:ajax update="descriptionmsg"/>
                     </p:inputTextarea>
                     <p:message id="descriptionmsg" for="description" />
 
-                    <p:outputLabel for="visibility" value="Visibility" />
-                    <p:selectOneMenu id="visibility" value="#{eventBean.event.publicEvent}" style="width: 210px" required="true">
-                        <f:selectItem itemLabel="" itemValue="" />
-                        <f:selectItem itemLabel="Private" itemValue="0" />
-                        <f:selectItem itemLabel="Public" itemValue="1" />
-                        <p:ajax update="visibilitymsg"/>
-                    </p:selectOneMenu>                    
-                    <p:message id="visibilitymsg" for="visibility" /> 
-
-                    <h:outputLabel for="start" value="Starting time" />
-                    <p:calendar id="start" pattern="MM/dd/yyyy HH:mm:ss" value="#{eventBean.event.beginDate}" navigator="true" maxdate="#{registrationBean.user.today}">
+                    <h:outputLabel for="start" value="Starting time *" />
+                    <p:calendar id="start" pattern="MM/dd/yyyy HH:mm:ss" value="#{eventBean.event.beginDate}" navigator="true" mindate="#{eventBean.today}" required="true">
                          <p:ajax update="startMsg"/>                       
                     </p:calendar>
                     <p:message id="startMsg" for="start" />
                     
-                    <h:outputLabel for="end" value="Event end" />
-                    <p:calendar id="end" pattern="MM/dd/yyyy HH:mm:ss" value="#{eventBean.event.endDate}" navigator="true" maxdate="#{registrationBean.user.today}">
+                    <h:outputLabel for="end" value="End time *" />
+                    <p:calendar id="end" pattern="MM/dd/yyyy HH:mm:ss" value="#{eventBean.event.endDate}" navigator="true" mindate="#{eventBean.today}" required="true">
                          <p:ajax update="endmsg"/>                       
                     </p:calendar>
                     <p:message id="endmsg" for="end" />
@@ -56,22 +47,29 @@
                     <p:inputText id="city" value="#{eventBean.event.city}" required="false">
                         <p:ajax update="cityMsg"/>
                     </p:inputText>
-                    <p:message id="cityMsg" for="city" />                        
-                    
-                    <p:outputLabel for="indoorRadio" value="dsadas"/>
-                    <p:selectOneRadio id="indoorRadio" value="#{eventBean.event.indoor}" layout="lineDirection">
+                    <p:message id="cityMsg" for="city" />
+                   
+                    <p:outputLabel for="locationInfo" value="Location addtitional info" />
+                    <p:inputTextarea cols="23" id="locationInfo" value="#{eventBean.event.locationInfo}" required="false">
+                        <p:ajax update="locationInfoMsg"/>
+                    </p:inputTextarea>
+                    <p:message id="locationInfoMsg" for="locationInfo" />                    
+
+                    <p:outputLabel for="visibility" value="Visibility" />
+                    <p:selectOneMenu id="visibility" value="#{eventBean.event.publicEvent}" style="width: 210px" required="true">
+                        <f:selectItem itemLabel="" itemValue="" />
+                        <f:selectItem itemLabel="Private" itemValue="false" />
+                        <f:selectItem itemLabel="Public" itemValue="true" />
+                        <p:ajax update="visibilitymsg"/>
+                    </p:selectOneMenu>                    
+                    <p:message id="visibilitymsg" for="visibility" /> 
+
+                    <p:outputLabel for="indoorRadio" value="Type"/>
+                    <p:selectOneRadio id="indoorRadio" value="#{eventBean.event.indoor}" layout="lineDirection" required="true">
                         <f:selectItem itemLabel="Indoor" itemValue="true" />
                         <f:selectItem itemLabel="Outdoor" itemValue="false" />
                     </p:selectOneRadio>
-                    <p:message id="indoorMsg" for="indoorRadio" />                        
-
-                    
-                    <p:outputLabel for="locationInfo" value="Location Info" />
-                    <p:inputText id="locationInfo" value="#{eventBean.event.locationInfo}" required="true">
-                        <p:ajax update="locationInfoMsg"/>
-                    </p:inputText>
-                    <p:message id="locationInfoMsg" for="locationInfo" />
-                    
+                    <p:message id="indoorMsg" for="indoorRadio" />  
                 </h:panelGrid>
                 <p:messages id="errorMsg" />
                 <p:commandButton id="btnCreateEvent" value="Create" update="createEventGrid"

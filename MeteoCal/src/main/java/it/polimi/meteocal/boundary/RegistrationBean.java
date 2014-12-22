@@ -8,6 +8,7 @@ package it.polimi.meteocal.boundary;
 import it.polimi.meteocal.entityManager.UserManager;
 import it.polimi.meteocal.entity.User;
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
@@ -100,5 +101,9 @@ public class RegistrationBean {
             Logger.getLogger(RegistrationBean.class.getName()).log(Level.SEVERE, null, e);
         }
         return null;
+    }
+    
+    public Date getToday() {
+        return new Date();
     }
 }

@@ -9,6 +9,7 @@ import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.EventManager;
 import it.polimi.meteocal.entityManager.UserManager;
+import java.util.Date;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
@@ -49,13 +50,8 @@ public class EventBean {
         userManager.update(user);
         return NavigationBean.redirectToHome();
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
+ 
+    public Date getToday() {
+        return new Date();
+    }
 }

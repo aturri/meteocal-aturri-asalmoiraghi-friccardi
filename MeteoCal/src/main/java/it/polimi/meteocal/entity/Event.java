@@ -32,7 +32,7 @@ public class Event implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     
-    @NotNull(message = "May not be empty")
+    @NotNull
     @ManyToOne
     //Unidirectional relationship, many events have one creator
     private User creator;
@@ -40,7 +40,7 @@ public class Event implements Serializable {
     @ManyToOne
     private Weather weather;
     
-    @NotNull(message = "May not be empty")
+    @NotNull(message = "Please insert a title")
     private String title;
     
     private String description;
@@ -52,20 +52,20 @@ public class Event implements Serializable {
     private String locationInfo;
     
     @Temporal(TemporalType.TIMESTAMP)
-    @NotNull(message = "May not be empty")
+    @NotNull(message = "Please choose a date/time")
     private Date beginDate;
     
-    @NotNull(message = "May not be empty")
+    @NotNull(message = "Please choose a date/time")
     @Temporal(TemporalType.TIMESTAMP)
     private Date endDate;
     
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdEvent = new Date();
 
-    @NotNull(message = "May not be empty")
+    @NotNull(message = "Please specify event's visibility")
     private Boolean publicEvent;
     
-    @NotNull(message = "May not be empty")
+    @NotNull(message = "Please choose an option")
     private Boolean indoor;
     
     @ManyToMany

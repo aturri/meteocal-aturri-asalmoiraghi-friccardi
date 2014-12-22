@@ -193,10 +193,6 @@ public class User implements Serializable {
     public void setUserEvents(Set<Event> events) {
         this.events = events;
     }
-    
-    public Date getToday() {
-        return new Date();
-    }
 
     public Set<Event> getInvitations() {
         return invitations;
