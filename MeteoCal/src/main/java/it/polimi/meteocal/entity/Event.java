@@ -6,8 +6,8 @@
 package it.polimi.meteocal.entity;
 
 import java.io.Serializable;
-import java.sql.Time;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -70,7 +70,7 @@ public class Event implements Serializable {
     
     @ManyToMany
     @JoinTable(name="EVENT_IN_CALENDAR")
-    private Set<User> users;
+    private Set<User> users = new HashSet<>();
   
     @ManyToMany
     @JoinTable(name="INVITATION")

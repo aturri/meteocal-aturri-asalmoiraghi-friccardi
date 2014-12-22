@@ -10,8 +10,10 @@
     <h:body>
         Welcome back #{userBean.name} #{userBean.surname}
         <p:link outcome="test" value="Test"/>
+        <br/>
+        <p:link outcome="/event/create" value="Create Event"/>
         <h:form>
-            <p:commandLink action="#{loginBean.logout()}" value="logout"/>
+            <p:commandLink action="#{loginBean.logout()}" value="Logout"/>
         </h:form>
         <p>Number of notifications to be read: #{userBean.numOfNotReadNotifications}</p>
         <ul>
