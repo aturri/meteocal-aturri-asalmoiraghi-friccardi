@@ -21,6 +21,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
@@ -44,8 +45,11 @@ public class User implements Serializable {
     @NotNull(message = "May not be empty")
     private String groupName;
     
-    @Temporal(javax.persistence.TemporalType.DATE)
+    @Temporal(TemporalType.DATE)
     private Date birthDate;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date registrationDate = new Date();
     
     @NotNull(message = "May not be empty")
     private String name;
@@ -114,6 +118,14 @@ public class User implements Serializable {
 
     public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
+    }
+
+    public Date getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public void setRegistrationDate(Date registrationDate) {
+        this.registrationDate = registrationDate;
     }
     
     public String getName() {

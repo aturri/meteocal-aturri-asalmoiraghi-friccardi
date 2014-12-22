@@ -6,10 +6,10 @@
 package it.polimi.meteocal.entity;
 
 import java.io.Serializable;
-import java.sql.Time;
 import java.util.Date;
 import javax.persistence.Embeddable;
 import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -19,26 +19,17 @@ import javax.persistence.Temporal;
 public class NotificationId implements Serializable {
     private static final long serialVersionUID = 1L;
     
-    @Temporal(javax.persistence.TemporalType.DATE)
-    private Date genDate;
-    private Time genTime;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date created;
     private String userId;
     private Integer eventId;
 
     public Date getGenDate() {
-        return genDate;
+        return created;
     }
 
-    public void setGenDate(Date genDate) {
-        this.genDate = genDate;
-    }
-
-    public Time getGenTime() {
-        return genTime;
-    }
-
-    public void setGenTime(Time genTime) {
-        this.genTime = genTime;
+    public void setGenDate(Date created) {
+        this.created = created;
     }
 
     public String getUserId() {

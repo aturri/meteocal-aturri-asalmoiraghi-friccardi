@@ -13,12 +13,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -52,19 +51,16 @@ public class Event implements Serializable {
     
     private String locationInfo;
     
-    @Temporal(javax.persistence.TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @NotNull(message = "May not be empty")
     private Date beginDate;
     
     @NotNull(message = "May not be empty")
-    @Temporal(javax.persistence.TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date endDate;
     
-    @NotNull(message = "May not be empty")
-    private Time beginTime;
-    
-    @NotNull(message = "May not be empty")
-    private Time endTime;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdEvent = new Date();
 
     @NotNull(message = "May not be empty")
     private Boolean publicEvent;
@@ -160,20 +156,12 @@ public class Event implements Serializable {
         this.endDate = endDate;
     }
 
-    public Time getBeginTime() {
-        return beginTime;
+    public Date getCreatedEvent() {
+        return createdEvent;
     }
 
-    public void setBeginTime(Time beginTime) {
-        this.beginTime = beginTime;
-    }
-
-    public Time getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(Time endTime) {
-        this.endTime = endTime;
+    public void setCreatedEvent(Date createdEvent) {
+        this.createdEvent = createdEvent;
     }
 
     public Boolean getPublicEvent() {
