@@ -31,5 +31,9 @@ public class EventManager {
     public Boolean existsEvent(Integer id) {
         return em.find(Event.class, id) != null;
     }
+    
+    public Event findById(int id) {
+        return em.find(Event.class, id);
+    }
            
 }

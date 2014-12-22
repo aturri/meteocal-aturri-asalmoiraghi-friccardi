@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Event Details | Meteocal</title>
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </h:head>
+    <h:body>
+       <p:link outcome="/user/home" value="Back to home"/>
+       <br/>
+       <h:outputText id="title" value="Event # #{param['id']}" />
+       <f:viewParam name="id" value="#{eventBean.event.title}"/>
+    </h:body>
+</html>
