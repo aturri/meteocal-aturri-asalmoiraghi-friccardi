@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.polimi.meteocal.boundary;
+package it.polimi.meteocal.control;
 
 import java.io.Serializable;
 import javax.enterprise.context.RequestScoped;
@@ -82,5 +82,21 @@ public class NavigationBean implements Serializable {
      */
     public static String toHome() {
         return "/user/home";
+    }
+    
+    /**
+     * Redirect to recover password page.
+     * @return recover password page name.
+     */
+    public static String redirectToRecoverPassword() {
+        return "/recoverPassword?faces-redirect=true";
+    }
+    
+    /**
+     * Go to recover password page.
+     * @return recover password page name.
+     */
+    public static String toRecoverPassword(){
+        return "/recoverPassword";
     }
 }

@@ -5,6 +5,8 @@
  */
 package it.polimi.meteocal.boundary;
 
+import it.polimi.meteocal.control.MailControl;
+import it.polimi.meteocal.control.NavigationBean;
 import it.polimi.meteocal.entityManager.UserManager;
 import it.polimi.meteocal.entity.User;
 import java.io.UnsupportedEncodingException;
@@ -35,8 +37,8 @@ import javax.mail.internet.MimeMultipart;
 @Named(value = "registrationBean")
 @RequestScoped
 public class RegistrationBean {
-    @Resource(name = "mail/mailSession")
-    private Session mailSession;
+    
+    private MailControl mailControl;
     
     @EJB
     private UserManager um;
@@ -66,37 +68,15 @@ public class RegistrationBean {
     public String register() {
         try {
             um.save(user);
-            
-            Message msg = new MimeMessage(mailSession);
-            msg.setSubject("Confirm registration");
-            try {
-                msg.setRecipient(RecipientType.TO, new InternetAddress(user.getEmail(), user.getName()+" "+user.getSurname()));
-            } catch (UnsupportedEncodingException ex) {
-                Logger.getLogger(RegistrationBean.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            try {
-                msg.setFrom(new InternetAddress("afa.meteocal@gmail.com", "MeteoCal's Team"));
-            } catch (UnsupportedEncodingException ex) {
-                Logger.getLogger(RegistrationBean.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            BodyPart messageBodyPart = new MimeBodyPart();
-            messageBodyPart.setText("Congraturation "+user.getName()+" "+user.getSurname()+",\\nYour account is registred succefully!\\nBest regards,\\n       MeteoCal's Team");
-
-            Multipart multipart = new MimeMultipart();
-            multipart.addBodyPart(messageBodyPart);
-
-            msg.setContent(multipart);
-
-            Transport.send(msg);
-            
+            //mailControl=new MailControl();
+            //mailControl.sendMail(user.getEmail(),user.getName()+" "+user.getSurname(),"Confirm registration","Congraturation "+user.getName()+" "+user.getSurname()+",\\nYour account is registred succefully!\\nBest regards,\\n       MeteoCal's Team");
             return NavigationBean.redirectToLogin();
-            
-        }catch(MessagingException ex) {
+        }/*catch(MessagingException ex) {
             Logger.getLogger(RegistrationBean.class.getName()).log(Level.SEVERE, null, ex);
             return NavigationBean.redirectToLogin();
-       }
-        catch (EJBException e){
+        }catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(RegistrationBean.class.getName()).log(Level.SEVERE, null, ex);
+        }*/catch (EJBException e){
             MessageBean.addWarning("Email already registered");
             Logger.getLogger(RegistrationBean.class.getName()).log(Level.SEVERE, null, e);
         }
