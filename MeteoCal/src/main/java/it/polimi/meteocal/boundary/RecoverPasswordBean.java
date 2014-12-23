@@ -11,7 +11,10 @@ import it.polimi.meteocal.control.MailControl;
 import it.polimi.meteocal.control.NavigationBean;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.UserManager;
+import java.io.FileInputStream;
 import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -192,7 +195,27 @@ public class RecoverPasswordBean {
      */
     private String getCodeFromUser(User user){
         String string=user.getEmail()+user.getCity()+user.getLastAccess().toString()+user.getPassword();
-        return "METTEREUNCODICEVERO";//Hashing.sha256().hashString(string,Charsets.UTF_8 ).toString();
+        
+        MessageDigest md=null;
+        try {
+            md = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(RecoverPasswordBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         
+        for(int i=0;i<string.length();i++){
+            md.update(string.getBytes());
+        }
+        
+        byte[] mdbytes = md.digest();
+        
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < mdbytes.length; i++) {
+          sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
+        }
+        System.out.println("Hex format : " + sb.toString());
+
+        return sb.toString();
     }
     
     
