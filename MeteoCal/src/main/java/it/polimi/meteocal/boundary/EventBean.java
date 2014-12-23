@@ -55,6 +55,11 @@ public class EventBean {
         userManager.update(user);
         return NavigationBean.redirectToHome();
     }
+    
+    public String editEvent() {
+        this.eventManager.update(event);
+        return NavigationBean.redirectToHome();
+    }
  
     public Date getToday() {
         return new Date();
