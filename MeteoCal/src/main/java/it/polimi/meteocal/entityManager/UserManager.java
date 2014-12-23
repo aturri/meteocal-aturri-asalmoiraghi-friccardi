@@ -63,4 +63,8 @@ public class UserManager {
         Query query = em.createQuery("SELECT COUNT(n) FROM Notification n WHERE n.user.email = :param_email AND n.readByUser = false").setParameter("param_email", principal.getName());
         return ((Number)query.getSingleResult()).intValue();
     }
+
+    public User findByEmail(String email) {
+        return em.find(User.class, email);
+    }
 }
