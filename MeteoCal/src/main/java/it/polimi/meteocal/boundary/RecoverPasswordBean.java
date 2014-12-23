@@ -12,12 +12,14 @@ import it.polimi.meteocal.control.NavigationBean;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.UserManager;
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.context.FacesContext;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 
@@ -72,17 +74,34 @@ public class RecoverPasswordBean {
     }
     
     public String setNewPassword(){
-        if(!userManager.existsUser(email)){
+        Map<String, String> params =FacesContext.getCurrentInstance().
+                   getExternalContext().getRequestParameterMap();
+        String codeFromEmail = params.get("code");
+        String emailFromEmail=params.get("email");
+        System.out.println(""+ params.keySet());
+
+        /*
+        if(!userManager.existsUser(emailFromEmail)){
             MessageBean.addError("User not found");
+            return "";
         }
         //verifica che il codice sia corretto
-        
+        User user=userManager.findByEmail(email);
+        if(this.getCodeFromUser(user).equals(codeFromEmail)){
+            MessageBean.addError("The code is not valid");
+            return "";
+        }
         //verifica che la password siano corrette
         if(!this.password1.equals(this.password2)){
             MessageBean.addError("eMails don't match");
             return null;
         }
-        return null;
+        
+        //Set the new password
+        user.setPassword(password1);
+        userManager.update(user);
+        */
+        return NavigationBean.redirectToIndex();
     }
 
     /**
@@ -144,33 +163,22 @@ public class RecoverPasswordBean {
     /**
      * 
      * @param user
-     * @return 
+     * @return the absolute path to go to the set new password page with correct parameters
      */
-    
     private String getLinkForResetEmail(User user) {
+        return "http://localhost:8080/MeteoCal/setNewPassword.xhtml?faces-redirect=true&code="
+                + this.getCodeFromUser(user) + "&email="+user.getEmail();
+    }
+    
+    /**
+     * 
+     * @param user
+     * @return the string that represents the code
+     */
+    private String getCodeFromUser(User user){
         String string=user.getEmail()+user.getPassword()+user.getLastAccess().toString();
-        String hashed = Hashing.sha256().hashString(string,Charsets.UTF_8 ).toString();
-        return "http://localhost:8080/MeteoCal/insertNewPassoword?faces-redirect=true&code="
-                + hashed + "&email="+user.getEmail();
+        return Hashing.sha256().hashString(string,Charsets.UTF_8 ).toString();
     }
     
     
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
