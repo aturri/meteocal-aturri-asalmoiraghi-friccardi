@@ -99,4 +99,9 @@ public class NavigationBean implements Serializable {
     public static String toRecoverPassword(){
         return "/recoverPassword";
     }
+
+    
+    public static String redirectToSetNewPassword(String email,String code) {
+        return "/setNewPassword?faces-redirect=true&email="+email+"&code="+code;
+    }
 }

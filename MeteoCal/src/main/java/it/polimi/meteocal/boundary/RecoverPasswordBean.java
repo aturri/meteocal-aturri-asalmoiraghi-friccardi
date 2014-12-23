@@ -51,19 +51,20 @@ public class RecoverPasswordBean {
     public String recoverPassword(){
         if(!userManager.existsUser(email)){
             MessageBean.addError("User not found");
+            return "";
         }
         else{
             User user=userManager.findByEmail(email);
             mailControl=new MailControl(mailSession);
             try {
                 this.mailControl.sendMail(email, user.getName()+" "+user.getSurname(),"Recover your Meteocal's password", 
-                        "Dear "+user.getName()+" "+user.getSurname()+",\n"
-                                + "We have see your request to change your password because you have forgotten it. \n"
-                                + "Now you just click on the follow link to set a new password and come back to MeteoCal\n"
-                                + this.getLinkForResetEmail(user)
-                                + "\n\n"
-                                + "If you haven't registed to MeteoCal or if you haven't required to change your password, ignore this eMail.\n"
-                                + "Best regards,\n"
+                        "Dear "+ user.getName()+" "+user.getSurname()+",<br />"
+                                + "We have see your request to change your password because you have forgotten it. <br />"
+                                + "Now you just click on the follow link to set a new password and come back to MeteoCal<br /><br />"
+                                + "<a href=\""+this.getLinkForResetEmail(user)+"\" >"+this.getLinkForResetEmail(user)+"</a>"
+                                + "<br /><br />"
+                                + "If you haven't registed to MeteoCal or if you haven't required to change your password, ignore this eMail.<br />"
+                                + "Best regards,<br />"
                                 + "        MeteoCal's Team"        
                 );            } catch (MessagingException | UnsupportedEncodingException ex) {
                 Logger.getLogger(RecoverPasswordBean.class.getName()).log(Level.SEVERE, null, ex);
@@ -80,27 +81,29 @@ public class RecoverPasswordBean {
         String emailFromEmail=params.get("email");
         System.out.println(""+ params.keySet());
 
-        /*
+        
         if(!userManager.existsUser(emailFromEmail)){
             MessageBean.addError("User not found");
             return "";
         }
         //verifica che il codice sia corretto
-        User user=userManager.findByEmail(email);
-        if(this.getCodeFromUser(user).equals(codeFromEmail)){
+        User user=userManager.findByEmail(emailFromEmail);
+        String aux1=this.getCodeFromUser(user);
+        if(!aux1.equals(codeFromEmail)){
             MessageBean.addError("The code is not valid");
             return "";
         }
         //verifica che la password siano corrette
         if(!this.password1.equals(this.password2)){
-            MessageBean.addError("eMails don't match");
-            return null;
+            MessageBean.addError("password don't match");
+            //returns null implies that the page is the same
+            return "";
         }
         
         //Set the new password
         user.setPassword(password1);
         userManager.update(user);
-        */
+        
         return NavigationBean.redirectToIndex();
     }
 
@@ -108,6 +111,14 @@ public class RecoverPasswordBean {
      * @return the email
      */
     public String getEmail() {
+        if(this.email==null){
+            Map<String, String> params =FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+            String emailFromEmail = params.get("email");
+            System.out.println(params.keySet().toString() +"-->"+emailFromEmail+"<--");
+            if(emailFromEmail!=null){
+                this.email=emailFromEmail;
+            }
+        }
         return email;
     }
 
@@ -146,13 +157,17 @@ public class RecoverPasswordBean {
         this.password2 = password2;
     }
 
-    /**
-     * @return the code
-     */
     public String getCode() {
-        return code;
+        if(this.code==null){
+            String codeFromEmail = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("code");
+            if(codeFromEmail==null){
+            } else {
+                this.code=codeFromEmail;
+            }
+        }
+        return this.code;
     }
-
+    
     /**
      * @param code the code to set
      */
@@ -176,7 +191,7 @@ public class RecoverPasswordBean {
      * @return the string that represents the code
      */
     private String getCodeFromUser(User user){
-        String string=user.getEmail()+user.getPassword()+user.getLastAccess().toString();
+        String string=user.getEmail()+user.getCity()+user.getLastAccess().toString()+user.getPassword();
         return Hashing.sha256().hashString(string,Charsets.UTF_8 ).toString();
     }
     

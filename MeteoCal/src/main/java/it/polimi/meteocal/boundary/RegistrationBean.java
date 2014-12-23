@@ -69,7 +69,7 @@ public class RegistrationBean {
             um.save(user);
             mailControl=new MailControl(mailSession);
             mailControl.sendMail(user.getEmail(),user.getName()+" "+user.getSurname(),"Confirm registration",
-                    "Congraturation "+user.getName()+" "+user.getSurname()+",\nYour account is registred succefully!\nBest regards,\n       MeteoCal's Team");
+                    "Congraturation "+user.getName()+" "+user.getSurname()+",<br />Your account is registred succefully!<br />Best regards,<br />       MeteoCal's Team");
             return NavigationBean.redirectToLogin();
         }catch(MessagingException ex) {
             Logger.getLogger(RegistrationBean.class.getName()).log(Level.SEVERE, null, ex);
@@ -80,7 +80,7 @@ public class RegistrationBean {
             MessageBean.addWarning("Email already registered");
             Logger.getLogger(RegistrationBean.class.getName()).log(Level.SEVERE, null, e);
         }
-        return null;
+        return "";
     }
     
     public Date getToday() {

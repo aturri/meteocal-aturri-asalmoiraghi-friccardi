@@ -34,9 +34,10 @@ public class MailControl {
         msg.setSubject(subject);
         msg.setRecipient(Message.RecipientType.TO, new InternetAddress(destination, nameOfDestination));
         msg.setFrom(new InternetAddress("afa.meteocal@gmail.com", "MeteoCal's Team"));
-        msg.setContent(message, "text/plain");
         //either
-        //msg.setContent(message, "text/html; charset=utf-8");
+        //msg.setContent(message, "text/plain");
+        //either
+        msg.setContent(message, "text/html; charset=utf-8");
         Transport.send(msg);
         System.out.println("I've sent an email to "+ destination);
     }
