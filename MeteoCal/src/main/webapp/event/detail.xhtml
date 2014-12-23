@@ -12,7 +12,17 @@
     <h:body>
        <p:link outcome="/user/home" value="Back to home"/>
        <br/>
-       <h:outputText id="title" value="Event # #{param['id']}" />
-       <f:viewParam name="id" value="#{eventBean.event.title}"/>
+       <h:outputText id="title" value="Event # #{param.id}" />
+       <f:viewParam name="id" value="#{eventBean.setEventByParam()}" />
+           <h3>#{eventBean.event.title}</h3>
+           <p>#{eventBean.event.address}</p>
+           <p>#{eventBean.event.beginDate}</p>
+           <p>#{eventBean.event.city}</p>
+           <p>#{eventBean.event.creator.email}</p>
+           <p>#{eventBean.event.description}</p>
+           <p>#{eventBean.event.endDate}</p>
+           <p>#{eventBean.event.indoor}</p>
+           <p>#{eventBean.event.locationInfo}</p>
+           <p>#{eventBean.event.publicEvent}</p>
     </h:body>
 </html>

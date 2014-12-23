@@ -32,7 +32,7 @@ public class EventManager {
         return em.find(Event.class, id) != null;
     }
     
-    public Event findById(int id) {
+    public Event findById(Integer id) {
         return em.find(Event.class, id);
     }
            

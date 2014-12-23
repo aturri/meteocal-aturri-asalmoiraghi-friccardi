@@ -11,9 +11,11 @@ import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.EventManager;
 import it.polimi.meteocal.entityManager.UserManager;
 import java.util.Date;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.context.FacesContext;
 
 /**
  *
@@ -54,5 +56,10 @@ public class EventBean {
  
     public Date getToday() {
         return new Date();
+    }
+    
+    public void setEventByParam() {
+	String id = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id");
+        this.setEvent(eventManager.findById(Integer.parseInt(id)));
     }
 }
