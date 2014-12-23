@@ -38,20 +38,19 @@ import javax.mail.internet.MimeMultipart;
 @RequestScoped
 public class RegistrationBean {
     
+    @Resource(name = "mail/mailSession")
+    private Session mailSession;
     private MailControl mailControl;
     
     @EJB
     private UserManager um;
 
-    private User user;
+    private User user=new User();
 
     public RegistrationBean() {
     }
 
     public User getUser() {
-        if (user == null) {
-            user = new User();
-        }
         return user;
     }
 
@@ -68,15 +67,16 @@ public class RegistrationBean {
     public String register() {
         try {
             um.save(user);
-            //mailControl=new MailControl();
-            //mailControl.sendMail(user.getEmail(),user.getName()+" "+user.getSurname(),"Confirm registration","Congraturation "+user.getName()+" "+user.getSurname()+",\\nYour account is registred succefully!\\nBest regards,\\n       MeteoCal's Team");
+            mailControl=new MailControl(mailSession);
+            mailControl.sendMail(user.getEmail(),user.getName()+" "+user.getSurname(),"Confirm registration",
+                    "Congraturation "+user.getName()+" "+user.getSurname()+",\nYour account is registred succefully!\nBest regards,\n       MeteoCal's Team");
             return NavigationBean.redirectToLogin();
-        }/*catch(MessagingException ex) {
+        }catch(MessagingException ex) {
             Logger.getLogger(RegistrationBean.class.getName()).log(Level.SEVERE, null, ex);
             return NavigationBean.redirectToLogin();
         }catch (UnsupportedEncodingException ex) {
             Logger.getLogger(RegistrationBean.class.getName()).log(Level.SEVERE, null, ex);
-        }*/catch (EJBException e){
+        }catch (EJBException e){
             MessageBean.addWarning("Email already registered");
             Logger.getLogger(RegistrationBean.class.getName()).log(Level.SEVERE, null, e);
         }
