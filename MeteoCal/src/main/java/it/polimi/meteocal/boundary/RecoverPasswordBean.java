@@ -5,8 +5,8 @@
  */
 package it.polimi.meteocal.boundary;
 
-import com.google.common.base.Charsets;
-import com.google.common.hash.Hashing;
+//import com.google.common.base.Charsets;
+//import com.google.common.hash.Hashing;
 import it.polimi.meteocal.control.MailControl;
 import it.polimi.meteocal.control.NavigationBean;
 import it.polimi.meteocal.entity.User;
@@ -192,7 +192,7 @@ public class RecoverPasswordBean {
      */
     private String getCodeFromUser(User user){
         String string=user.getEmail()+user.getCity()+user.getLastAccess().toString()+user.getPassword();
-        return Hashing.sha256().hashString(string,Charsets.UTF_8 ).toString();
+        return "METTEREUNCODICEVERO";//Hashing.sha256().hashString(string,Charsets.UTF_8 ).toString();
     }
     
     
