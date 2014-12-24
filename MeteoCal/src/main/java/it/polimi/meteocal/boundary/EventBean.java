@@ -13,7 +13,6 @@ import it.polimi.meteocal.entityManager.UserManager;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Map;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
@@ -34,31 +33,26 @@ public class EventBean {
     UserManager userManager;
     
     //È necessario per il form dove si modifica l'evento, f:metadata>f:viewParam vogliono un setter su questo attributo
-    private Integer id;
-    
-    private Event event = new Event();
+    private Event event;
 
     public EventBean() {
     }
 
     public Event getEvent() {
-        if(event==null) {
-            this.setEvent(new Event());
+        if(this.event==null&&this.isExistsIdParam()){
+            this.setEventByParam();
+        }else if(this.event==null){
+            this.event=new Event();
         }
-        return event;
+        return this.event;
     }
 
     public void setEvent(Event event) {
+        //guardiamo se this.id oppure il paramentro id è impostato, se si facciamo la ricerca nel DB
+        /*if(this.event==null&&this.isExistsIdParam()){ 
+           this.setEventByParam();
+        }*/
         this.event = event;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-        this.event = eventManager.findById(id);
     }
     
     public String createEvent(){
@@ -66,6 +60,8 @@ public class EventBean {
         this.event.setCreator(user);
         this.event.getUsers().add(user);
         this.eventManager.save(event);
+        
+        //devo aggiornare la lista di eventi nell'utente
         user.getEvents().add(event);
         userManager.update(user);
         return NavigationBean.redirectToHome();
@@ -73,20 +69,44 @@ public class EventBean {
     
     public String editEvent() {
         System.out.println(eventManager.toString());
-        System.out.println(event.toString());
+        System.out.println("Sto facendo l'update");
         this.eventManager.update(event);
         return NavigationBean.redirectToHome();
     }
  
+    /**
+     * Dice se esiste un paramentro "id"
+     * @return 
+     */
+    public boolean isExistsIdParam(){
+        return FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().containsKey("id");
+    }
+    
+    /**
+     * Prende dal GET il parametro id e trova l'evento corrispondente
+     */
+    public void setEventByParam() throws RuntimeException {
+        if(this.isExistsIdParam()){
+            String idParam = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id");
+            this.event=eventManager.findById(Integer.parseInt(idParam));
+        }else{
+            throw new RuntimeException();
+        }
+    }
+   
+    
+    
+    
+    
+   
+    
+    
+    
     public Date getToday() {
         return new Date();
     }
-    
-    public void setEventByParam() {
-	String idParam = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id");
-        this.setEvent(eventManager.findById(Integer.parseInt(idParam)));
-    }
-    
+   
+    //METEDI UTILI PER LA VISUALIZZAZIONE TESTUALE
     public String eventIndoor() {
         if(this.event.getIndoor()) {
             return "Indoor";
