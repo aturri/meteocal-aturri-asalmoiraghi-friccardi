@@ -26,4 +26,16 @@ public class MessageBean {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, message, null));
     }
     
+    public static void addWarning(String id, String message) {
+        FacesContext.getCurrentInstance().addMessage(id, new FacesMessage(FacesMessage.SEVERITY_WARN, message, null));
+    }
+    
+    public static void addInfo(String id, String message) {
+        FacesContext.getCurrentInstance().addMessage(id, new FacesMessage(FacesMessage.SEVERITY_INFO, message, null));
+    }
+    
+    public static void addError(String id, String message) {
+        FacesContext.getCurrentInstance().addMessage(id, new FacesMessage(FacesMessage.SEVERITY_ERROR, message, null));
+    }
+    
 }

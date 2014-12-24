@@ -16,20 +16,24 @@
         
         <h:form style="width: 500px; margin: auto;">
             <p:panel header="Change Password Form">
-                <p:panelGrid columns="2" id="changePasswordGrid">
+                <p:panelGrid columns="3" id="changePasswordGrid">
                     <p:outputLabel for="passwordInput" value="Old Password"/>
                     <p:password id="passwordInput" value="#{settingsBean.oldPassword}" 
-                                 required="true" />
+                                 required="true" requiredMessage="Old password is required"/>
+                    <p:message id="oldPwdMsg" for="passwordInput" />
                     <p:outputLabel for="newPasswordInput" value="New Password"/>
-                    <p:password id="newPasswordInput" value="#{settingsBean.newPassword1}" 
-                                 required="true" />
+                    <p:password id="newPasswordInput" value="#{settingsBean.newPassword}" 
+                                match="confirmNewPasswordInput" required="true" requiredMessage="New password is required"
+                                validatorMessage="New password and confirm don't match" feedback="true" />
+                    <p:message id="newPwdMsg" for="newPasswordInput" />
                     <p:outputLabel for="confirmNewPasswordInput" value="Confirm new password"/>
-                    <p:password id="confirmNewPasswordInput" value="#{settingsBean.newPassword2}" 
-                                 required="true" />   
+                    <p:password id="confirmNewPasswordInput" /> 
+                    <p:message id="confirmPwdMsg" for="confirmNewPasswordInput" />
 
-                    <p:commandButton id="submit" action="#{settingsBean.changePassword()}" value="Set New Password" ajax="true" update="@all"/>                    
-                    <p:messages />
+                    <p:commandButton id="submit" action="#{settingsBean.changePassword()}" value="Set New Password" ajax="true" update="@all"/>                   
                 </p:panelGrid>
+                <p:growl for="PasswordMessages" sticky="true" severity="info"/>
+                <p:messages for="PasswordMessages" severity="error" />
             </p:panel>
         </h:form>
         <br />
@@ -77,7 +81,8 @@
                     </p:inputText>
                     <p:message id="citymsg" for="city" />                        
                 </h:panelGrid>
-                <p:messages id="errorMsg" />
+                <p:growl for="UserDataMessages" sticky="true"/>
+                
                 <p:commandButton id="btnSave" value="Save" update="usersDataGrid"
                                  action="#{settingsBean.changeUsersData()}" />
                 <br /> 
@@ -99,7 +104,7 @@
                     </p:selectOneMenu>                    
                     <p:message id="visibilitymsg" for="visibility" />
                 </h:panelGrid>
-                <p:messages id="errorMsg" />
+                <p:growl for="VisibilityMessages" sticky="true"/>
                 <p:commandButton id="btnSave" value="Save" update="usersDataGrid"
                                  action="#{settingsBean.changeCalendarVisibilityData()}" />
                 <br /> 

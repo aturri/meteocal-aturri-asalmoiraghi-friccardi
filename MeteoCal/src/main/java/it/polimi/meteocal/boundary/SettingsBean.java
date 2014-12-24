@@ -26,42 +26,42 @@ public class SettingsBean {
     private User user;
     
     private String oldPassword;
-    private String newPassword1;
-    private String newPassword2;
+    private String newPassword;
+//    private String newPassword2;
     
     public SettingsBean() {
     }
 
     public String changePassword(){
-        if(!this.newPassword1.equals(this.newPassword2)){
-            MessageBean.addError("Passwords don't match");
-        }else{
+//        if(!this.newPassword1.equals(this.newPassword2)){
+//            MessageBean.addError("Passwords don't match");
+//        }else{
             //verify the old password is correct
             String old=Utility.getHashSHA256(this.oldPassword);
             User currentUser=userManager.getLoggedUser();
             String saved=currentUser.getPassword();
             if(!saved.equals(old)){
-                MessageBean.addError("Insert the right password before change it");
+                MessageBean.addError("PasswordMessages", "Insert the right password before change it");
             }else{
                 //password update
                 //NB: we don't need to hash the new password. This is computed from glassfish automatically
-                currentUser.setPassword(this.newPassword1);
+                currentUser.setPassword(this.newPassword);
                 userManager.update(currentUser);
-                MessageBean.addInfo("The password is correctly changed");
+                MessageBean.addInfo("PasswordMessages","The password is correctly changed");
             }
-        }
+//        }
         return "";
     }
     
     public String changeUsersData(){
         userManager.update(this.user);
-        MessageBean.addInfo("Data correctly changed");
+        MessageBean.addInfo("UserDataMessages","Data correctly changed");
         return "";
     }
     
     public String changeCalendarVisibilityData(){
         userManager.update(this.user);
-        MessageBean.addInfo("Your calendar's visibility is correctly changed");
+        MessageBean.addInfo("VisibilityMessages","Your calendar's visibility is correctly changed");
         return "";
     }
     /**
@@ -81,30 +81,30 @@ public class SettingsBean {
     /**
      * @return the newPassword1
      */
-    public String getNewPassword1() {
-        return newPassword1;
+    public String getNewPassword() {
+        return newPassword;
     }
 
     /**
      * @param newPassword1 the newPassword1 to set
      */
-    public void setNewPassword1(String newPassword1) {
-        this.newPassword1 = newPassword1;
+    public void setNewPassword(String newPassword1) {
+        this.newPassword = newPassword1;
     }
 
     /**
      * @return the newPassword2
      */
-    public String getNewPassword2() {
-        return newPassword2;
-    }
+//    public String getNewPassword2() {
+//        return newPassword2;
+//    }
 
     /**
      * @param newPassword2 the newPassword2 to set
      */
-    public void setNewPassword2(String newPassword2) {
-        this.newPassword2 = newPassword2;
-    }
+//    public void setNewPassword2(String newPassword2) {
+//        this.newPassword2 = newPassword2;
+//    }
 
     /**
      * @return the user
