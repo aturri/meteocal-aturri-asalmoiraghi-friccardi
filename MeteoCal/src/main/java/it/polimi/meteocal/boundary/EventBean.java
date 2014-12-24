@@ -10,7 +10,9 @@ import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.EventManager;
 import it.polimi.meteocal.entityManager.UserManager;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.inject.Named;
@@ -53,6 +55,11 @@ public class EventBean {
         userManager.update(user);
         return NavigationBean.redirectToHome();
     }
+    
+    public String editEvent() {
+        this.eventManager.update(event);
+        return NavigationBean.redirectToHome();
+    }
  
     public Date getToday() {
         return new Date();
@@ -61,5 +68,29 @@ public class EventBean {
     public void setEventByParam() {
 	String id = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id");
         this.setEvent(eventManager.findById(Integer.parseInt(id)));
+    }
+    
+    public String eventIndoor() {
+        if(this.event.getIndoor()) {
+            return "Indoor";
+        }
+        return "Outdoor";
+    }
+    
+    public String eventVisibility() {
+         if(this.event.getPublicEvent()) {
+            return "Public";
+        }
+        return "Private";       
+    }
+        
+    public String eventBegin() {
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm",Locale.ENGLISH);
+        return sdf.format(event.getBeginDate());
+    }
+    
+    public String eventEnd() {
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm",Locale.ENGLISH);
+        return sdf.format(event.getEndDate());
     }
 }

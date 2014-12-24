@@ -14,15 +14,22 @@
        <br/>
        <h:outputText id="title" value="Event # #{param.id}" />
        <f:viewParam name="id" value="#{eventBean.setEventByParam()}" />
-           <h3>#{eventBean.event.title}</h3>
-           <p>#{eventBean.event.address}</p>
-           <p>#{eventBean.event.beginDate}</p>
-           <p>#{eventBean.event.city}</p>
-           <p>#{eventBean.event.creator.email}</p>
-           <p>#{eventBean.event.description}</p>
-           <p>#{eventBean.event.endDate}</p>
-           <p>#{eventBean.event.indoor}</p>
-           <p>#{eventBean.event.locationInfo}</p>
-           <p>#{eventBean.event.publicEvent}</p>
+            <h3>#{eventBean.event.title}</h3>
+            <p>#{eventBean.event.description}</p>
+            <hr/>
+            <p>From: #{eventBean.eventBegin()}</p>
+            <p>To: #{eventBean.eventEnd()}</p>
+            <hr/>
+            <p>#{eventBean.event.city}, #{eventBean.event.address}</p>
+            <p>#{eventBean.event.locationInfo}</p>
+            <hr/>
+            <p>Owner: #{eventBean.event.creator.name} #{eventBean.event.creator.surname} (#{eventBean.event.creator.email})</p>
+            <hr/>
+            <p>#{eventBean.eventIndoor()}</p>
+            <p>#{eventBean.eventVisibility()}</p>
+            <hr/>
+            <p:link value="Edit event" outcome="/event/edit">
+                <f:param name="id" value="#{eventBean.event.id}" />
+            </p:link>
     </h:body>
 </html>
