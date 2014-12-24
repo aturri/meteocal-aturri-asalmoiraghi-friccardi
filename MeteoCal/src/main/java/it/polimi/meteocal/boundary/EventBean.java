@@ -33,21 +33,36 @@ public class EventBean {
     @EJB
     UserManager userManager;
     
+    //È necessario per il form dove si modifica l'evento, f:metadata>f:viewParam vogliono un setter su questo attributo
+    private Integer id;
+    
     private Event event = new Event();
 
     public EventBean() {
     }
 
     public Event getEvent() {
+        if(event==null) {
+            this.setEvent(new Event());
+        }
         return event;
     }
 
     public void setEvent(Event event) {
         this.event = event;
     }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+        this.event = eventManager.findById(id);
+    }
     
     public String createEvent(){
-        User user=userManager.getLoggedUser(); 
+        User user = userManager.getLoggedUser(); 
         this.event.setCreator(user);
         this.event.getUsers().add(user);
         this.eventManager.save(event);
@@ -57,7 +72,9 @@ public class EventBean {
     }
     
     public String editEvent() {
-        this.eventManager.update(event);
+        System.out.println(eventManager.toString());
+        System.out.println(event.toString());
+        this.eventManager.update(this.getEvent());
         return NavigationBean.redirectToHome();
     }
  
@@ -66,8 +83,8 @@ public class EventBean {
     }
     
     public void setEventByParam() {
-	String id = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id");
-        this.setEvent(eventManager.findById(Integer.parseInt(id)));
+	String idParam = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id");
+        this.setEvent(eventManager.findById(Integer.parseInt(idParam)));
     }
     
     public String eventIndoor() {

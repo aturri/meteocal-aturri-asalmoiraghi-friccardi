@@ -10,7 +10,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </h:head>
     <h:body>
-        <f:viewParam name="id" value="#{eventBean.setEventByParam()}" />
+        <f:metadata>
+            <f:viewParam name="id" value="#{eventBean.id}" />
+        </f:metadata>
         <h:form id="editEventForm">
             <p:panel header="Edit event">
                 <h:panelGrid columns="3" id="editEventGrid">
