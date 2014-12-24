@@ -11,7 +11,9 @@ import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.EventManager;
 import it.polimi.meteocal.entityManager.UserManager;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import javax.ejb.EJB;
 import javax.inject.Named;
@@ -31,6 +33,8 @@ public class EventBean {
     
     @EJB
     UserManager userManager;
+    
+    private String invitedUsers;
     
     //È necessario per il form dove si modifica l'evento, f:metadata>f:viewParam vogliono un setter su questo attributo
     private Event event;
@@ -55,15 +59,21 @@ public class EventBean {
         this.event = event;
     }
     
-    public String createEvent(){
+    public String createEvent(){       
+        //setup creator
         User user = userManager.getLoggedUser(); 
         this.event.setCreator(user);
         this.event.getUsers().add(user);
         this.eventManager.save(event);
-        
-        //devo aggiornare la lista di eventi nell'utente
+        //add to creator's calendar
         user.getEvents().add(event);
         userManager.update(user);
+        //setup invitations
+        String[] split = this.invitedUsers.split(",");
+        for (String email : split) {
+            this.event.getInvitedUsers().add(userManager.findByEmail(email));
+        }
+        this.eventManager.update(event);
         return NavigationBean.redirectToHome();
     }
     
@@ -93,14 +103,6 @@ public class EventBean {
             throw new RuntimeException();
         }
     }
-   
-    
-    
-    
-    
-   
-    
-    
     
     public Date getToday() {
         return new Date();
@@ -129,5 +131,30 @@ public class EventBean {
     public String eventEnd() {
         SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm",Locale.ENGLISH);
         return sdf.format(event.getEndDate());
+    }
+    
+    public void handleInvitedUsers() {
+        String foo = this.invitedUsers;
+        String[] split = foo.split(",");
+        for (String splitted : split) {
+            if(splitted.equals(userManager.getLoggedUser().getEmail())) {
+                MessageBean.addError("You can't invite yourself");
+            } else if(!userManager.existsUser(splitted)) {
+                MessageBean.addWarning(splitted+" is not registered to MeteoCal");
+            }
+
+        }
+    }
+
+    public String getInvitedUsers() {
+        return invitedUsers;
+    }
+
+    public void setInvitedUsers(String invitedUsers) {
+        this.invitedUsers = invitedUsers;
+    }
+
+    public List<User> getListInvitedUsers() {
+        return new ArrayList<>(event.getInvitedUsers());
     }
 }

@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
         <title>Event Details | Meteocal</title>
         <link href="css/style.css" rel="stylesheet" type="text/css" />
@@ -24,6 +25,12 @@
             <p>#{eventBean.event.locationInfo}</p>
             <hr/>
             <p>Owner: #{eventBean.event.creator.name} #{eventBean.event.creator.surname} (#{eventBean.event.creator.email})</p>
+            <p>Invited users:</p>
+            <ul>
+                <ui:repeat value="#{eventBean.listInvitedUsers}" var="user">
+                    <li>#{user.name} #{user.surname} (#{user.email})</li>
+                </ui:repeat>
+            </ul>
             <hr/>
             <p>#{eventBean.eventIndoor()}</p>
             <p>#{eventBean.eventVisibility()}</p>

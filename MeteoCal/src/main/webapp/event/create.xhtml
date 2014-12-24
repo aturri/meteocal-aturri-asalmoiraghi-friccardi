@@ -70,6 +70,13 @@
                         <f:selectItem itemLabel="Outdoor" itemValue="false" />
                     </p:selectOneRadio>
                     <p:message id="indoorMsg" for="indoorRadio" />  
+                    
+                    <p:outputLabel for="invitations" value="Invited users (inset emails separated by a comma)" style="width: 200px; display: block" />
+                    <p:inputTextarea cols="23" id="invitations" value="#{eventBean.invitedUsers}" required="false">
+                        <p:ajax update="errorMsg" listener="#{eventBean.handleInvitedUsers()}"/>
+                    </p:inputTextarea>
+                    <p:message id="invitationsMsg" for="invitations"/> 
+                    
                 </h:panelGrid>
                 <p:messages id="errorMsg" />
                 <p:commandButton id="btnCreateEvent" value="Create" update="createEventGrid"
