@@ -74,7 +74,7 @@ public class EventBean {
     public String editEvent() {
         System.out.println(eventManager.toString());
         System.out.println(event.toString());
-        this.eventManager.update(this.getEvent());
+        this.eventManager.update(event);
         return NavigationBean.redirectToHome();
     }
  
