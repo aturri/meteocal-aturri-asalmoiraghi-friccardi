@@ -5,20 +5,27 @@
  */
 package it.polimi.meteocal.boundary;
 
+import it.polimi.meteocal.control.MailControl;
 import it.polimi.meteocal.control.NavigationBean;
 import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.EventManager;
 import it.polimi.meteocal.entityManager.UserManager;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.mail.MessagingException;
+import javax.mail.Session;
 
 /**
  *
@@ -28,6 +35,10 @@ import javax.faces.context.FacesContext;
 @RequestScoped
 public class EventBean {
 
+    @Resource(name = "mail/mailSession")
+    private Session mailSession;
+    private MailControl mailControl;
+    
     @EJB
     EventManager eventManager;
     
@@ -71,7 +82,20 @@ public class EventBean {
         //setup invitations
         String[] split = this.invitedUsers.split(",");
         for (String email : split) {
-            this.event.getInvitedUsers().add(userManager.findByEmail(email));
+            User invitedUser=userManager.findByEmail(email);
+            this.event.getInvitedUsers().add(invitedUser);
+            mailControl=new MailControl(mailSession);
+            try {
+                mailControl.sendMail(email, invitedUser.getName()+" "+invitedUser.getSurname(), "Invite to partecipate to "+event.getTitle(), "Dear "+invitedUser.getName()+" "+invitedUser.getSurname()+",<br />"
+                        + "You are invited from "+event.getCreator().getName()+" "+event.getCreator().getSurname()+ " to partecipate to "+event.getTitle()+". Click on the follow link to see more details:<br /><br />"
+                        + "<a href=\"http://localhost:8080/MeteoCal\">http://localhost:8080/MeteoCal</a>"
+                        + "<br />"
+                        + "<br />"
+                        + "Enjoy it ;)<br />"
+                        + "      MeteoCal's Team");
+            } catch (MessagingException | UnsupportedEncodingException ex) {
+                Logger.getLogger(EventBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         this.eventManager.update(event);
         return NavigationBean.redirectToHome();
