@@ -36,6 +36,10 @@ public class UserBean {
         return um.getLoggedUser().getSurname();
     }
     
+    public String getEmail() {
+        return um.getLoggedUser().getEmail();
+    }
+    
     public int getNumOfNotReadNotifications() {
         return um.countNotReadNotifications();
     }

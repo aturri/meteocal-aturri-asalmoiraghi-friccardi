@@ -13,7 +13,7 @@
         
         <h:form id="editEventForm">
             <input type="hidden" name="id" value="#{eventBean.event.id}" />
-            <p:panel header="Edit event">
+            <p:panel header="Edit event" rendered="#{eventBean.event.creator.email == userBean.email}">
                 <h:panelGrid columns="3" id="editEventGrid">
                     <p:outputLabel for="title" value="Title:" />
                     <p:inputText id="title"  required="true" value="#{eventBean.event.title}">

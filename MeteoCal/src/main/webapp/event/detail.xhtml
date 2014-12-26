@@ -13,8 +13,8 @@
     <h:body>
        <p:link outcome="/user/home" value="Back to home"/>
        <br/>
-       <h:outputText id="title" value="Event # #{param.id}" />
-       
+       <f:viewParam name="id" value="#{eventBean.event.id}" />
+       <h:panelGroup rendered="#{eventBean.isVisibleForCurrentUser()}">
             <h3>#{eventBean.event.title}</h3>
             <p>#{eventBean.event.description}</p>
             <hr/>
@@ -35,8 +35,9 @@
             <p>#{eventBean.eventIndoor()}</p>
             <p>#{eventBean.eventVisibility()}</p>
             <hr/>
-            <p:link value="Edit event" outcome="/event/edit">
+            <p:link value="Edit event" outcome="/event/edit" rendered="#{eventBean.isCurrentUserCreator()}" >
                 <f:param name="id" value="#{eventBean.event.id}" />
             </p:link>
+       </h:panelGroup>
     </h:body>
 </html>

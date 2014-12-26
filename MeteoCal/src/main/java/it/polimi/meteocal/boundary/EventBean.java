@@ -80,24 +80,26 @@ public class EventBean {
         user.getEvents().add(event);
         userManager.update(user);
         //setup invitations
-        String[] split = this.invitedUsers.split(",");
-        for (String email : split) {
-            User invitedUser=userManager.findByEmail(email);
-            this.event.getInvitedUsers().add(invitedUser);
-            mailControl=new MailControl(mailSession);
-            try {
-                mailControl.sendMail(email, invitedUser.getName()+" "+invitedUser.getSurname(), "Invite to partecipate to "+event.getTitle(), "Dear "+invitedUser.getName()+" "+invitedUser.getSurname()+",<br />"
-                        + "You are invited from "+event.getCreator().getName()+" "+event.getCreator().getSurname()+ " to partecipate to "+event.getTitle()+". Click on the follow link to see more details:<br /><br />"
-                        + "<a href=\"http://localhost:8080/MeteoCal\">http://localhost:8080/MeteoCal</a>"
-                        + "<br />"
-                        + "<br />"
-                        + "Enjoy it ;)<br />"
-                        + "      MeteoCal's Team");
-            } catch (MessagingException | UnsupportedEncodingException ex) {
-                Logger.getLogger(EventBean.class.getName()).log(Level.SEVERE, null, ex);
+        if(this.invitedUsers!=null && this.invitedUsers!="") {
+            String[] split = this.invitedUsers.split(",");
+            for (String email : split) {
+                User invitedUser=userManager.findByEmail(email);
+                this.event.getInvitedUsers().add(invitedUser);
+                mailControl=new MailControl(mailSession);
+                try {
+                    mailControl.sendMail(email, invitedUser.getName()+" "+invitedUser.getSurname(), "Invite to partecipate to "+event.getTitle(), "Dear "+invitedUser.getName()+" "+invitedUser.getSurname()+",<br />"
+                            + "You are invited from "+event.getCreator().getName()+" "+event.getCreator().getSurname()+ " to partecipate to "+event.getTitle()+". Click on the follow link to see more details:<br /><br />"
+                            + "<a href=\"http://localhost:8080/MeteoCal\">http://localhost:8080/MeteoCal</a>"
+                            + "<br />"
+                            + "<br />"
+                            + "Enjoy it ;)<br />"
+                            + "      MeteoCal's Team");
+                } catch (MessagingException | UnsupportedEncodingException ex) {
+                    Logger.getLogger(EventBean.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
+            this.eventManager.update(event);   
         }
-        this.eventManager.update(event);
         return NavigationBean.redirectToHome();
     }
     
@@ -197,5 +199,40 @@ public class EventBean {
     
     public List<User> getParticipatingUsers() {
         return new ArrayList<>(event.getUsers());
+    }
+    
+    public Boolean isUserParticipant(User user) {
+        List<User> participants = this.getParticipatingUsers();
+        for(User u: participants) {
+            if(u.getEmail().equals(user.getEmail())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public Boolean isUserInvited(User user) {
+        List<User> invited = this.getListInvitedUsers();
+        for(User u: invited) {
+            if(u.getEmail().equals(user.getEmail())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public Boolean isCurrentUserCreator() {
+        return event.getCreator().getEmail().equals(userManager.getLoggedUser().getEmail());
+    }
+    
+    public Boolean isVisibleForCurrentUser() {
+        User currentUser = userManager.getLoggedUser();
+        if(this.isCurrentUserCreator() || 
+                this.event.getPublicEvent() ||
+                this.isUserInvited(currentUser) ||
+                this.isUserParticipant(currentUser)) {
+            return true;
+        }
+        return false;
     }
 }
