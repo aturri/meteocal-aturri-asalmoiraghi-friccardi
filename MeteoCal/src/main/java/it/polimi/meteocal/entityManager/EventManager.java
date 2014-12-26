@@ -24,8 +24,13 @@ public class EventManager {
         em.persist(event);
     }
     
-    public void update(Event event){
+    public void update(Event event) {
         em.merge(event);
+    }
+    
+    public void delete(Event event) {
+        Event toBeDeleted = em.merge(event);
+        em.remove(toBeDeleted);
     }
     
     public Boolean existsEvent(Integer id) {

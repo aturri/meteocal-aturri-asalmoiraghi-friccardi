@@ -102,9 +102,22 @@ public class EventBean {
     }
     
     public String editEvent() {
-        System.out.println(eventManager.toString());
-        System.out.println("Sto facendo l'update");
         this.eventManager.update(event);
+        return NavigationBean.redirectToHome();
+    }
+    
+    public String deleteEvent() {
+        List<User> participatingUsers = this.getParticipatingUsers();
+        for(User u: participatingUsers) {
+            u.getEvents().remove(event);
+            this.userManager.update(u);
+        }
+        List<User> listInvitedUsers = this.getListInvitedUsers();
+        for(User u: listInvitedUsers) {
+            u.getInvitations().remove(event);
+            this.userManager.update(u);
+        }    
+        this.eventManager.delete(event);
         return NavigationBean.redirectToHome();
     }
  
@@ -180,5 +193,9 @@ public class EventBean {
 
     public List<User> getListInvitedUsers() {
         return new ArrayList<>(event.getInvitedUsers());
+    }
+    
+    public List<User> getParticipatingUsers() {
+        return new ArrayList<>(event.getUsers());
     }
 }

@@ -12,10 +12,7 @@
     <h:body>
         
         <h:form id="editEventForm">
-            You are editing the vent with id=#{eventBean.event.id}
             <input type="hidden" name="id" value="#{eventBean.event.id}" />
-            
-
             <p:panel header="Edit event">
                 <h:panelGrid columns="3" id="editEventGrid">
                     <p:outputLabel for="title" value="Title:" />
@@ -79,7 +76,9 @@
                 <p:messages id="errorMsg" />
                 <p:commandButton id="btnEditEvent" value="Edit" update="editEventGrid"
                                  action="#{eventBean.editEvent()}" />
-                <br /> 
+                <br />
+                <p:commandButton value="Delete event" action="#{eventBean.deleteEvent()}" />
+                <br />
                 * Mandatory fields
             </p:panel>
         </h:form>
