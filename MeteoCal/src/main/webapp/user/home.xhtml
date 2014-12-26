@@ -34,6 +34,16 @@
                 </li>
             </ui:repeat>
         </ul>
+        <p>Pending invitations:</p>
+        <ul>
+            <ui:repeat value="#{userBean.eventsInvitedTo}" var="event">
+                <li>
+                    <h:link value="#{event.title}" outcome="/event/detail">
+                        <f:param name="id" value="#{event.id}" />
+                    </h:link>
+                </li>
+            </ui:repeat>
+        </ul>
     </h:body>
 </html>
 

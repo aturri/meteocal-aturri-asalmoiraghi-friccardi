@@ -51,4 +51,8 @@ public class UserBean {
     public List<Event> getEventsInCalendar() {
         return new ArrayList<>(um.getLoggedUser().getEvents());
     }
+
+    public List<Event> getEventsInvitedTo() {
+        return new ArrayList<>(um.getLoggedUser().getInvitations());
+    }
 }

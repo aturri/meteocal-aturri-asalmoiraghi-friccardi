@@ -27,7 +27,7 @@
             </p:panel>
         </h:form>
        
-       <h:panelGroup rendered="#{eventBean.isVisibleForCurrentUser()}">
+        <h:panelGroup rendered="#{eventBean.isVisibleForCurrentUser(eventBean.event.id)}">
             <h3>#{eventBean.event.title}</h3>
             <p>#{eventBean.event.description}</p>
             <hr/>
@@ -38,6 +38,12 @@
             <p>#{eventBean.event.locationInfo}</p>
             <hr/>
             <p>Owner: #{eventBean.event.creator.name} #{eventBean.event.creator.surname} (#{eventBean.event.creator.email})</p>
+            <p>Participating users:</p>
+            <ul>
+                <ui:repeat value="#{eventBean.participatingUsers}" var="user">
+                    <li>#{user.name} #{user.surname} (#{user.email})</li>
+                </ui:repeat>
+            </ul>
             <p>Invited users:</p>
             <ul>
                 <ui:repeat value="#{eventBean.listInvitedUsers}" var="user">
@@ -47,10 +53,18 @@
             <hr/>
             <p>#{eventBean.eventIndoor()}</p>
             <p>#{eventBean.eventVisibility()}</p>
-            <hr/>
-            <p:link value="Edit event" outcome="/event/edit" rendered="#{eventBean.isCurrentUserCreator()}" >
-                <f:param name="id" value="#{eventBean.event.id}" />
-            </p:link>
-       </h:panelGroup>
+        </h:panelGroup>
+       
+        <h:form id="actionEventForm">
+            <input type="hidden" name="id" value="#{eventBean.event.id}" />
+            <p:panel header="Actions for #{eventBean.event.title}" rendered="#{eventBean.isCurrentUserParticipatingTo(eventBean.event.id)}">
+                <p:button value="Edit event" outcome="/event/edit"
+                                 rendered="#{eventBean.isCurrentUserCreator()}">
+                    <f:param name="id" value="#{eventBean.event.id}" />                 
+                </p:button>
+                <p:commandButton value="Remove from my calendar" action="#{eventBean.removeFromMyCalendar()}"
+                                 rendered="#{eventBean.isCurrentUserParticipatingTo(eventBean.event.id) and !eventBean.isCurrentUserCreator()}" />
+            </p:panel>
+        </h:form>
     </h:body>
 </html>

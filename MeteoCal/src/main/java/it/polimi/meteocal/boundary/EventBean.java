@@ -125,23 +125,10 @@ public class EventBean {
     }
     
     private void removeInvitation() {
-        User currentUser = userManager.getLoggedUser();
-        Set<User> setInvitedUsers = event.getInvitedUsers();
-        event.getInvitedUsers().clear();
-        for(User u: setInvitedUsers) {
-            if(!u.getEmail().equals(currentUser.getEmail())) {
-                event.getInvitedUsers().add(u);
-            }
-        }
-        eventManager.update(event);
-        
-        Set<Event> setInvitations = currentUser.getInvitations();
-        currentUser.getInvitations().clear();
-        for(Event e: setInvitations) {
-            if(!e.getId().equals(event.getId())) {
-                currentUser.getInvitations().add(e);
-            }
-        }
+        User currentUser = userManager.getLoggedUser();      
+        event.getInvitedUsers().remove(currentUser);
+        eventManager.update(event);   
+        currentUser.getInvitations().remove(event);
         userManager.update(currentUser);
     }
     
@@ -157,6 +144,15 @@ public class EventBean {
     
     public String refuseInvitation() {
         this.removeInvitation();
+        return NavigationBean.redirectToHome();
+    }
+    
+    public String removeFromMyCalendar() {
+        User currentUser = userManager.getLoggedUser();        
+        event.getUsers().remove(currentUser);
+        eventManager.update(event);   
+        currentUser.getEvents().remove(event);
+        userManager.update(currentUser);
         return NavigationBean.redirectToHome();
     }
  
@@ -268,7 +264,16 @@ public class EventBean {
         return this.isUserInvited(user);
     }
     
-    public Boolean isVisibleForCurrentUser() {
+    public Boolean isCurrentUserParticipatingTo(Integer id) {
+        this.event = eventManager.findById(id);
+        User user = userManager.getLoggedUser();
+        return this.isUserParticipant(user);
+    }
+    
+    public Boolean isVisibleForCurrentUser(Integer id) {
+        if(this.event == null) {
+            this.event = eventManager.findById(id);
+        }
         User currentUser = userManager.getLoggedUser();
         return this.isCurrentUserCreator() || 
                 this.event.getPublicEvent() ||
