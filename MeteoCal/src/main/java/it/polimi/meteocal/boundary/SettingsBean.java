@@ -27,41 +27,36 @@ public class SettingsBean {
     
     private String oldPassword;
     private String newPassword;
-//    private String newPassword2;
     
     public SettingsBean() {
     }
 
     public String changePassword(){
-//        if(!this.newPassword1.equals(this.newPassword2)){
-//            MessageBean.addError("Passwords don't match");
-//        }else{
-            //verify the old password is correct
-            String old=Utility.getHashSHA256(this.oldPassword);
-            User currentUser=userManager.getLoggedUser();
-            String saved=currentUser.getPassword();
-            if(!saved.equals(old)){
-                MessageBean.addError("PasswordMessages", "Insert the right password before change it");
-            }else{
-                //password update
-                //NB: we don't need to hash the new password. This is computed from glassfish automatically
-                currentUser.setPassword(this.newPassword);
-                userManager.update(currentUser);
-                MessageBean.addInfo("PasswordMessages","The password is correctly changed");
-            }
-//        }
+        //verify the old password is correct
+        String old=Utility.getHashSHA256(this.oldPassword);
+        User currentUser=userManager.getLoggedUser();
+        String saved=currentUser.getPassword();
+        if(!saved.equals(old)){
+            MessageBean.addError("PasswordMessages", "Insert the right password before change it");
+        }else{
+            //password update
+            //NB: we don't need to hash the new password. This is computed from glassfish automatically
+            currentUser.setPassword(this.newPassword);
+            userManager.update(currentUser);
+            MessageBean.addInfo("PasswordMessages","Password correctly changed");
+        }
         return "";
     }
     
     public String changeUsersData(){
         userManager.update(this.user);
-        MessageBean.addInfo("UserDataMessages","Data correctly changed");
+        MessageBean.addInfo("UserDataMessages","User's data correctly changed");
         return "";
     }
     
     public String changeCalendarVisibilityData(){
         userManager.update(this.user);
-        MessageBean.addInfo("VisibilityMessages","Your calendar's visibility is correctly changed");
+        MessageBean.addInfo("VisibilityMessages","Calendar's visibility correctly changed");
         return "";
     }
     /**
@@ -79,32 +74,18 @@ public class SettingsBean {
     }
 
     /**
-     * @return the newPassword1
+     * @return the newPassword
      */
     public String getNewPassword() {
         return newPassword;
     }
 
     /**
-     * @param newPassword1 the newPassword1 to set
+     * @param newPassword the newPassword to set
      */
-    public void setNewPassword(String newPassword1) {
-        this.newPassword = newPassword1;
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
     }
-
-    /**
-     * @return the newPassword2
-     */
-//    public String getNewPassword2() {
-//        return newPassword2;
-//    }
-
-    /**
-     * @param newPassword2 the newPassword2 to set
-     */
-//    public void setNewPassword2(String newPassword2) {
-//        this.newPassword2 = newPassword2;
-//    }
 
     /**
      * @return the user
@@ -122,7 +103,5 @@ public class SettingsBean {
     public void setUser(User user) {
         this.user = user;
     }
-    
-    
-    
+
 }
