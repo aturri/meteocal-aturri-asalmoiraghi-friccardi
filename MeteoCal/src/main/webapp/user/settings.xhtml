@@ -33,7 +33,7 @@
                     <p:commandButton id="submit" action="#{settingsBean.changePassword()}" value="Set New Password" ajax="true" update="@all"/>                   
                 </p:panelGrid>
                 <p:growl for="PasswordMessages" sticky="true" severity="info"/>
-                <p:messages for="PasswordMessages" severity="error" />
+                <p:messages for="PasswordMessages" severity="error"/>
             </p:panel>
         </h:form>
         <br />
@@ -43,19 +43,22 @@
             <p:panel header="Change User's Data Form">
                 <h:panelGrid columns="3" id="usersDataGrid">
                     <p:outputLabel for="name" value="Name" />
-                    <p:inputText id="name"  required="true" value="#{settingsBean.user.name}">
+                    <p:inputText id="name"  required="true" value="#{settingsBean.user.name}"
+                                  requiredMessage="Insert your name">
                         <p:ajax update="namemsg"/>
                     </p:inputText>
                     <p:message id="namemsg" for="name" />
                     
                     <p:outputLabel for="surname" value="Surname" />
-                    <p:inputText id="surname" value="#{settingsBean.user.surname}" required="true">
+                    <p:inputText id="surname" value="#{settingsBean.user.surname}" required="true"
+                                  requiredMessage="Insert your last name">
                         <p:ajax update="surnamemsg"/>
                     </p:inputText>
                     <p:message id="surnamemsg" for="surname" />
 
                     <p:outputLabel for="gender" value="Gender" />
-                    <p:selectOneMenu id="gender" value="#{settingsBean.user.gender}" style="width: 210px" required="true">
+                    <p:selectOneMenu id="gender" value="#{settingsBean.user.gender}" style="width: 210px" required="true"
+                                      requiredMessage="Select your gender">
                         <f:selectItem itemLabel="" itemValue="" />
                         <f:selectItem itemLabel="Man" itemValue="M" />
                         <f:selectItem itemLabel="Woman" itemValue="F" />
@@ -64,7 +67,8 @@
                     <p:message id="gendermsg" for="gender" /> 
 
                     <h:outputLabel for="birthdate" value="Date of birth" />
-                    <p:calendar id="birthdate" value="#{settingsBean.user.birthDate}" navigator="true" maxdate="#{registrationBean.today}">
+                    <p:calendar id="birthdate" value="#{settingsBean.user.birthDate}" navigator="true" 
+                                maxdate="#{registrationBean.today}" yearRange='1900:c'>
                          <p:ajax update="birthdatemsg"/>                       
                     </p:calendar>
                     <p:message id="birthdatemsg" for="birthdate" />
@@ -83,7 +87,7 @@
                 </h:panelGrid>
                 <p:growl for="UserDataMessages" sticky="true"/>
                 
-                <p:commandButton id="btnSave" value="Save" update="usersDataGrid"
+                <p:commandButton id="btnSave" value="Save" ajax="true" update="@all"
                                  action="#{settingsBean.changeUsersData()}" />
                 <br /> 
                 * Mandatory fields
@@ -94,9 +98,10 @@
         <br />
         <h:form style="width: 500px; margin: auto;">
             <p:panel header="Change Calendar visibility Form">
-                <h:panelGrid columns="3" id="usersDataGrid">
+                <h:panelGrid columns="3" id="visibilityDataGrid">
                     <p:outputLabel for="visibility" value="Visibility " />
-                    <p:selectOneMenu id="visibility" value="#{settingsBean.user.privateCalendar}" style="width: 210px" required="true">
+                    <p:selectOneMenu id="visibility" value="#{settingsBean.user.privateCalendar}" 
+                                     style="width: 210px" required="true" requiredMessage="Select the calendar's visibility">
                         <f:selectItem itemLabel="" itemValue="" />
                         <f:selectItem itemLabel="Public" itemValue="false" />
                         <f:selectItem itemLabel="Private" itemValue="true" />
@@ -105,7 +110,7 @@
                     <p:message id="visibilitymsg" for="visibility" />
                 </h:panelGrid>
                 <p:growl for="VisibilityMessages" sticky="true"/>
-                <p:commandButton id="btnSave" value="Save" update="usersDataGrid"
+                <p:commandButton id="btnSave" value="Save"  ajax="true" update="@all"
                                  action="#{settingsBean.changeCalendarVisibilityData()}" />
                 <br /> 
                 * Mandatory fields
