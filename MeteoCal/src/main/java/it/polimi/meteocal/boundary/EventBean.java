@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
@@ -122,6 +123,42 @@ public class EventBean {
         this.eventManager.delete(event);
         return NavigationBean.redirectToHome();
     }
+    
+    private void removeInvitation() {
+        User currentUser = userManager.getLoggedUser();
+        Set<User> setInvitedUsers = event.getInvitedUsers();
+        event.getInvitedUsers().clear();
+        for(User u: setInvitedUsers) {
+            if(!u.getEmail().equals(currentUser.getEmail())) {
+                event.getInvitedUsers().add(u);
+            }
+        }
+        eventManager.update(event);
+        
+        Set<Event> setInvitations = currentUser.getInvitations();
+        currentUser.getInvitations().clear();
+        for(Event e: setInvitations) {
+            if(!e.getId().equals(event.getId())) {
+                currentUser.getInvitations().add(e);
+            }
+        }
+        userManager.update(currentUser);
+    }
+    
+    public String acceptInvitation() {
+        this.removeInvitation();
+        User user = userManager.getLoggedUser();        
+        event.getUsers().add(user);
+        eventManager.update(event);
+        user.getEvents().add(event);
+        userManager.update(user);
+        return NavigationBean.redirectToHome();
+    }
+    
+    public String refuseInvitation() {
+        this.removeInvitation();
+        return NavigationBean.redirectToHome();
+    }
  
     /**
      * Dice se esiste un paramentro "id"
@@ -202,18 +239,8 @@ public class EventBean {
     }
     
     public Boolean isUserParticipant(User user) {
-        List<User> participants = this.getParticipatingUsers();
+       List<User> participants = this.getParticipatingUsers();
         for(User u: participants) {
-            if(u.getEmail().equals(user.getEmail())) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    public Boolean isUserInvited(User user) {
-        List<User> invited = this.getListInvitedUsers();
-        for(User u: invited) {
             if(u.getEmail().equals(user.getEmail())) {
                 return true;
             }
@@ -225,14 +252,27 @@ public class EventBean {
         return event.getCreator().getEmail().equals(userManager.getLoggedUser().getEmail());
     }
     
+    public Boolean isUserInvited(User user) {
+        List<User> invited = this.getListInvitedUsers();
+        for(User u: invited) {
+            if(u.getEmail().equals(user.getEmail())) {
+                return true;
+            }
+        }
+        return false;      
+    }
+    
+    public Boolean isCurrentUserInvitedTo(Integer id) {
+        this.event = eventManager.findById(id);
+        User user = userManager.getLoggedUser();
+        return this.isUserInvited(user);
+    }
+    
     public Boolean isVisibleForCurrentUser() {
         User currentUser = userManager.getLoggedUser();
-        if(this.isCurrentUserCreator() || 
+        return this.isCurrentUserCreator() || 
                 this.event.getPublicEvent() ||
                 this.isUserInvited(currentUser) ||
-                this.isUserParticipant(currentUser)) {
-            return true;
-        }
-        return false;
+                this.isUserParticipant(currentUser);
     }
 }

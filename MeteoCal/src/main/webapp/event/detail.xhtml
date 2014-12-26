@@ -13,7 +13,20 @@
     <h:body>
        <p:link outcome="/user/home" value="Back to home"/>
        <br/>
-       <f:viewParam name="id" value="#{eventBean.event.id}" />
+
+        <f:metadata>
+            <f:viewParam name="id" value="#{eventBean.event.id}" />
+        </f:metadata>
+        <h:form id="editEventForm">
+            <input type="hidden" name="id" value="#{eventBean.event.id}" />
+            <p:panel header="You received an invitation to #{eventBean.event.title} by #{eventBean.event.creator.email}"
+                     rendered="#{eventBean.isCurrentUserInvitedTo(eventBean.event.id)}" >
+                <p:commandButton value="Accept" action="#{eventBean.acceptInvitation()}" />
+                <br />
+                <p:commandButton value="Refuse" action="#{eventBean.refuseInvitation()}" />
+            </p:panel>
+        </h:form>
+       
        <h:panelGroup rendered="#{eventBean.isVisibleForCurrentUser()}">
             <h3>#{eventBean.event.title}</h3>
             <p>#{eventBean.event.description}</p>
