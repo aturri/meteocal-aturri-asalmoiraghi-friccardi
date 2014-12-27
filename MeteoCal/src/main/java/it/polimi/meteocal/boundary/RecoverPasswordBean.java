@@ -8,7 +8,7 @@ package it.polimi.meteocal.boundary;
 //import com.google.common.base.Charsets;
 //import com.google.common.hash.Hashing;
 import it.polimi.meteocal.control.KindOfEmail;
-import it.polimi.meteocal.control.MailControler;
+import it.polimi.meteocal.control.MailController;
 import it.polimi.meteocal.control.NavigationBean;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.UserManager;
@@ -36,7 +36,7 @@ public class RecoverPasswordBean {
 
     @Resource(name = "mail/mailSession")
     private Session mailSession;
-    private MailControler mailControl;
+    private MailController mailControl;
     
     @EJB
     private UserManager userManager;
@@ -58,7 +58,7 @@ public class RecoverPasswordBean {
         }
         else{
             User user=userManager.findByEmail(email);
-            mailControl=new MailControler(mailSession);
+            mailControl=new MailController(mailSession);
             try {
                 this.mailControl.sendMail(email,KindOfEmail.FORGOTTENPASSWORD,null );
             } catch (MessagingException | UnsupportedEncodingException ex) {

@@ -6,7 +6,7 @@
 package it.polimi.meteocal.boundary;
 
 import it.polimi.meteocal.control.KindOfEmail;
-import it.polimi.meteocal.control.MailControler;
+import it.polimi.meteocal.control.MailController;
 import it.polimi.meteocal.control.NavigationBean;
 import it.polimi.meteocal.entityManager.UserManager;
 import it.polimi.meteocal.entity.User;
@@ -58,7 +58,7 @@ public class RegistrationBean {
     public String register() {
         try {
             um.save(user);
-            MailControler mailControler=new MailControler(this.mailSession);
+            MailController mailControler=new MailController(this.mailSession);
             mailControler.sendMail(user.getEmail(),KindOfEmail.REGISTRATION,null);
             return NavigationBean.redirectToLogin();
         }catch(MessagingException ex) {
