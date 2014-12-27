@@ -41,7 +41,7 @@
         <br />
         <h:form style="width: 500px; margin: auto;">
             <p:panel header="Change User's Data Form">
-                <h:panelGrid columns="3" id="usersDataGrid">
+                <p:panelGrid columns="3" id="usersDataGrid">
                     <p:outputLabel for="name" value="Name" />
                     <p:inputText id="name"  required="true" value="#{settingsBean.user.name}"
                                   requiredMessage="Insert your name">
@@ -84,7 +84,7 @@
                         <p:ajax update="citymsg"/>
                     </p:inputText>
                     <p:message id="citymsg" for="city" />                        
-                </h:panelGrid>
+                </p:panelGrid>
                 <p:growl for="UserDataMessages" sticky="true"/>
                 
                 <p:commandButton id="btnSave" value="Save" ajax="true" update="@all"
