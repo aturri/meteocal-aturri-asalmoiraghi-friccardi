@@ -12,6 +12,8 @@
         Welcome back #{userBean.name} #{userBean.surname}
         <p:link outcome="test" value="Test"/>
         <br/>
+        <p:link outcome="#{navigationBean.toSearchResultsPage()}" value="Results"/>
+        <br/>
         <p:link outcome="/event/create" value="Create Event"/>
         <h:form>
             <p:commandLink action="#{loginBean.logout()}" value="Logout"/>

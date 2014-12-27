@@ -104,4 +104,12 @@ public class NavigationBean implements Serializable {
     public static String redirectToSetNewPassword(String email,String code) {
         return "/setNewPassword?faces-redirect=true&email="+email+"&code="+code;
     }
+    
+    /**
+     * Go to search results page.
+     * @return search results page name.
+     */
+    public static String toSearchResultsPage(){
+        return "/search/results";
+    }
 }
