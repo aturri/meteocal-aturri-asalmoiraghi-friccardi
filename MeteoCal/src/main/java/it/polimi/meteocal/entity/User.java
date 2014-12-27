@@ -5,11 +5,16 @@
  */
 package it.polimi.meteocal.entity;
 
-import it.polimi.meteocal.control.Utility;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -92,7 +97,14 @@ public class User implements Serializable {
     }
 
     public void setPassword(String password) {
-        this.password = Utility.getHashSHA256(password);
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(password.getBytes("UTF-8"));
+            BigInteger bigInt = new BigInteger(1, hash);
+            this.password = bigInt.toString(16);
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+            Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void setGroupName(String groupName) {
