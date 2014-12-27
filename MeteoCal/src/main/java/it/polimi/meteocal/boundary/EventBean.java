@@ -77,11 +77,11 @@ public class EventBean {
     }
     
     public String createEvent(){    
-        if(!this.isEndDateLegal()) {
-            MessageBean.addError("errorMsg","End date must be after begin date!");
+        if(!this.areInvitedUserLegal() || this.areThereOverlaps()) {
             return "";
         }
-        if(!this.areInvitedUserLegal()) {
+        if(!this.isEndDateLegal()) {
+            MessageBean.addError("errorMsg","End date must be after begin date!");
             return "";
         }
         
@@ -234,7 +234,25 @@ public class EventBean {
         }
     }
     
+    public Boolean areThereOverlaps() {
+        Set<Event> userEvents = userManager.getLoggedUser().getEvents();
+        Date beginDate = this.event.getBeginDate();
+        Date endDate = this.event.getEndDate();
+        for(Event e: userEvents) {
+            if((beginDate.after(e.getBeginDate()) && endDate.before(e.getEndDate())) ||
+                    (beginDate.after(e.getBeginDate()) && e.getEndDate().after(endDate)) ||
+                    (e.getBeginDate().after(beginDate) && endDate.before(e.getEndDate()))) {
+                MessageBean.addError("errorMsg","This event overlaps with an existing one! Please change begin and/or end date/time.");
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public Boolean areInvitedUserLegal() {
+        if(this.invitedUsers==null || this.invitedUsers=="") {
+            return true;
+        }
         int error = 0;
         String foo = this.invitedUsers;
         String[] split = foo.split(",");
