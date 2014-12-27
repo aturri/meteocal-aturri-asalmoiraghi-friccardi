@@ -5,16 +5,11 @@
  */
 package it.polimi.meteocal.entityManager;
 
-import it.polimi.meteocal.boundary.RecoverPasswordBean;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entity.Notification;
 import it.polimi.meteocal.entity.Group;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -71,35 +66,5 @@ public class UserManager {
 
     public User findByEmail(String email) {
         return em.find(User.class, email);
-    }
-    
-    /**
-     * 
-     * @param user
-     * @return the string that represents the code
-     */
-    public String getCodeFromUser(User user){
-        String string=user.getEmail()+user.getCity()+user.getLastAccess().toString()+user.getPassword();
-        
-        MessageDigest md=null;
-        try {
-            md = MessageDigest.getInstance("SHA-256");
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(RecoverPasswordBean.class.getName()).log(Level.SEVERE, null, ex);
-        }
-         
-        for(int i=0;i<string.length();i++){
-            md.update(string.getBytes());
-        }
-        
-        byte[] mdbytes = md.digest();
-        
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < mdbytes.length; i++) {
-          sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
-        }
-        System.out.println("Hex format : " + sb.toString());
-
-        return sb.toString();
     }
 }
