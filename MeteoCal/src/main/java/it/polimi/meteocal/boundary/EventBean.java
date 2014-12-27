@@ -5,12 +5,13 @@
  */
 package it.polimi.meteocal.boundary;
 
-import it.polimi.meteocal.control.MailControl;
+import it.polimi.meteocal.control.MailControler;
 import it.polimi.meteocal.control.NavigationBean;
 import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.EventManager;
 import it.polimi.meteocal.entityManager.UserManager;
+import it.polimi.meteocal.entityManager.WeatherController;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,13 +39,16 @@ public class EventBean {
 
     @Resource(name = "mail/mailSession")
     private Session mailSession;
-    private MailControl mailControl;
+    private MailControler mailControl;
     
     @EJB
     EventManager eventManager;
     
     @EJB
     UserManager userManager;
+    
+    @EJB
+    WeatherController wc;
     
     private String invitedUsers;
     
@@ -59,8 +63,13 @@ public class EventBean {
             this.setEventByParam();
         }else if(this.event==null){
             this.event=new Event();
+            this.event.setBeginDate(this.getToday());
         }
         return this.event;
+    }
+    
+    public String getWeather() {
+        return this.wc.test();
     }
 
     public void setEvent(Event event) {
@@ -71,7 +80,19 @@ public class EventBean {
         this.event = event;
     }
     
-    public String createEvent(){       
+    public Boolean isEndDateLegal() {
+        return !event.getBeginDate().after(event.getEndDate());
+    }
+    
+    public String createEvent(){    
+        if(!this.areInvitedUserLegal() || this.areThereOverlaps()) {
+            return "";
+        }
+        if(!this.isEndDateLegal()) {
+            MessageBean.addError("errorMsg","End date must be after begin date!");
+            return "";
+        }
+        
         //setup creator
         User user = userManager.getLoggedUser(); 
         this.event.setCreator(user);
@@ -86,7 +107,9 @@ public class EventBean {
             for (String email : split) {
                 User invitedUser=userManager.findByEmail(email);
                 this.event.getInvitedUsers().add(invitedUser);
-                mailControl=new MailControl(mailSession);
+                
+                //codice mail
+                mailControl=new MailControler(mailSession);
                 try {
                     mailControl.sendMail(email, invitedUser.getName()+" "+invitedUser.getSurname(), "Invite to partecipate to "+event.getTitle(), "Dear "+invitedUser.getName()+" "+invitedUser.getSurname()+",<br />"
                             + "You are invited from "+event.getCreator().getName()+" "+event.getCreator().getSurname()+ " to partecipate to "+event.getTitle()+". Click on the follow link to see more details:<br /><br />"
@@ -98,6 +121,7 @@ public class EventBean {
                 } catch (MessagingException | UnsupportedEncodingException ex) {
                     Logger.getLogger(EventBean.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                //fine codice mail
             }
             this.eventManager.update(event);   
         }
@@ -210,12 +234,49 @@ public class EventBean {
         String[] split = foo.split(",");
         for (String splitted : split) {
             if(splitted.equals(userManager.getLoggedUser().getEmail())) {
-                MessageBean.addError("You can't invite yourself");
+                MessageBean.addError("errorMsg","You can't invite yourself");
             } else if(!userManager.existsUser(splitted)) {
-                MessageBean.addWarning(splitted+" is not registered to MeteoCal");
+                MessageBean.addWarning("errorMsg",splitted+" is not registered to MeteoCal");
             }
 
         }
+    }
+    
+    public Boolean areThereOverlaps() {
+        Set<Event> userEvents = userManager.getLoggedUser().getEvents();
+        Date beginDate = this.event.getBeginDate();
+        Date endDate = this.event.getEndDate();
+        for(Event e: userEvents) {
+            if((beginDate.after(e.getBeginDate()) && endDate.before(e.getEndDate())) ||
+                    (beginDate.after(e.getBeginDate()) && e.getEndDate().after(endDate)) ||
+                    (e.getBeginDate().after(beginDate) && endDate.before(e.getEndDate()))) {
+                MessageBean.addError("errorMsg","This event overlaps with an existing one! Please change begin and/or end date/time.");
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public Boolean areInvitedUserLegal() {
+        if(this.invitedUsers==null || this.invitedUsers=="") {
+            return true;
+        }
+        int error = 0;
+        String foo = this.invitedUsers;
+        String[] split = foo.split(",");
+        for (String splitted : split) {
+            if(splitted.equals(userManager.getLoggedUser().getEmail())) {
+                error++;
+                MessageBean.addError("errorMsg","You can't invite yourself");
+            } else if(!userManager.existsUser(splitted)) {
+                error++;
+                MessageBean.addWarning("errorMsg",splitted+" is not registered to MeteoCal");
+            }
+        }
+        if(error==0) {
+            return true;
+        }
+        return false;
     }
 
     public String getInvitedUsers() {

@@ -12,11 +12,13 @@ import javax.mail.internet.MimeMessage;
  *
  * @author Fabiuz
  */
-public class MailControl {
+public class MailControler {
     
     private final Session mailSession;
+    private final String meteocalsEmail="afa.meteocal@gmail.com";
+    private final String meteocalsName="MeteoCal's Team";
     
-    public MailControl(Session mailSession){
+    public MailControler(Session mailSession){
         this.mailSession=mailSession;
     }
     
@@ -33,7 +35,7 @@ public class MailControl {
         Message msg = new MimeMessage(mailSession);
         msg.setSubject(subject);
         msg.setRecipient(Message.RecipientType.TO, new InternetAddress(destination, nameOfDestination));
-        msg.setFrom(new InternetAddress("afa.meteocal@gmail.com", "MeteoCal's Team"));
+        msg.setFrom(new InternetAddress(this.meteocalsEmail, this.meteocalsName));
         //either
         //msg.setContent(message, "text/plain");
         //either

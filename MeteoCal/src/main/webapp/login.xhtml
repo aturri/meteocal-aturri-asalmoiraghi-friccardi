@@ -8,7 +8,8 @@
     </h:head>
     <h:body>
         <h:form style="width: 500px; margin: auto; ">
-            <p:panel header="Login Form">
+            <p:panel id="loginPanel" header="Login Form">
+                <p:focus context="loginPanel"/>
                 <p:panelGrid columns="2" id="loginGrid">
                     <p:outputLabel for="usernameInput" value="Username"/>
                     <p:inputText id="usernameInput" value="#{loginBean.username}" 

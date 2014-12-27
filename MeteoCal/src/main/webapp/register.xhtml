@@ -9,7 +9,8 @@
     </h:head>
     <h:body>
         <h:form>
-            <p:panel header="Registration Form">
+            <p:panel id="registrationPanel" header="Registration Form">
+                <p:focus context="registrationPanel" />
                 <h:panelGrid columns="3" id="regGrid">
                     <p:outputLabel for="name" value="Name:" />
                     <p:inputText id="name"  required="true" value="#{registrationBean.user.name}">
