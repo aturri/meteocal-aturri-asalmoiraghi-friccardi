@@ -244,12 +244,12 @@ public class EventBean {
     
     public Boolean areThereOverlaps() {
         Set<Event> userEvents = userManager.getLoggedUser().getEvents();
-        Date beginDate = this.event.getBeginDate();
-        Date endDate = this.event.getEndDate();
+        Date a = this.event.getBeginDate();
+        Date b = this.event.getEndDate();
         for(Event e: userEvents) {
-            if((beginDate.after(e.getBeginDate()) && endDate.before(e.getEndDate())) ||
-                    (beginDate.after(e.getBeginDate()) && e.getEndDate().after(endDate)) ||
-                    (e.getBeginDate().after(beginDate) && endDate.before(e.getEndDate()))) {
+            Date c = e.getBeginDate();
+            Date d = e.getEndDate();
+            if((c.after(a) && d.before(b)) || (c.after(a) && b.after(c)) || (c.before(a) && d.after(a))) {
                 MessageBean.addError("errorMsg","This event overlaps with an existing one! Please change begin and/or end date/time.");
                 return true;
             }
