@@ -9,10 +9,14 @@
         <title>Home | MeteoCal</title>
     </h:head>
     <h:body>
-        Welcome back #{userBean.name} #{userBean.surname}
+        Welcome back #{userBean.loggedUser.name} #{userBean.loggedUser.surname}
         <p:link outcome="test" value="Test"/>
         <br/>
         <p:link outcome="#{navigationBean.toSearchResultsPage()}" value="Results"/>
+        <br/>
+        <p:link outcome="/user/settings" value="Settings"/>
+        <br/>
+        <p:link outcome="/user/favoriteUsers" value="Favorite Users"/>
         <br/>
         <p:link outcome="/event/create" value="Create Event"/>
         <h:form>
