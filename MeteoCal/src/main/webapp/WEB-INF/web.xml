@@ -45,6 +45,26 @@
             <role-name>USER</role-name>
         </auth-constraint>
     </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Logged User</web-resource-name>
+            <description/>
+            <url-pattern>/event/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>USER</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Logged User</web-resource-name>
+            <description/>
+            <url-pattern>/search/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>USER</role-name>
+        </auth-constraint>
+    </security-constraint>
     <security-role>
         <role-name>USER</role-name>
     </security-role>

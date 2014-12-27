@@ -19,23 +19,23 @@
                     <p:inputText id="txtSearch" value="#{searchBean.keyword}" required="true" label="Keyword">
                         <f:validateLength minimum="3" />
                     </p:inputText>
-                    <p:commandButton update="@form :resultsSearch" value="Search" />
+                    <p:commandButton update="@form :resultsSearch :messages" value="Search" action="#{searchBean.searchKeyword()}"/>
                     <p:message for="txtSearch" />
                 </h:panelGrid>
             </p:panel>
         </h:form>
         
-        <p:dataScroller rendered="true" id="resultsSearch" value="#{searchBean.resultsEvents}" var="eventsResults" chunkSize="1">
+        <p:dataScroller rendered="true" id="resultsSearch" value="#{searchBean.events}" var="eventsResult" chunkSize="20">
             <f:facet name="header">Events found: #{searchBean.keyword}</f:facet>
             <f:facet name="loader">
-                <p:commandButton type="button" value="More" icon="ui-icon-circle-triangle-s"/>
+                <p:commandButton type="button" value="More" icon="ui-icon-circle-triangle-s" update="eventsResult"/>
             </f:facet>
-            <h:link value="#{eventsResults.title}" outcome="/event/detail">
-                <f:param name="id" value="#{eventsResults.id}" />
-            </h:link>
-            
-            <p:growl for="resultsMessage" sticky="true"/>
+            <h:panelGrid columns="2" style="width:100%">
+                        <h:outputText value="Id:" />
+                        <h:outputText value="#{eventsResult.title}" style="font-weight: bold"/>
+            </h:panelGrid>
         </p:dataScroller>
-
+        
+        <p:growl id="messages" for="resultsMessage" sticky="true"/>
     </h:body>
 </html>
