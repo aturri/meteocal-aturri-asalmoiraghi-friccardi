@@ -59,6 +59,7 @@ public class EventBean {
             this.setEventByParam();
         }else if(this.event==null){
             this.event=new Event();
+            this.event.setBeginDate(this.getToday());
         }
         return this.event;
     }
@@ -71,7 +72,19 @@ public class EventBean {
         this.event = event;
     }
     
-    public String createEvent(){       
+    public Boolean isEndDateLegal() {
+        return !event.getBeginDate().after(event.getEndDate());
+    }
+    
+    public String createEvent(){    
+        if(!this.isEndDateLegal()) {
+            MessageBean.addError("errorMsg","End date must be after begin date!");
+            return "";
+        }
+        if(!this.areInvitedUserLegal()) {
+            return "";
+        }
+        
         //setup creator
         User user = userManager.getLoggedUser(); 
         this.event.setCreator(user);
@@ -86,6 +99,8 @@ public class EventBean {
             for (String email : split) {
                 User invitedUser=userManager.findByEmail(email);
                 this.event.getInvitedUsers().add(invitedUser);
+                
+                //codice mail
                 mailControl=new MailControl(mailSession);
                 try {
                     mailControl.sendMail(email, invitedUser.getName()+" "+invitedUser.getSurname(), "Invite to partecipate to "+event.getTitle(), "Dear "+invitedUser.getName()+" "+invitedUser.getSurname()+",<br />"
@@ -98,6 +113,7 @@ public class EventBean {
                 } catch (MessagingException | UnsupportedEncodingException ex) {
                     Logger.getLogger(EventBean.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                //fine codice mail
             }
             this.eventManager.update(event);   
         }
@@ -210,12 +226,31 @@ public class EventBean {
         String[] split = foo.split(",");
         for (String splitted : split) {
             if(splitted.equals(userManager.getLoggedUser().getEmail())) {
-                MessageBean.addError("You can't invite yourself");
+                MessageBean.addError("errorMsg","You can't invite yourself");
             } else if(!userManager.existsUser(splitted)) {
-                MessageBean.addWarning(splitted+" is not registered to MeteoCal");
+                MessageBean.addWarning("errorMsg",splitted+" is not registered to MeteoCal");
             }
 
         }
+    }
+    
+    public Boolean areInvitedUserLegal() {
+        int error = 0;
+        String foo = this.invitedUsers;
+        String[] split = foo.split(",");
+        for (String splitted : split) {
+            if(splitted.equals(userManager.getLoggedUser().getEmail())) {
+                error++;
+                MessageBean.addError("errorMsg","You can't invite yourself");
+            } else if(!userManager.existsUser(splitted)) {
+                error++;
+                MessageBean.addWarning("errorMsg",splitted+" is not registered to MeteoCal");
+            }
+        }
+        if(error==0) {
+            return true;
+        }
+        return false;
     }
 
     public String getInvitedUsers() {

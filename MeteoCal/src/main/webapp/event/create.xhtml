@@ -26,14 +26,15 @@
                     <p:message id="descriptionmsg" for="description" />
 
                     <h:outputLabel for="start" value="Starting time *" />
-                    <p:calendar id="start" pattern="MM/dd/yyyy HH:mm:ss" value="#{eventBean.event.beginDate}" navigator="true" mindate="#{eventBean.today}" required="true">
-                         <p:ajax update="startMsg"/>                       
+                    <p:calendar id="start" pattern="MM/dd/yyyy HH:mm" value="#{eventBean.event.beginDate}" 
+                                navigator="true" mindate="#{eventBean.today}" required="true">
+                        <p:ajax event="blur" update="startMsg end"/>                       
                     </p:calendar>
                     <p:message id="startMsg" for="start" />
                     
                     <h:outputLabel for="end" value="End time *" />
-                    <p:calendar id="end" pattern="MM/dd/yyyy HH:mm:ss" value="#{eventBean.event.endDate}" navigator="true" mindate="#{eventBean.today}" required="true">
-                         <p:ajax update="endmsg"/>                       
+                    <p:calendar id="end" pattern="MM/dd/yyyy HH:mm" value="#{eventBean.event.endDate}" navigator="true" mindate="#{eventBean.event.beginDate}" required="true">
+                         <p:ajax update="endmsg"/>                                               
                     </p:calendar>
                     <p:message id="endmsg" for="end" />
                                                            
@@ -73,14 +74,13 @@
                     
                     <p:outputLabel for="invitations" value="Invited users (inset emails separated by a comma)" style="width: 200px; display: block" />
                     <p:inputTextarea cols="23" id="invitations" value="#{eventBean.invitedUsers}" required="false">
-                        <p:ajax update="errorMsg" listener="#{eventBean.handleInvitedUsers()}"/>
+                        <p:ajax update="errorMsgId" listener="#{eventBean.handleInvitedUsers()}"/>
                     </p:inputTextarea>
                     <p:message id="invitationsMsg" for="invitations"/> 
-                    
+
                 </h:panelGrid>
-                <p:messages id="errorMsg" />
-                <p:commandButton id="btnCreateEvent" value="Create" update="createEventGrid"
-                                 action="#{eventBean.createEvent()}" />
+                <p:messages id="errorMsgId" for="errorMsg" />
+                <p:commandButton id="btnCreateEvent" value="Create" update="createEventGrid errorMsgId" action="#{eventBean.createEvent()}" />
                 <br /> 
                 * Mandatory fields
             </p:panel>
