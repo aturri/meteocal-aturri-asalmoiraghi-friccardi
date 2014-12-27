@@ -11,7 +11,12 @@
             <artifactId>primefaces</artifactId>
             <version>5.0</version>
         </dependency>
-
+        <dependency>
+            <groupId>it.polimi.se2</groupId>
+            <artifactId>MeteoCal</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
