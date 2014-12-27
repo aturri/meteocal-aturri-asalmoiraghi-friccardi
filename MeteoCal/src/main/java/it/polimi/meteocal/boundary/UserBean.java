@@ -7,6 +7,7 @@ package it.polimi.meteocal.boundary;
 
 import it.polimi.meteocal.entity.Notification;
 import it.polimi.meteocal.entity.Event;
+import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.UserManager;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,14 +29,21 @@ public class UserBean {
     public UserBean() {
     }
     
+    public User getLoggedUser(){
+        return um.getLoggedUser();
+    }
+    
+    @Deprecated
     public String getName() {
         return um.getLoggedUser().getName();
     }
     
+    @Deprecated
     public String getSurname() {
         return um.getLoggedUser().getSurname();
     }
     
+    @Deprecated
     public String getEmail() {
         return um.getLoggedUser().getEmail();
     }
