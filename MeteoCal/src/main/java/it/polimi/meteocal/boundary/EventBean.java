@@ -11,6 +11,7 @@ import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.EventManager;
 import it.polimi.meteocal.entityManager.UserManager;
+import it.polimi.meteocal.entityManager.WeatherController;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,6 +47,9 @@ public class EventBean {
     @EJB
     UserManager userManager;
     
+    @EJB
+    WeatherController wc;
+    
     private String invitedUsers;
     
     //È necessario per il form dove si modifica l'evento, f:metadata>f:viewParam vogliono un setter su questo attributo
@@ -62,6 +66,10 @@ public class EventBean {
             this.event.setBeginDate(this.getToday());
         }
         return this.event;
+    }
+    
+    public String getWeather() {
+        return this.wc.test();
     }
 
     public void setEvent(Event event) {
