@@ -6,7 +6,6 @@
 package it.polimi.meteocal.control;
 
 import it.polimi.meteocal.boundary.RecoverPasswordBean;
-import it.polimi.meteocal.entity.User;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;

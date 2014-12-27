@@ -8,7 +8,6 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.EJB;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -21,9 +20,9 @@ import javax.mail.internet.MimeMessage;
  * otherwise will happen for concurrent error
  * @author Fabiuz
  */
-public class MailControler implements Runnable{
+public class MailController implements Runnable{
     
-    private UserManager userManager;
+    private UserManager userManager=new UserManager();
     
     private final Session mailSession;
     private final String meteocalsEmail="afa.meteocal@gmail.com";
@@ -32,7 +31,7 @@ public class MailControler implements Runnable{
     private final Map<KindOfEmail,String> messages=new EnumMap<>(KindOfEmail.class);
     private Message msg;
     
-    public MailControler(Session mailSession){
+    public MailController(Session mailSession){
         this.mailSession=mailSession;
         subjects.put(KindOfEmail.REGISTRATION, "Confirm registration");
         messages.put(KindOfEmail.REGISTRATION, ""
@@ -119,7 +118,7 @@ public class MailControler implements Runnable{
             Transport.send(msg);
             System.out.println("I've sent an email to "+ msg.getAllRecipients());
         } catch (MessagingException ex) {
-            Logger.getLogger(MailControler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MailController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
