@@ -9,6 +9,7 @@ import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.EventManager;
 import it.polimi.meteocal.entityManager.UserManager;
+import it.polimi.meteocal.exception.InvalidArgumentException;
 import java.io.UnsupportedEncodingException;
 import java.util.EnumMap;
 import java.util.Map;
@@ -38,6 +39,8 @@ public class MailController {
     
     private final String meteocalsEmail="afa.meteocal@gmail.com";
     private final String meteocalsName="MeteoCal's Team";
+    private final String meteocalsSignature="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MeteoCal's Team";
+    private final String meteocalsHello="Dear %s %s,<br />";
     private final Map<KindOfEmail,String> subjects=new EnumMap<>(KindOfEmail.class);
     private final Map<KindOfEmail,String> messages=new EnumMap<>(KindOfEmail.class);
     
@@ -48,19 +51,19 @@ public class MailController {
                 + "Congraturation %s %s,<br />"
                 + "Your account is registred succefully!<br />"
                 + "Best regards,<br />"
-                + "       MeteoCal's Team");
+                + this.meteocalsSignature);
         subjects.put(KindOfEmail.INVITEDTOEVENT, "Invite to partecipate to %s");
         messages.put(KindOfEmail.INVITEDTOEVENT, ""
-                + "Dear %s %s,<br />"
+                + this.meteocalsHello
                 + "You are invited from %s %s to partecipate to %s. Click on the follow link to see more details:<br />"
                 + "<br />"
                 + "<a href=\"http://localhost:8080/MeteoCal/event/detail.xhtml?id=%d\">%s</a><br />"
                 + "<br />"
                 + "Enjoy it ;)<br />"
-                + "      MeteoCal's Team");
+                + this.meteocalsSignature);
         subjects.put(KindOfEmail.FORGOTTENPASSWORD, "Recover your Meteocal's password");
         messages.put(KindOfEmail.FORGOTTENPASSWORD, ""
-                + "Dear %s %s,<br />"
+                + this.meteocalsHello
                 + "We have see your request to change your password because you have forgotten it. <br />"
                 + "Now you just click on the follow link to set a new password and come back to MeteoCal<br />"
                 + "<br />"
@@ -68,7 +71,27 @@ public class MailController {
                 + "<br /><br />"
                 + "If you haven't registed to MeteoCal or if you haven't required to change your password, ignore this eMail.<br />"
                 + "Best regards,<br />"
-                + "        MeteoCal's Team");
+                + this.meteocalsSignature);
+        subjects.put(KindOfEmail.EVENTCANCELLED,"An event that you l'll partecipate is cancelled");
+        messages.put(KindOfEmail.EVENTCANCELLED, ""
+                + this.meteocalsHello
+                + "The following event is cancelled from the organizer %s %s (%s):<br />"
+                + "<br />"
+                + "Title: %s<br />"
+                + "Description: %s<br />"
+                + "<br />"
+                + "All the partecipating are be notified. Sorry for the drawback.<br />"
+                + this.meteocalsSignature);
+        subjects.put(KindOfEmail.EVENTUPDATED, "An event that you l'll partecipate is updated");
+        messages.put(KindOfEmail.EVENTUPDATED, ""
+                + this.meteocalsHello
+                + "The following event is updated from the organizer %s %s (%s):<br />"
+                + "<br />"
+                + "<a href=\"http://localhost:8080/MeteoCal/event/detail.xhtml?id=%d\">%s</a><br />"
+                + "<br />"
+                + "Click on the link to see more details.<br />"
+                + this.meteocalsSignature);
+                
     }
     
     public void sendMail(String destination, KindOfEmail kindOfEmail, Event event) throws MessagingException, UnsupportedEncodingException{
@@ -89,6 +112,24 @@ public class MailController {
                 subject=this.subjects.get(KindOfEmail.FORGOTTENPASSWORD);
                 message=String.format(this.messages.get(KindOfEmail.FORGOTTENPASSWORD), user.getName(),user.getSurname(),NavigationBean.getLinkForResetEmail(user),NavigationBean.getLinkForResetEmail(user));
                 break;
+            case EVENTCANCELLED:
+                subject=this.subjects.get(KindOfEmail.EVENTCANCELLED);
+                message=String.format(this.messages.get(KindOfEmail.EVENTCANCELLED), user.getName(),user.getSurname(),event.getCreator().getName(),event.getCreator().getSurname(),event.getCreator().getEmail(),event.getTitle(),event.getDescription());
+                break;
+            case EVENTUPDATED:
+                subject=this.subjects.get(KindOfEmail.EVENTUPDATED);
+                message=String.format(this.messages.get(KindOfEmail.EVENTUPDATED), user.getName(),user.getSurname(),event.getCreator().getName(),event.getCreator().getSurname(),event.getCreator().getEmail(),event.getId(),event.getTitle());
+                break;
+            /*case SEVEREWEATHER:
+                subject=this.subjects.get(KindOfEmail.SEVEREWEATHER);
+                message=String.format(this.messages.get(KindOfEmail.SEVEREWEATHER),);
+                break;
+            case SEVEREWHEATER_MOD:
+                subject=this.subjects.get(KindOfEmail.SEVEREWHEATER_MOD);
+                message=String.format(this.messages.get(KindOfEmail.SEVEREWHEATER_MOD),);
+                break;*/
+            case GENERIC:
+                throw new InvalidArgumentException("You must use sendGenericEmail() and set manually subject and message email");
         }
         
         Message msg = new MimeMessage(mailSession);
