@@ -5,7 +5,7 @@
  */
 package it.polimi.meteocal.boundary;
 
-import it.polimi.meteocal.control.MailControler;
+import it.polimi.meteocal.control.MailController;
 import it.polimi.meteocal.control.NavigationBean;
 import it.polimi.meteocal.entityManager.UserManager;
 import it.polimi.meteocal.entity.User;
@@ -31,7 +31,7 @@ public class RegistrationBean {
     
     @Resource(name = "mail/mailSession")
     private Session mailSession;
-    private MailControler mailControl;
+    private MailController mailControl;
     
     @EJB
     private UserManager um;
@@ -58,7 +58,7 @@ public class RegistrationBean {
     public String register() {
         try {
             um.save(user);
-            mailControl=new MailControler(mailSession);
+            mailControl=new MailController(mailSession);
             mailControl.sendMail(user.getEmail(),user.getName()+" "+user.getSurname(),"Confirm registration",
                     "Congraturation "+user.getName()+" "+user.getSurname()+",<br />Your account is registred succefully!<br />Best regards,<br />       MeteoCal's Team");
             return NavigationBean.redirectToLogin();

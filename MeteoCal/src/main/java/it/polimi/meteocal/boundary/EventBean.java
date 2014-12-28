@@ -5,7 +5,7 @@
  */
 package it.polimi.meteocal.boundary;
 
-import it.polimi.meteocal.control.MailControler;
+import it.polimi.meteocal.control.MailController;
 import it.polimi.meteocal.control.NavigationBean;
 import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
@@ -40,7 +40,7 @@ public class EventBean {
 
     @Resource(name = "mail/mailSession")
     private Session mailSession;
-    private MailControler mailControl;
+    private MailController mailControl;
     
     @EJB
     EventManager eventManager;
@@ -110,7 +110,7 @@ public class EventBean {
                 this.event.getInvitedUsers().add(invitedUser);
                 
                 //codice mail
-                mailControl=new MailControler(mailSession);
+                mailControl=new MailController(mailSession);
                 try {
                     mailControl.sendMail(email, invitedUser.getName()+" "+invitedUser.getSurname(), "Invite to partecipate to "+event.getTitle(), "Dear "+invitedUser.getName()+" "+invitedUser.getSurname()+",<br />"
                             + "You are invited from "+event.getCreator().getName()+" "+event.getCreator().getSurname()+ " to partecipate to "+event.getTitle()+". Click on the follow link to see more details:<br /><br />"

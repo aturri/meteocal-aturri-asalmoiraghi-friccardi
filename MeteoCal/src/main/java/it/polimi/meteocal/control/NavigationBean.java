@@ -5,7 +5,10 @@
  */
 package it.polimi.meteocal.control;
 
+import it.polimi.meteocal.entity.User;
+import it.polimi.meteocal.entityManager.UserManager;
 import java.io.Serializable;
+import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 
@@ -20,6 +23,9 @@ public class NavigationBean implements Serializable {
  
     private static final long serialVersionUID = 1520318172495977648L;
  
+    @EJB
+    private UserManager userManager;
+    
     /**
      * Redirect to login page.
      * @return Login page name.
@@ -111,5 +117,15 @@ public class NavigationBean implements Serializable {
      */
     public static String toSearchResultsPage(){
         return "/search/results";
+    }
+    
+        /**
+     * 
+     * @param user
+     * @return the absolute path to go to the set new password page with correct parameters
+     */
+    public static String getLinkForResetEmail(User user) {
+        return "http://localhost:8080/MeteoCal/setNewPassword.xhtml?faces-redirect=true&code="
+                + UserManager.getCodeFromUser(user) + "&email="+user.getEmail();
     }
 }

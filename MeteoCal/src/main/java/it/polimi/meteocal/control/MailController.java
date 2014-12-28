@@ -12,13 +12,13 @@ import javax.mail.internet.MimeMessage;
  *
  * @author Fabiuz
  */
-public class MailControler {
+public class MailController {
     
     private final Session mailSession;
     private final String meteocalsEmail="afa.meteocal@gmail.com";
     private final String meteocalsName="MeteoCal's Team";
     
-    public MailControler(Session mailSession){
+    public MailController(Session mailSession){
         this.mailSession=mailSession;
     }
     
