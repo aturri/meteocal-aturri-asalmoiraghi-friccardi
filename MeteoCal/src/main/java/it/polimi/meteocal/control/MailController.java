@@ -72,9 +72,7 @@ public class MailController {
     }
     
     public void sendMail(String destination, KindOfEmail kindOfEmail, Event event) throws MessagingException, UnsupportedEncodingException{
-        User user=userManager.findByEmail(destination);
-        System.out.println(user.getEmail());
-        
+        User user=userManager.findByEmail(destination);        
         
         String subject=null;
         String message=null;
@@ -101,7 +99,12 @@ public class MailController {
         //msg.setContent(message, "text/plain");
         //either
         msg.setContent(message, "text/html; charset=utf-8");
-        Transport.send(msg);
-        System.out.println("I've sent an email to "+ destination);
+        SendEmailController sec=new SendEmailController();
+        sec.setMessage(msg);
+        Thread t1=new Thread(sec);
+        t1.start();
+        
+        //Transport.send(msg);
+        System.out.println("The thread is started!");
     }
 }
