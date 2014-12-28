@@ -19,9 +19,10 @@
         </f:metadata>
         <h:form id="editEventForm">
             <input type="hidden" name="id" value="#{eventBean.event.id}" />
-            <p:panel header="You received an invitation to #{eventBean.event.title} by #{eventBean.event.creator.email}"
+            <p:panel header="You received an invitation by #{eventBean.event.creator.email}"
                      rendered="#{eventBean.isCurrentUserInvitedTo(eventBean.event.id)}" >
-                <p:commandButton value="Accept" action="#{eventBean.acceptInvitation()}" />
+                <p:messages id="errorMsgId" for="errorMsg" />
+                <p:commandButton value="Accept" action="#{eventBean.acceptInvitation()}" update="errorMsgId" />
                 <br />
                 <p:commandButton value="Refuse" action="#{eventBean.refuseInvitation()}" />
             </p:panel>

@@ -106,6 +106,8 @@ public class EventBean {
             for (String email : split) {
                 User invitedUser=userManager.findByEmail(email);
                 this.event.getInvitedUsers().add(invitedUser);
+                invitedUser.getInvitations().add(event);
+                userManager.update(invitedUser);
                 mailControl.sendMail(email, KindOfEmail.INVITEDTOEVENT,this.event);
             }
             this.eventManager.update(event);   
@@ -124,6 +126,8 @@ public class EventBean {
             for (String email : split) {
                 User invitedUser=userManager.findByEmail(email);
                 this.event.getInvitedUsers().add(invitedUser);
+                invitedUser.getInvitations().add(event);
+                userManager.update(invitedUser);
                 mailControl.sendMail(email, KindOfEmail.INVITEDTOEVENT,this.event);
             }
             this.eventManager.update(event);   
@@ -155,6 +159,9 @@ public class EventBean {
     }
     
     public String acceptInvitation() {
+        if(this.areThereOverlaps()) {
+            return "";
+        }
         this.removeInvitation();
         User user = userManager.getLoggedUser();        
         event.getUsers().add(user);
@@ -301,7 +308,7 @@ public class EventBean {
             Date c = e.getBeginDate();
             Date d = e.getEndDate();
             if((c.after(a) && d.before(b)) || (c.after(a) && b.after(c)) || (c.before(a) && d.after(a))) {
-                MessageBean.addError("errorMsg","This event overlaps with an existing one! Please change begin and/or end date/time.");
+                MessageBean.addError("errorMsg","This event overlaps with an existing one!");
                 return true;
             }
         }
