@@ -5,6 +5,7 @@
  */
 package it.polimi.meteocal.boundary;
 
+import it.polimi.meteocal.control.KindOfEmail;
 import it.polimi.meteocal.control.MailController;
 import it.polimi.meteocal.control.MailController;
 import it.polimi.meteocal.control.NavigationBean;
@@ -53,18 +54,9 @@ public class RecoverPasswordBean {
             return "";
         }
         else{
-            User user=userManager.findByEmail(email);
             try {
-                this.mailControl.sendMail(email, user.getName()+" "+user.getSurname(),"Recover your Meteocal's password", 
-                        "Dear "+ user.getName()+" "+user.getSurname()+",<br />"
-                                + "We have see your request to change your password because you have forgotten it. <br />"
-                                + "Now you just click on the follow link to set a new password and come back to MeteoCal<br /><br />"
-                                + "<a href=\""+NavigationBean.getLinkForResetEmail(user)+"\" >"+NavigationBean.getLinkForResetEmail(user)+"</a>"
-                                + "<br /><br />"
-                                + "If you haven't registed to MeteoCal or if you haven't required to change your password, ignore this eMail.<br />"
-                                + "Best regards,<br />"
-                                + "        MeteoCal's Team"        
-                );            } catch (MessagingException | UnsupportedEncodingException ex) {
+                this.mailControl.sendMail(email, KindOfEmail.FORGOTTENPASSWORD,null);
+            } catch (MessagingException | UnsupportedEncodingException ex) {
                 Logger.getLogger(RecoverPasswordBean.class.getName()).log(Level.SEVERE, null, ex);
             }
             MessageBean.addInfo("Recover link sent to the specified email");

@@ -5,6 +5,7 @@
  */
 package it.polimi.meteocal.boundary;
 
+import it.polimi.meteocal.control.KindOfEmail;
 import it.polimi.meteocal.control.MailController;
 import it.polimi.meteocal.control.NavigationBean;
 import it.polimi.meteocal.entity.Event;
@@ -103,7 +104,7 @@ public class EventBean {
         user.getEvents().add(event);
         userManager.update(user);
         //setup invitations
-        if(this.invitedUsers!=null && this.invitedUsers!="") {
+        if(this.invitedUsers!=null && !"".equals(this.invitedUsers)) {
             String[] split = this.invitedUsers.split(",");
             for (String email : split) {
                 User invitedUser=userManager.findByEmail(email);
@@ -111,13 +112,7 @@ public class EventBean {
                 
                 //codice mail
                 try {
-                    mailControl.sendMail(email, invitedUser.getName()+" "+invitedUser.getSurname(), "Invite to partecipate to "+event.getTitle(), "Dear "+invitedUser.getName()+" "+invitedUser.getSurname()+",<br />"
-                            + "You are invited from "+event.getCreator().getName()+" "+event.getCreator().getSurname()+ " to partecipate to "+event.getTitle()+". Click on the follow link to see more details:<br /><br />"
-                            + "<a href=\"http://localhost:8080/MeteoCal\">http://localhost:8080/MeteoCal</a>"
-                            + "<br />"
-                            + "<br />"
-                            + "Enjoy it ;)<br />"
-                            + "      MeteoCal's Team");
+                    mailControl.sendMail(email, KindOfEmail.INVITEDTOEVENT,this.event);
                 } catch (MessagingException | UnsupportedEncodingException ex) {
                     Logger.getLogger(EventBean.class.getName()).log(Level.SEVERE, null, ex);
                 }
