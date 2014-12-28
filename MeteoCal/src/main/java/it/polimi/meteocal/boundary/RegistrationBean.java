@@ -18,6 +18,7 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 
@@ -29,8 +30,7 @@ import javax.mail.Session;
 @RequestScoped
 public class RegistrationBean {
     
-    @Resource(name = "mail/mailSession")
-    private Session mailSession;
+    @Inject
     private MailController mailControl;
     
     @EJB
@@ -58,7 +58,6 @@ public class RegistrationBean {
     public String register() {
         try {
             um.save(user);
-            mailControl=new MailController(mailSession);
             mailControl.sendMail(user.getEmail(),user.getName()+" "+user.getSurname(),"Confirm registration",
                     "Congraturation "+user.getName()+" "+user.getSurname()+",<br />Your account is registred succefully!<br />Best regards,<br />       MeteoCal's Team");
             return NavigationBean.redirectToLogin();

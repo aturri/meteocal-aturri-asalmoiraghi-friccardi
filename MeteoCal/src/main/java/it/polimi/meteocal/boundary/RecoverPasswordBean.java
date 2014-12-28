@@ -5,8 +5,7 @@
  */
 package it.polimi.meteocal.boundary;
 
-//import com.google.common.base.Charsets;
-//import com.google.common.hash.Hashing;
+import it.polimi.meteocal.control.MailController;
 import it.polimi.meteocal.control.MailController;
 import it.polimi.meteocal.control.NavigationBean;
 import it.polimi.meteocal.entity.User;
@@ -20,6 +19,7 @@ import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 
@@ -30,9 +30,8 @@ import javax.mail.Session;
 @Named
 @RequestScoped
 public class RecoverPasswordBean {
-
-    @Resource(name = "mail/mailSession")
-    private Session mailSession;
+    
+    @Inject
     private MailController mailControl;
     
     @EJB
@@ -55,7 +54,6 @@ public class RecoverPasswordBean {
         }
         else{
             User user=userManager.findByEmail(email);
-            mailControl=new MailController(mailSession);
             try {
                 this.mailControl.sendMail(email, user.getName()+" "+user.getSurname(),"Recover your Meteocal's password", 
                         "Dear "+ user.getName()+" "+user.getSurname()+",<br />"

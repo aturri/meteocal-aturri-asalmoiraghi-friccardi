@@ -1,6 +1,19 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package it.polimi.meteocal.control;
 
+import it.polimi.meteocal.entity.User;
+import it.polimi.meteocal.entityManager.EventManager;
+import it.polimi.meteocal.entityManager.UserManager;
 import java.io.UnsupportedEncodingException;
+import java.util.EnumMap;
+import java.util.Map;
+import javax.annotation.Resource;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -12,26 +25,24 @@ import javax.mail.internet.MimeMessage;
  *
  * @author Fabiuz
  */
+@Stateless
 public class MailController {
+
+    @Resource(name = "mail/mailSession")
+    private Session mailSession;
     
-    private final Session mailSession;
+    @EJB
+    UserManager userManager;
+    
     private final String meteocalsEmail="afa.meteocal@gmail.com";
     private final String meteocalsName="MeteoCal's Team";
+    private final Map<KindOfEmail,String> subjects=new EnumMap<>(KindOfEmail.class);
+    private final Map<KindOfEmail,String> messages=new EnumMap<>(KindOfEmail.class);
     
-    public MailController(Session mailSession){
-        this.mailSession=mailSession;
-    }
-    
-    /**
-     * This method send the eMail in text/plain format
-     * @param destination recipient's email address
-     * @param nameOfDestination recipient's name
-     * @param subject Subject of eMail
-     * @param message Message of eMail
-     * @throws MessagingException
-     * @throws UnsupportedEncodingException 
-     */
     public void sendMail(String destination, String nameOfDestination, String subject, String message) throws MessagingException, UnsupportedEncodingException{
+        User user=userManager.findByEmail(destination);
+        System.out.println(user.getEmail());
+        
         Message msg = new MimeMessage(mailSession);
         msg.setSubject(subject);
         msg.setRecipient(Message.RecipientType.TO, new InternetAddress(destination, nameOfDestination));

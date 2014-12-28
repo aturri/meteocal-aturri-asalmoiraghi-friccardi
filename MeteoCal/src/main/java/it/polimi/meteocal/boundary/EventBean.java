@@ -27,6 +27,7 @@ import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 
@@ -37,9 +38,8 @@ import javax.mail.Session;
 @Named
 @RequestScoped
 public class EventBean {
-
-    @Resource(name = "mail/mailSession")
-    private Session mailSession;
+    
+    @Inject
     private MailController mailControl;
     
     @EJB
@@ -110,7 +110,6 @@ public class EventBean {
                 this.event.getInvitedUsers().add(invitedUser);
                 
                 //codice mail
-                mailControl=new MailController(mailSession);
                 try {
                     mailControl.sendMail(email, invitedUser.getName()+" "+invitedUser.getSurname(), "Invite to partecipate to "+event.getTitle(), "Dear "+invitedUser.getName()+" "+invitedUser.getSurname()+",<br />"
                             + "You are invited from "+event.getCreator().getName()+" "+event.getCreator().getSurname()+ " to partecipate to "+event.getTitle()+". Click on the follow link to see more details:<br /><br />"

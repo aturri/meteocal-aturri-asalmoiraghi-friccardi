@@ -8,7 +8,6 @@ package it.polimi.meteocal.control;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.UserManager;
 import java.io.Serializable;
-import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 
@@ -22,9 +21,6 @@ import javax.inject.Named;
 public class NavigationBean implements Serializable {
  
     private static final long serialVersionUID = 1520318172495977648L;
- 
-    @EJB
-    private UserManager userManager;
     
     /**
      * Redirect to login page.
