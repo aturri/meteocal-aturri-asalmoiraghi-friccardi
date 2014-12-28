@@ -8,15 +8,13 @@ package it.polimi.meteocal.control;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Resource;
-import javax.ejb.Stateless;
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.Session;
 import javax.mail.Transport;
 
 /**
- *
+ * This is the class that send the Email. The only task of this class is send the email, 
+ * not create or setting anything
  * @author Fabiuz
  */
 public class SendEmailThread implements Runnable{

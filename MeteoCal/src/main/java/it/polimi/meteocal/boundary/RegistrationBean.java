@@ -59,11 +59,6 @@ public class RegistrationBean {
             um.save(user);
             mailControl.sendMail(user.getEmail(),KindOfEmail.REGISTRATION,null);
             return NavigationBean.redirectToLogin();
-        }catch(MessagingException ex) {
-            Logger.getLogger(RegistrationBean.class.getName()).log(Level.SEVERE, null, ex);
-            return NavigationBean.redirectToLogin();
-        }catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(RegistrationBean.class.getName()).log(Level.SEVERE, null, ex);
         }catch (EJBException e){
             MessageBean.addWarning("Email already registered");
             Logger.getLogger(RegistrationBean.class.getName()).log(Level.SEVERE, null, e);

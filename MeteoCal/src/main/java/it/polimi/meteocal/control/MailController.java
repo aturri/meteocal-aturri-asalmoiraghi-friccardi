@@ -1,18 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.polimi.meteocal.control;
 
 import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
-import it.polimi.meteocal.entityManager.EventManager;
 import it.polimi.meteocal.entityManager.UserManager;
 import it.polimi.meteocal.exception.InvalidArgumentException;
 import java.io.UnsupportedEncodingException;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -20,12 +16,13 @@ import javax.ejb.Stateless;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
-import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 /**
- *
+ * IMPROVEMENT TODO:
+ * - create sendGenericEmail()
+ * - create sendEmail() and sendDefaultEmail()
  * @author Fabiuz
  */
 @Stateless
@@ -44,6 +41,9 @@ public class MailController {
     private final Map<KindOfEmail,String> subjects=new EnumMap<>(KindOfEmail.class);
     private final Map<KindOfEmail,String> messages=new EnumMap<>(KindOfEmail.class);
     
+    /**
+     * Initialize the Map with default subjects and messages
+     */
     @PostConstruct
     private void init(){
         subjects.put(KindOfEmail.REGISTRATION, "Confirm registration");
@@ -94,9 +94,15 @@ public class MailController {
                 
     }
     
-    public void sendMail(String destination, KindOfEmail kindOfEmail, Event event) throws MessagingException, UnsupportedEncodingException{
-        User user=userManager.findByEmail(destination);        
-        
+    /**
+     * This function send a default email
+     * @param destination the address of the recipiet
+     * @param kindOfEmail kind of email (it defines the layout of message and subject in the email)
+     * @param event the event which the email refer. If the email doesn't use event, it may set to null
+     */
+    public void sendMail(String destination, KindOfEmail kindOfEmail, Event event){
+        User user=userManager.findByEmail(destination);
+
         String subject=null;
         String message=null;
         switch(kindOfEmail){
@@ -104,13 +110,13 @@ public class MailController {
                 subject=this.subjects.get(KindOfEmail.REGISTRATION);
                 message=String.format(this.messages.get(KindOfEmail.REGISTRATION), user.getName(),user.getSurname());
                 break;
-            case INVITEDTOEVENT:
-                subject=String.format(this.subjects.get(KindOfEmail.INVITEDTOEVENT), event.getTitle());
-                message=String.format(this.messages.get(KindOfEmail.INVITEDTOEVENT), user.getName(),user.getSurname(),event.getCreator().getName(),event.getCreator().getSurname(),event.getTitle(),event.getId(),event.getTitle());
-                break;
             case FORGOTTENPASSWORD:
                 subject=this.subjects.get(KindOfEmail.FORGOTTENPASSWORD);
                 message=String.format(this.messages.get(KindOfEmail.FORGOTTENPASSWORD), user.getName(),user.getSurname(),NavigationBean.getLinkForResetEmail(user),NavigationBean.getLinkForResetEmail(user));
+                break;
+            case INVITEDTOEVENT:
+                subject=String.format(this.subjects.get(KindOfEmail.INVITEDTOEVENT), event.getTitle());
+                message=String.format(this.messages.get(KindOfEmail.INVITEDTOEVENT), user.getName(),user.getSurname(),event.getCreator().getName(),event.getCreator().getSurname(),event.getTitle(),event.getId(),event.getTitle());
                 break;
             case EVENTCANCELLED:
                 subject=this.subjects.get(KindOfEmail.EVENTCANCELLED);
@@ -120,32 +126,33 @@ public class MailController {
                 subject=this.subjects.get(KindOfEmail.EVENTUPDATED);
                 message=String.format(this.messages.get(KindOfEmail.EVENTUPDATED), user.getName(),user.getSurname(),event.getCreator().getName(),event.getCreator().getSurname(),event.getCreator().getEmail(),event.getId(),event.getTitle());
                 break;
-            /*case SEVEREWEATHER:
+                /*case SEVEREWEATHER:
                 subject=this.subjects.get(KindOfEmail.SEVEREWEATHER);
                 message=String.format(this.messages.get(KindOfEmail.SEVEREWEATHER),);
                 break;
-            case SEVEREWHEATER_MOD:
+                case SEVEREWHEATER_MOD:
                 subject=this.subjects.get(KindOfEmail.SEVEREWHEATER_MOD);
                 message=String.format(this.messages.get(KindOfEmail.SEVEREWHEATER_MOD),);
                 break;*/
             case GENERIC:
                 throw new InvalidArgumentException("You must use sendGenericEmail() and set manually subject and message email");
         }
-        
-        Message msg = new MimeMessage(mailSession);
-        msg.setSubject(subject);
-        msg.setRecipient(Message.RecipientType.TO, new InternetAddress(destination, user.getName()+" "+user.getSurname()));
-        msg.setFrom(new InternetAddress(this.meteocalsEmail, this.meteocalsName));
-        //either
-        //msg.setContent(message, "text/plain");
-        //either
-        msg.setContent(message, "text/html; charset=utf-8");
-        SendEmailThread sec=new SendEmailThread();
-        sec.setMessage(msg);
-        Thread t1=new Thread(sec);
-        t1.start();
-        
-        //Transport.send(msg);
-        System.out.println("The thread is started!");
+        try {    
+            Message msg = new MimeMessage(mailSession);
+            msg.setSubject(subject);
+            msg.setRecipient(Message.RecipientType.TO, new InternetAddress(destination, user.getName()+" "+user.getSurname()));
+            msg.setFrom(new InternetAddress(this.meteocalsEmail, this.meteocalsName));
+            //either
+            //msg.setContent(message, "text/plain");
+            //either
+            msg.setContent(message, "text/html; charset=utf-8");
+            SendEmailThread sec=new SendEmailThread();
+            sec.setMessage(msg);
+            Thread t1=new Thread(sec);
+            t1.start();
+            System.out.println("The thread is started!");
+        } catch (MessagingException | UnsupportedEncodingException ex) {
+            Logger.getLogger(MailController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

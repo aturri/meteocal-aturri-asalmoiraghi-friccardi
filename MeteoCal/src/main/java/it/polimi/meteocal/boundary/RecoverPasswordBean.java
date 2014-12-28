@@ -7,7 +7,6 @@ package it.polimi.meteocal.boundary;
 
 import it.polimi.meteocal.control.KindOfEmail;
 import it.polimi.meteocal.control.MailController;
-import it.polimi.meteocal.control.MailController;
 import it.polimi.meteocal.control.NavigationBean;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.UserManager;
@@ -15,14 +14,12 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
-import javax.mail.Session;
 
 /**
  *
@@ -42,28 +39,33 @@ public class RecoverPasswordBean {
     private String password1;
     private String password2;
     private String code;
+    
     /**
      * Creates a new instance of RecoverPasswordBean
      */
     public RecoverPasswordBean() {
     }
     
+    /**
+     * Function that control the data insert into the form and send email to reset the password
+     * @return the destination page
+     */
     public String recoverPassword(){
         if(!userManager.existsUser(email)){
             MessageBean.addError("User not found");
             return "";
         }
         else{
-            try {
-                this.mailControl.sendMail(email, KindOfEmail.FORGOTTENPASSWORD,null);
-            } catch (MessagingException | UnsupportedEncodingException ex) {
-                Logger.getLogger(RecoverPasswordBean.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            this.mailControl.sendMail(email, KindOfEmail.FORGOTTENPASSWORD,null);
             MessageBean.addInfo("Recover link sent to the specified email");
         }
         return NavigationBean.redirectToIndex();
     }
     
+    /**
+     * This function controls the data inserted into the form and if correct, change the password
+     * @return the destination page
+     */
     public String setNewPassword(){
         Map<String, String> params =FacesContext.getCurrentInstance().
                    getExternalContext().getRequestParameterMap();
@@ -71,7 +73,7 @@ public class RecoverPasswordBean {
         String emailFromEmail=params.get("email");
         System.out.println(""+ params.keySet());
 
-        
+        //verify that the user exists
         if(!userManager.existsUser(emailFromEmail)){
             MessageBean.addError("User not found");
             return "";
@@ -86,25 +88,24 @@ public class RecoverPasswordBean {
         //verifica che la password siano corrette
         if(!this.password1.equals(this.password2)){
             MessageBean.addError("password don't match");
-            //returns null implies that the page is the same
+            //returns "" implies that the page is the same
             return "";
         }
         
         //Set the new password
         user.setPassword(password1);
         userManager.update(user);
-        
         return NavigationBean.redirectToIndex();
     }
 
     /**
+     * Get email From "GET" paramenter (if class field are not initializated) or from the class field
      * @return the email
      */
     public String getEmail() {
         if(this.email==null){
             Map<String, String> params =FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
             String emailFromEmail = params.get("email");
-            System.out.println(params.keySet().toString() +"-->"+emailFromEmail+"<--");
             if(emailFromEmail!=null){
                 this.email=emailFromEmail;
             }
@@ -113,6 +114,7 @@ public class RecoverPasswordBean {
     }
 
     /**
+     * 
      * @param email the email to set
      */
     public void setEmail(String email) {
@@ -147,6 +149,10 @@ public class RecoverPasswordBean {
         this.password2 = password2;
     }
 
+    /**
+     * 
+     * @return the code for changing email
+     */
     public String getCode() {
         if(this.code==null){
             String codeFromEmail = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("code");
@@ -159,11 +165,10 @@ public class RecoverPasswordBean {
     }
     
     /**
+     * 
      * @param code the code to set
      */
     public void setCode(String code) {
         this.code = code;
     }
-    
-    
 }

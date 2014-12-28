@@ -1,12 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.polimi.meteocal.control;
 
 /**
- *
+ * This ENUM contains the DEFAULT kind of email used in MeteoCal plus the GENERIC 
+ * that it will be used for debug and other unpredictable situation
  * @author Fabiuz
  */
 public enum KindOfEmail {

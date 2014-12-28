@@ -14,7 +14,6 @@ import it.polimi.meteocal.entityManager.EventManager;
 import it.polimi.meteocal.entityManager.UserManager;
 import it.polimi.meteocal.entityManager.WeatherController;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,14 +22,12 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
-import javax.mail.Session;
 
 /**
  *
@@ -109,13 +106,8 @@ public class EventBean {
             for (String email : split) {
                 User invitedUser=userManager.findByEmail(email);
                 this.event.getInvitedUsers().add(invitedUser);
-                
                 //codice mail
-                try {
-                    mailControl.sendMail(email, KindOfEmail.INVITEDTOEVENT,this.event);
-                } catch (MessagingException | UnsupportedEncodingException ex) {
-                    Logger.getLogger(EventBean.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                mailControl.sendMail(email, KindOfEmail.INVITEDTOEVENT,this.event);
                 //fine codice mail
             }
             this.eventManager.update(event);   
@@ -125,7 +117,7 @@ public class EventBean {
     
     public String editEvent() {
         this.eventManager.update(event);
-        return NavigationBean.redirectToHome();
+        return NavigationBean.redirectToEventDetailsPage(event.getId());
     }
     
     public String deleteEvent() {

@@ -115,8 +115,12 @@ public class NavigationBean implements Serializable {
         return "/search/results";
     }
     
-        /**
-     * 
+    public static String redirectToEventDetailsPage(Integer id){
+        return "/event/detail.xhtml?faces-redirect=true&id="+id;
+    }
+    
+    /**
+     * Return the link to go to the page to set the new password with correct parameter
      * @param user
      * @return the absolute path to go to the set new password page with correct parameters
      */
