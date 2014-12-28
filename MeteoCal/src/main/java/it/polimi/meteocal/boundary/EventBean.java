@@ -80,15 +80,15 @@ public class EventBean {
     }
     
     public Boolean isEndDateLegal() {
-        return !event.getBeginDate().after(event.getEndDate());
+        if(event.getBeginDate().after(event.getEndDate())) {
+            MessageBean.addError("errorMsg","End date must be after begin date!");
+            return false;
+        }
+        return true;
     }
     
     public String createEvent(){    
-        if(!this.areInvitedUserLegal() || this.areThereOverlaps()) {
-            return "";
-        }
-        if(!this.isEndDateLegal()) {
-            MessageBean.addError("errorMsg","End date must be after begin date!");
+        if(!this.areInvitedUserLegalForCreate() || this.areThereOverlaps() || !this.isEndDateLegal()) {
             return "";
         }
         
@@ -106,9 +106,7 @@ public class EventBean {
             for (String email : split) {
                 User invitedUser=userManager.findByEmail(email);
                 this.event.getInvitedUsers().add(invitedUser);
-                //codice mail
                 mailControl.sendMail(email, KindOfEmail.INVITEDTOEVENT,this.event);
-                //fine codice mail
             }
             this.eventManager.update(event);   
         }
@@ -248,16 +246,32 @@ public class EventBean {
         return sdf.format(event.getEndDate());
     }
     
-    public void handleInvitedUsers() {
+    public void handleInvitedUsersForCreate() {
+        String foo = this.invitedUsers;
+        String[] split = foo.split(",");
+        List<String> tmpUsersList = new ArrayList<>();
+        for (String splitted : split) {
+            if(splitted.equals(userManager.getLoggedUser().getEmail())) {
+                MessageBean.addWarning("errorMsg","You can't invite yourself");
+            } else if(!userManager.existsUser(splitted)) {
+                MessageBean.addWarning("errorMsg",splitted+" is not registered to MeteoCal");
+            } else if(tmpUsersList.contains(splitted)) {
+                MessageBean.addWarning("errorMsg",splitted+" has been invited more than once");
+            } else {
+                tmpUsersList.add(splitted);
+            }
+        }
+    }
+    
+    public void handleInvitedUsersForEdit() {
+        this.handleInvitedUsersForCreate();
         String foo = this.invitedUsers;
         String[] split = foo.split(",");
         for (String splitted : split) {
-            if(splitted.equals(userManager.getLoggedUser().getEmail())) {
-                MessageBean.addError("errorMsg","You can't invite yourself");
-            } else if(!userManager.existsUser(splitted)) {
-                MessageBean.addWarning("errorMsg",splitted+" is not registered to MeteoCal");
+            if(event.getInvitedUsers().contains(userManager.findByEmail(splitted)) || 
+                        event.getUsers().contains(userManager.findByEmail(splitted))) {
+                MessageBean.addWarning("errorMsg",splitted+" has already been invited");
             }
-
         }
     }
     
@@ -276,26 +290,49 @@ public class EventBean {
         return false;
     }
     
-    public Boolean areInvitedUserLegal() {
+    public Boolean areInvitedUserLegalForCreate() {
         if(this.invitedUsers==null || this.invitedUsers=="") {
             return true;
         }
         int error = 0;
         String foo = this.invitedUsers;
         String[] split = foo.split(",");
+        List<String> tmpUsersList = new ArrayList<>();
         for (String splitted : split) {
             if(splitted.equals(userManager.getLoggedUser().getEmail())) {
                 error++;
                 MessageBean.addError("errorMsg","You can't invite yourself");
             } else if(!userManager.existsUser(splitted)) {
                 error++;
-                MessageBean.addWarning("errorMsg",splitted+" is not registered to MeteoCal");
+                MessageBean.addError("errorMsg",splitted+" is not registered to MeteoCal");
+            } else if(tmpUsersList.contains(splitted)) {
+                error++;
+                MessageBean.addError("errorMsg",splitted+" has been invited more than once");
+            } else {
+                tmpUsersList.add(splitted);
             }
         }
-        if(error==0) {
+        return error==0;
+    }
+    
+    public Boolean areInvitedUserLegalForEdit() {
+        if(this.invitedUsers==null || this.invitedUsers=="") {
             return true;
         }
-        return false;
+        if(!this.areInvitedUserLegalForCreate()) {
+            return false;
+        }
+        int error = 0;
+        String foo = this.invitedUsers;
+        String[] split = foo.split(",");
+        for (String splitted : split) {
+            if(event.getInvitedUsers().contains(userManager.findByEmail(splitted)) || 
+                        event.getUsers().contains(userManager.findByEmail(splitted))) {
+                error++;
+                MessageBean.addError("errorMsg",splitted+" has already been invited");
+            }
+        }
+        return error==0;
     }
 
     public String getInvitedUsers() {
