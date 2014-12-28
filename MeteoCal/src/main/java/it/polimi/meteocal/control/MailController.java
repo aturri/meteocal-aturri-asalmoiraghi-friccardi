@@ -99,7 +99,7 @@ public class MailController {
         //msg.setContent(message, "text/plain");
         //either
         msg.setContent(message, "text/html; charset=utf-8");
-        SendEmailController sec=new SendEmailController();
+        SendEmailThread sec=new SendEmailThread();
         sec.setMessage(msg);
         Thread t1=new Thread(sec);
         t1.start();

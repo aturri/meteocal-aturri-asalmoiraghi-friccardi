@@ -19,7 +19,7 @@ import javax.mail.Transport;
  *
  * @author Fabiuz
  */
-public class SendEmailController implements Runnable{
+public class SendEmailThread implements Runnable{
     
     private Message message;
     
@@ -30,10 +30,10 @@ public class SendEmailController implements Runnable{
                 Transport.send(getMessage());
                 System.out.println("I've sent an email to "+ Arrays.toString(message.getAllRecipients()));
             } catch (MessagingException ex) {
-                Logger.getLogger(SendEmailController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SendEmailThread.class.getName()).log(Level.SEVERE, null, ex);
             }
         }else{
-            Logger.getLogger(SendEmailController.class.getName()).log(Level.SEVERE, "Non puoi mandare email se prima non setti il messaggio");
+            Logger.getLogger(SendEmailThread.class.getName()).log(Level.SEVERE, "Non puoi mandare email se prima non setti il messaggio");
         }
     }
 
