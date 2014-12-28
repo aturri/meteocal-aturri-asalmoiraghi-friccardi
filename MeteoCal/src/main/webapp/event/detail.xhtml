@@ -41,13 +41,25 @@
             <p>Participating users:</p>
             <ul>
                 <ui:repeat value="#{eventBean.participatingUsers}" var="user">
-                    <li>#{user.name} #{user.surname} (#{user.email})</li>
+                    <li>#{user.name} #{user.surname} (#{user.email}) &nbsp;
+                        <h:form rendered="#{eventBean.canUserBeRemovedFromParticipants(user.email)}">
+                            <p:commandLink value="Remove" action="#{eventBean.removeParticipant(user.email)}" ajax="false">
+                                <f:param name="id" value="#{eventBean.event.id}" />
+                            </p:commandLink>
+                        </h:form>
+                    </li>
                 </ui:repeat>
             </ul>
             <p>Invited users:</p>
             <ul>
                 <ui:repeat value="#{eventBean.listInvitedUsers}" var="user">
-                    <li>#{user.name} #{user.surname} (#{user.email})</li>
+                    <li>#{user.name} #{user.surname} (#{user.email}) &nbsp;
+                        <h:form rendered="#{eventBean.isCurrentUserCreator()}">    
+                            <p:commandLink value="Remove" action="#{eventBean.removeInvitation(user.email)}" ajax="false">
+                                <f:param name="id" value="#{eventBean.event.id}" />
+                            </p:commandLink>
+                        </h:form>
+                    </li>
                 </ui:repeat>
             </ul>
             <hr/>

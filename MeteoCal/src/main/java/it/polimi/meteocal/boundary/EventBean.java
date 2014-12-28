@@ -12,6 +12,7 @@ import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.EventManager;
 import it.polimi.meteocal.entityManager.UserManager;
 import it.polimi.meteocal.entityManager.WeatherController;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -179,6 +180,38 @@ public class EventBean {
         userManager.update(currentUser);
         return NavigationBean.redirectToHome();
     }
+    
+    public void removeParticipant(String email) {
+        User user = userManager.findByEmail(email);
+        event.getUsers().remove(user);
+        eventManager.update(event);   
+        user.getEvents().remove(event);
+        userManager.update(user);        
+        String url = "detail.xhtml?id="+event.getId().toString();
+        try {
+            FacesContext.getCurrentInstance().getExternalContext().redirect(url);
+        } catch (IOException ex) {
+            Logger.getLogger(EventBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public Boolean canUserBeRemovedFromParticipants(String email) {
+        return !(!isCurrentUserCreator() || email.equals(userManager.getLoggedUser().getEmail()));
+    }
+    
+    public void removeInvitation(String email) {
+        User user = userManager.findByEmail(email);
+        event.getInvitedUsers().remove(user);
+        eventManager.update(event);   
+        user.getInvitations().remove(event);
+        userManager.update(user);        
+        String url = "detail.xhtml?id="+event.getId().toString();
+        try {
+            FacesContext.getCurrentInstance().getExternalContext().redirect(url);
+        } catch (IOException ex) {
+            Logger.getLogger(EventBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
  
     /**
      * Dice se esiste un paramentro "id"
@@ -244,12 +277,12 @@ public class EventBean {
     
     public Boolean areThereOverlaps() {
         Set<Event> userEvents = userManager.getLoggedUser().getEvents();
-        Date beginDate = this.event.getBeginDate();
-        Date endDate = this.event.getEndDate();
+        Date a = this.event.getBeginDate();
+        Date b = this.event.getEndDate();
         for(Event e: userEvents) {
-            if((beginDate.after(e.getBeginDate()) && endDate.before(e.getEndDate())) ||
-                    (beginDate.after(e.getBeginDate()) && e.getEndDate().after(endDate)) ||
-                    (e.getBeginDate().after(beginDate) && endDate.before(e.getEndDate()))) {
+            Date c = e.getBeginDate();
+            Date d = e.getEndDate();
+            if((c.after(a) && d.before(b)) || (c.after(a) && b.after(c)) || (c.before(a) && d.after(a))) {
                 MessageBean.addError("errorMsg","This event overlaps with an existing one! Please change begin and/or end date/time.");
                 return true;
             }
