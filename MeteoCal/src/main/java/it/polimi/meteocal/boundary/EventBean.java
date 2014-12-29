@@ -185,36 +185,26 @@ public class EventBean {
         return NavigationBean.redirectToHome();
     }
     
-    public void removeParticipant(String email) {
+    public String removeParticipant(String email) {
         User user = userManager.findByEmail(email);
         event.getUsers().remove(user);
         eventManager.update(event);   
         user.getEvents().remove(event);
-        userManager.update(user);        
-        String url = "detail.xhtml?id="+event.getId().toString();
-        try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect(url);
-        } catch (IOException ex) {
-            Logger.getLogger(EventBean.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        userManager.update(user);   
+        return NavigationBean.redirectToEventDetailsPage(event.getId());
     }
     
     public Boolean canUserBeRemovedFromParticipants(String email) {
         return !(!isCurrentUserCreator() || email.equals(userManager.getLoggedUser().getEmail()));
     }
     
-    public void removeInvitation(String email) {
+    public String removeInvitation(String email) {
         User user = userManager.findByEmail(email);
         event.getInvitedUsers().remove(user);
         eventManager.update(event);   
         user.getInvitations().remove(event);
         userManager.update(user);        
-        String url = "detail.xhtml?id="+event.getId().toString();
-        try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect(url);
-        } catch (IOException ex) {
-            Logger.getLogger(EventBean.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        return NavigationBean.redirectToEventDetailsPage(event.getId());
     }
  
     /**

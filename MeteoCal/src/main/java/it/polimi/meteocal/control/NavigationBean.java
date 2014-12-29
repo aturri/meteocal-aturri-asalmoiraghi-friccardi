@@ -132,8 +132,10 @@ public class NavigationBean implements Serializable {
      */
     public static String toEvent(String id){
         return "/event/detail?id="+id;
+    }    
+        
     public static String redirectToEventDetailsPage(Integer id){
-        return "/event/detail.xhtml?faces-redirect=true&id="+id;
+        return "/event/detail.xhtml?faces-redirect=true&id="+id.toString();
     }
     
     /**
