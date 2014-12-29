@@ -112,4 +112,23 @@ public class NavigationBean implements Serializable {
     public static String toSearchResultsPage(){
         return "/search/results";
     }
+    
+    /**
+     * Go to user page.
+     * @param email of the user
+     * @return user page name.
+     */
+    public static String toShowUser(String email){
+//        return "/user/showUser?email="+email;
+        return "/user/home";
+    }
+    
+    /**
+     * Go to event detail page.
+     * @param id of the event
+     * @return event detail page name.
+     */
+    public static String toEvent(String id){
+        return "/event/detail?id="+id;
+    }
 }

@@ -25,17 +25,58 @@
             </p:panel>
         </h:form>
         
-        <p:dataScroller rendered="true" id="resultsSearch" value="#{searchBean.events}" var="eventsResult" chunkSize="20">
-            <f:facet name="header">Events found: #{searchBean.keyword}</f:facet>
-            <f:facet name="loader">
-                <p:commandButton type="button" value="More" icon="ui-icon-circle-triangle-s" update="eventsResult"/>
-            </f:facet>
-            <h:panelGrid columns="2" style="width:100%">
-                        <h:outputText value="Id:" />
-                        <h:outputText value="#{eventsResult.title}" style="font-weight: bold"/>
-            </h:panelGrid>
-        </p:dataScroller>
+        <p:tabView id="resultsSearch" orientation="left">
+            <p:tab title="Users (#{searchBean.users.size()})">
+                <p:dataScroller value="#{searchBean.users}" var="usersResult" chunkSize="20">
+                    <f:facet name="header">
+                        <h:panelGrid columns="4" style="width:100%">
+                            <f:facet name="header">
+                                 Users found for "#{searchBean.keyword}"
+                            </f:facet>
+                            <h:outputText value="Email" style="width:30%"/>
+                            <h:outputText value="Name" style="width:25%"/>
+                            <h:outputText value="Last name"  style="width:25%"/>
+                            <h:outputText value=""  style="width:20%"/>
+                        </h:panelGrid>
+                    </f:facet>
+                    <f:facet name="loader">
+                        <p:commandButton type="button" value="More" icon="ui-icon-circle-triangle-s"/>
+                    </f:facet>
+                    <h:panelGrid columns="4" style="width:100%" >
+                            <h:outputText value="#{usersResult.email}" style="width:30%"/>
+                            <h:outputText value="#{usersResult.name}" style="width:25%"/>
+                            <h:outputText value="#{usersResult.surname}" style="width:35%"/>
+                            <p:button value="Show" outcome="#{navigationBean.toShowUser(usersResult.email)}" />
+                    </h:panelGrid>
+                </p:dataScroller>
+            </p:tab>
+            
+            <p:tab title="Events (#{searchBean.events.size()})">
+                <p:dataScroller value="#{searchBean.events}" var="eventsResult" chunkSize="20">
+                    <f:facet name="header">
+                        <h:panelGrid columns="4" style="width:100%">
+                            <f:facet name="header">
+                                 Events found for "#{searchBean.keyword}"
+                            </f:facet>
+                            <h:outputText value="Title" style="width:30%"/>
+                            <h:outputText value="City" style="width:25%"/>
+                            <h:outputText value="Begin date"  style="width:25%"/>
+                            <h:outputText value=""  style="width:20%"/>
+                        </h:panelGrid>
+                    </f:facet>                    
+                    <f:facet name="loader">
+                        <p:commandButton type="button" value="More" icon="ui-icon-circle-triangle-s"/>
+                    </f:facet>
+                    <h:panelGrid columns="4" style="width:100%" >
+                        <h:outputText value="#{eventsResult.title}" style="width:30%"/>
+                        <h:outputText value="#{eventsResult.city}" style="width:25%"/>
+                        <h:outputText value="#{eventsResult.beginDate}" style="width:35%"/>
+                            <p:button value="Show" outcome="#{navigationBean.toEvent(eventsResult.id)}" />
+                    </h:panelGrid>
+                </p:dataScroller>
+            </p:tab>
+        </p:tabView>
         
-        <p:growl id="messages" for="resultsMessage" sticky="true"/>
+        <p:growl id="messages" for="resultsMessage"/>
     </h:body>
 </html>

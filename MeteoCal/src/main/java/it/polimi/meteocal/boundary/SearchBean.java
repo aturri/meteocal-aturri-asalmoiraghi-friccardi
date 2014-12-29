@@ -6,13 +6,12 @@
 package it.polimi.meteocal.boundary;
 
 import it.polimi.meteocal.entity.Event;
+import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.SearchController;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
-import javax.enterprise.context.RequestScoped;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
@@ -29,9 +28,11 @@ public class SearchBean implements Serializable{
     
     private String keyword;
     private List<Event> events;
+    private List<User> users;
     
     public SearchBean(){
         this.events = new ArrayList<>();
+        this.users = new ArrayList<>();
     }
     
     public String getKeyword() {
@@ -46,8 +47,14 @@ public class SearchBean implements Serializable{
         return this.events;
     }
     
+    public List<User> getUsers (){
+        return this.users;
+    }
+    
     public void searchKeyword(){
         this.events = sc.getEvents(keyword);
-        MessageBean.addInfo("resultsMessage",Integer.toString(events.size()));
+        this.users = sc.getUsers(keyword);
+        MessageBean.addInfo("resultsMessage","Found " + Integer.toString(users.size()) + " users");
+        MessageBean.addInfo("resultsMessage","Found " + Integer.toString(events.size()) + " events");
     }
 }
