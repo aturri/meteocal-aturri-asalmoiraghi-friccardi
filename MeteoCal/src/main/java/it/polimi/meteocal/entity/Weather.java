@@ -6,7 +6,6 @@
 package it.polimi.meteocal.entity;
 
 import java.io.Serializable;
-import java.sql.Time;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,12 +26,13 @@ public class Weather implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     
-    @Temporal(javax.persistence.TemporalType.DATE)
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     @NotNull
-    private Date lastUpdateDate;
+    private Date lastUpdate;
     
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     @NotNull
-    private Time lastUpdateTime;
+    private Date forecastDate;
     
     @NotNull
     private String city;
@@ -54,20 +54,20 @@ public class Weather implements Serializable {
         this.id = id;
     }
 
-    public Date getLastUpdateDate() {
-        return lastUpdateDate;
+    public Date getLastUpdate() {
+        return lastUpdate;
     }
 
-    public void setLastUpdateDate(Date lastUpdateDate) {
-        this.lastUpdateDate = lastUpdateDate;
+    public void setLastUpdate(Date lastUpdate) {
+        this.lastUpdate = lastUpdate;
     }
 
-    public Time getLastUpdateTime() {
-        return lastUpdateTime;
+    public Date getForecastDate() {
+        return forecastDate;
     }
 
-    public void setLastUpdateTime(Time lastUpdateTime) {
-        this.lastUpdateTime = lastUpdateTime;
+    public void setForecastDate(Date forecastDate) {
+        this.forecastDate = forecastDate;
     }
 
     public String getCity() {

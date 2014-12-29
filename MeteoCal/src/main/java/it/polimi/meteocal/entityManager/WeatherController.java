@@ -5,6 +5,7 @@
  */
 package it.polimi.meteocal.entityManager;
 
+import it.polimi.meteocal.entity.Weather;
 import it.polimi.meteocal.control.JsonReader;
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -12,10 +13,14 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import org.primefaces.json.JSONArray;
 import org.primefaces.json.JSONException;
 import org.primefaces.json.JSONObject;
@@ -33,10 +38,14 @@ public class WeatherController {
     private static final DateFormat formatForecast = new SimpleDateFormat("d MMM yyyy", Locale.ENGLISH);
     
     private Date date;
+    private Date forecastDate;
     private String city;
-    private String weather;
+    private String weatherText;
     private float minTemp;
-    private float maxTemp;  
+    private float maxTemp; 
+    
+    @PersistenceContext
+    private EntityManager em;
     
     private Boolean searchForecast(String search, Date when) {
         JSONObject json;
@@ -50,9 +59,10 @@ public class WeatherController {
             JSONArray forecasts = weather.getJSONArray("forecast");
             for(int i=0;i<forecasts.length();i++) {
                 JSONObject forecast = forecasts.getJSONObject(i);
-                String forecastDate = forecast.getString("date");
-                if(forecastDate.equals(whenStr)) {
-                    this.weather = forecast.getString("text");
+                String forecastDateStr = forecast.getString("date");
+                if(forecastDateStr.equals(whenStr)) {
+                    this.weatherText = forecast.getString("text");
+                    this.forecastDate = formatForecast.parse(forecastDateStr);
                     this.maxTemp = Float.parseFloat(forecast.getString("high"));
                     this.minTemp = Float.parseFloat(forecast.getString("low"));
                     return true;
@@ -73,7 +83,7 @@ public class WeatherController {
         Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24));
         if(this.searchForecast("Milano", tomorrow)) {        
             return "(Last update: " + date.toString() + ") Forecast for " + city + " on " + tomorrow.toString() + " " + 
-                    weather + " " + Float.toString(minTemp) + " °C - " + Float.toString(maxTemp) + " °C";
+                    weatherText + " " + Float.toString(minTemp) + " °C - " + Float.toString(maxTemp) + " °C";
         }
         return "Not available";
     }
@@ -98,5 +108,71 @@ public class WeatherController {
     Verrà implemetato anche un metodo per aggiornare il Weather quando l'utente vede i dettagli dell'evento.
     
     */
-
+    
+    public Weather createWeather(String city, Date when) {
+        if(this.searchForecast(city, when)) {
+            Weather weather = new Weather();
+            weather.setCity(city);
+            weather.setWeather(this.weatherText);
+            weather.setMaxTemp(this.maxTemp);
+            weather.setMinTemp(this.minTemp);
+            weather.setForecastDate(this.forecastDate);
+            weather.setLastUpdate(this.date);
+            this.save(weather);
+            return weather;
+        }
+        return null;
+    }
+    
+    public void destroyWeather(Integer id) {
+        this.delete(this.find(id));
+    }
+    
+    public void checkWeatherUpdate(Integer id) {
+        Weather weather = this.find(id);
+        this.checkWeatherUpdate(weather);
+    }
+    
+    private void checkWeatherUpdate(Weather weather) {
+        if(weather==null) return;
+        if(this.searchForecast(weather.getCity(), weather.getForecastDate())) {
+            weather.setWeather(this.weatherText);
+            weather.setMaxTemp(this.maxTemp);
+            weather.setMinTemp(this.minTemp);
+            weather.setLastUpdate(this.date);
+            this.update(weather);
+        } else {
+            this.delete(weather);
+        }  
+    }
+    
+    private void checkAllWeather() {
+        Logger.getLogger(WeatherController.class.getName()).log(Level.INFO, "Updating weather for all events...");
+        List<Weather> listWeather = this.findAll();
+        for(Weather w: listWeather) {
+            this.checkWeatherUpdate(w);
+        }
+    }
+    
+    private void save(Weather weather) {
+        em.persist(weather);
+    }
+    
+    private void update(Weather weather) {
+        em.merge(weather);
+    }
+    
+    private void delete(Weather weather) {
+        Weather toBeDeleted = em.merge(weather);
+        em.remove(toBeDeleted);
+    }
+    
+    private Weather find(Integer id) {
+        return em.find(Weather.class, id);
+    }
+    
+    private List<Weather> findAll() {
+        TypedQuery<Weather> query = em.createQuery("SELECT w FROM Weather w WHERE w.forecastDate < CURRENT_TIMESTAMP", Weather.class);
+        return query.getResultList();
+    }
 }
