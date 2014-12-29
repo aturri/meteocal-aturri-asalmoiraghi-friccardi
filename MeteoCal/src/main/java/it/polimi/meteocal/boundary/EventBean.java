@@ -5,14 +5,15 @@
  */
 package it.polimi.meteocal.boundary;
 
-import it.polimi.meteocal.control.MailControler;
+import it.polimi.meteocal.control.KindOfEmail;
+import it.polimi.meteocal.control.MailController;
 import it.polimi.meteocal.control.NavigationBean;
 import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.EventManager;
 import it.polimi.meteocal.entityManager.UserManager;
 import it.polimi.meteocal.entityManager.WeatherController;
-import java.io.UnsupportedEncodingException;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,13 +22,12 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.mail.MessagingException;
-import javax.mail.Session;
 
 /**
  *
@@ -36,10 +36,9 @@ import javax.mail.Session;
 @Named
 @RequestScoped
 public class EventBean {
-
-    @Resource(name = "mail/mailSession")
-    private Session mailSession;
-    private MailControler mailControl;
+    
+    @Inject
+    private MailController mailControl;
     
     @EJB
     EventManager eventManager;
@@ -81,15 +80,15 @@ public class EventBean {
     }
     
     public Boolean isEndDateLegal() {
-        return !event.getBeginDate().after(event.getEndDate());
+        if(event.getBeginDate().after(event.getEndDate())) {
+            MessageBean.addError("errorMsg","End date must be after begin date!");
+            return false;
+        }
+        return true;
     }
     
     public String createEvent(){    
-        if(!this.areInvitedUserLegal() || this.areThereOverlaps()) {
-            return "";
-        }
-        if(!this.isEndDateLegal()) {
-            MessageBean.addError("errorMsg","End date must be after begin date!");
+        if(!this.areInvitedUserLegalForCreate() || this.areThereOverlaps() || !this.isEndDateLegal()) {
             return "";
         }
         
@@ -102,26 +101,14 @@ public class EventBean {
         user.getEvents().add(event);
         userManager.update(user);
         //setup invitations
-        if(this.invitedUsers!=null && this.invitedUsers!="") {
+        if(this.invitedUsers!=null && !"".equals(this.invitedUsers)) {
             String[] split = this.invitedUsers.split(",");
             for (String email : split) {
                 User invitedUser=userManager.findByEmail(email);
                 this.event.getInvitedUsers().add(invitedUser);
-                
-                //codice mail
-                mailControl=new MailControler(mailSession);
-                try {
-                    mailControl.sendMail(email, invitedUser.getName()+" "+invitedUser.getSurname(), "Invite to partecipate to "+event.getTitle(), "Dear "+invitedUser.getName()+" "+invitedUser.getSurname()+",<br />"
-                            + "You are invited from "+event.getCreator().getName()+" "+event.getCreator().getSurname()+ " to partecipate to "+event.getTitle()+". Click on the follow link to see more details:<br /><br />"
-                            + "<a href=\"http://localhost:8080/MeteoCal\">http://localhost:8080/MeteoCal</a>"
-                            + "<br />"
-                            + "<br />"
-                            + "Enjoy it ;)<br />"
-                            + "      MeteoCal's Team");
-                } catch (MessagingException | UnsupportedEncodingException ex) {
-                    Logger.getLogger(EventBean.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                //fine codice mail
+                invitedUser.getInvitations().add(event);
+                userManager.update(invitedUser);
+                mailControl.sendMail(email, KindOfEmail.INVITEDTOEVENT,this.event);
             }
             this.eventManager.update(event);   
         }
@@ -129,8 +116,23 @@ public class EventBean {
     }
     
     public String editEvent() {
+        if(!this.areInvitedUserLegalForEdit() || this.areThereOverlaps() || !this.isEndDateLegal()) {
+            return "";
+        }
         this.eventManager.update(event);
-        return NavigationBean.redirectToHome();
+        //setup invitations
+        if(this.invitedUsers!=null && !"".equals(this.invitedUsers)) {
+            String[] split = this.invitedUsers.split(",");
+            for (String email : split) {
+                User invitedUser=userManager.findByEmail(email);
+                this.event.getInvitedUsers().add(invitedUser);
+                invitedUser.getInvitations().add(event);
+                userManager.update(invitedUser);
+                mailControl.sendMail(email, KindOfEmail.INVITEDTOEVENT,this.event);
+            }
+            this.eventManager.update(event);   
+        }
+        return NavigationBean.redirectToEventDetailsPage(event.getId());
     }
     
     public String deleteEvent() {
@@ -157,6 +159,9 @@ public class EventBean {
     }
     
     public String acceptInvitation() {
+        if(this.areThereOverlaps()) {
+            return "";
+        }
         this.removeInvitation();
         User user = userManager.getLoggedUser();        
         event.getUsers().add(user);
@@ -178,6 +183,38 @@ public class EventBean {
         currentUser.getEvents().remove(event);
         userManager.update(currentUser);
         return NavigationBean.redirectToHome();
+    }
+    
+    public void removeParticipant(String email) {
+        User user = userManager.findByEmail(email);
+        event.getUsers().remove(user);
+        eventManager.update(event);   
+        user.getEvents().remove(event);
+        userManager.update(user);        
+        String url = "detail.xhtml?id="+event.getId().toString();
+        try {
+            FacesContext.getCurrentInstance().getExternalContext().redirect(url);
+        } catch (IOException ex) {
+            Logger.getLogger(EventBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public Boolean canUserBeRemovedFromParticipants(String email) {
+        return !(!isCurrentUserCreator() || email.equals(userManager.getLoggedUser().getEmail()));
+    }
+    
+    public void removeInvitation(String email) {
+        User user = userManager.findByEmail(email);
+        event.getInvitedUsers().remove(user);
+        eventManager.update(event);   
+        user.getInvitations().remove(event);
+        userManager.update(user);        
+        String url = "detail.xhtml?id="+event.getId().toString();
+        try {
+            FacesContext.getCurrentInstance().getExternalContext().redirect(url);
+        } catch (IOException ex) {
+            Logger.getLogger(EventBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
  
     /**
@@ -229,54 +266,98 @@ public class EventBean {
         return sdf.format(event.getEndDate());
     }
     
-    public void handleInvitedUsers() {
-        String foo = this.invitedUsers;
-        String[] split = foo.split(",");
-        for (String splitted : split) {
-            if(splitted.equals(userManager.getLoggedUser().getEmail())) {
-                MessageBean.addError("errorMsg","You can't invite yourself");
-            } else if(!userManager.existsUser(splitted)) {
-                MessageBean.addWarning("errorMsg",splitted+" is not registered to MeteoCal");
+    public void handleInvitedUsersForCreate() {
+        if(this.invitedUsers!=null && !"".equals(this.invitedUsers)) {
+            String foo = this.invitedUsers;
+            String[] split = foo.split(",");
+            List<String> tmpUsersList = new ArrayList<>();
+            for (String splitted : split) {
+                if(splitted.equals(userManager.getLoggedUser().getEmail())) {
+                    MessageBean.addWarning("errorMsg","You can't invite yourself");
+                } else if(!userManager.existsUser(splitted)) {
+                    MessageBean.addWarning("errorMsg",splitted+" is not registered to MeteoCal");
+                } else if(tmpUsersList.contains(splitted)) {
+                    MessageBean.addWarning("errorMsg",splitted+" has been invited more than once");
+                } else {
+                    tmpUsersList.add(splitted);
+                }
             }
-
+        }
+    }
+    
+    public void handleInvitedUsersForEdit() {
+        if(this.invitedUsers!=null && !"".equals(this.invitedUsers)) {
+            this.handleInvitedUsersForCreate();
+            String foo = this.invitedUsers;
+            String[] split = foo.split(",");
+            for (String splitted : split) {
+                if(event.getInvitedUsers().contains(userManager.findByEmail(splitted)) || 
+                            event.getUsers().contains(userManager.findByEmail(splitted))) {
+                    MessageBean.addWarning("errorMsg",splitted+" has already been invited");
+                }
+            }
         }
     }
     
     public Boolean areThereOverlaps() {
         Set<Event> userEvents = userManager.getLoggedUser().getEvents();
-        Date beginDate = this.event.getBeginDate();
-        Date endDate = this.event.getEndDate();
+        userEvents.remove(this.event); //the current event overlaps to the current event if already prensent
+        Date a = this.event.getBeginDate();
+        Date b = this.event.getEndDate();
         for(Event e: userEvents) {
-            if((beginDate.after(e.getBeginDate()) && endDate.before(e.getEndDate())) ||
-                    (beginDate.after(e.getBeginDate()) && e.getEndDate().after(endDate)) ||
-                    (e.getBeginDate().after(beginDate) && endDate.before(e.getEndDate()))) {
-                MessageBean.addError("errorMsg","This event overlaps with an existing one! Please change begin and/or end date/time.");
+            Date c = e.getBeginDate();
+            Date d = e.getEndDate();
+            if((c.after(a) && d.before(b)) || (c.after(a) && b.after(c)) || (c.before(a) && d.after(a))) {
+                MessageBean.addError("errorMsg","This event overlaps with an existing one!");
                 return true;
             }
         }
         return false;
     }
     
-    public Boolean areInvitedUserLegal() {
-        if(this.invitedUsers==null || this.invitedUsers=="") {
+    public Boolean areInvitedUserLegalForCreate() {
+        if(this.invitedUsers==null || this.invitedUsers.equals("")) {
             return true;
         }
         int error = 0;
         String foo = this.invitedUsers;
         String[] split = foo.split(",");
+        List<String> tmpUsersList = new ArrayList<>();
         for (String splitted : split) {
             if(splitted.equals(userManager.getLoggedUser().getEmail())) {
                 error++;
                 MessageBean.addError("errorMsg","You can't invite yourself");
             } else if(!userManager.existsUser(splitted)) {
                 error++;
-                MessageBean.addWarning("errorMsg",splitted+" is not registered to MeteoCal");
+                MessageBean.addError("errorMsg",splitted+" is not registered to MeteoCal");
+            } else if(tmpUsersList.contains(splitted)) {
+                error++;
+                MessageBean.addError("errorMsg",splitted+" has been invited more than once");
+            } else {
+                tmpUsersList.add(splitted);
             }
         }
-        if(error==0) {
+        return error==0;
+    }
+    
+    public Boolean areInvitedUserLegalForEdit() {
+        if(this.invitedUsers==null || this.invitedUsers.equals("")) {
             return true;
         }
-        return false;
+        if(!this.areInvitedUserLegalForCreate()) {
+            return false;
+        }
+        int error = 0;
+        String foo = this.invitedUsers;
+        String[] split = foo.split(",");
+        for (String splitted : split) {
+            if(event.getInvitedUsers().contains(userManager.findByEmail(splitted)) || 
+                        event.getUsers().contains(userManager.findByEmail(splitted))) {
+                error++;
+                MessageBean.addError("errorMsg",splitted+" has already been invited");
+            }
+        }
+        return error==0;
     }
 
     public String getInvitedUsers() {

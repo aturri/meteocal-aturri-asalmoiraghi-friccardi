@@ -5,26 +5,21 @@
  */
 package it.polimi.meteocal.boundary;
 
-//import com.google.common.base.Charsets;
-//import com.google.common.hash.Hashing;
-import it.polimi.meteocal.control.MailControler;
+import it.polimi.meteocal.control.KindOfEmail;
+import it.polimi.meteocal.control.MailController;
 import it.polimi.meteocal.control.NavigationBean;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.UserManager;
-import java.io.FileInputStream;
 import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.mail.MessagingException;
-import javax.mail.Session;
 
 /**
  *
@@ -33,10 +28,9 @@ import javax.mail.Session;
 @Named
 @RequestScoped
 public class RecoverPasswordBean {
-
-    @Resource(name = "mail/mailSession")
-    private Session mailSession;
-    private MailControler mailControl;
+    
+    @Inject
+    private MailController mailControl;
     
     @EJB
     private UserManager userManager;
@@ -45,38 +39,33 @@ public class RecoverPasswordBean {
     private String password1;
     private String password2;
     private String code;
+    
     /**
      * Creates a new instance of RecoverPasswordBean
      */
     public RecoverPasswordBean() {
     }
     
+    /**
+     * Function that control the data insert into the form and send email to reset the password
+     * @return the destination page
+     */
     public String recoverPassword(){
         if(!userManager.existsUser(email)){
             MessageBean.addError("User not found");
             return "";
         }
         else{
-            User user=userManager.findByEmail(email);
-            mailControl=new MailControler(mailSession);
-            try {
-                this.mailControl.sendMail(email, user.getName()+" "+user.getSurname(),"Recover your Meteocal's password", 
-                        "Dear "+ user.getName()+" "+user.getSurname()+",<br />"
-                                + "We have see your request to change your password because you have forgotten it. <br />"
-                                + "Now you just click on the follow link to set a new password and come back to MeteoCal<br /><br />"
-                                + "<a href=\""+this.getLinkForResetEmail(user)+"\" >"+this.getLinkForResetEmail(user)+"</a>"
-                                + "<br /><br />"
-                                + "If you haven't registed to MeteoCal or if you haven't required to change your password, ignore this eMail.<br />"
-                                + "Best regards,<br />"
-                                + "        MeteoCal's Team"        
-                );            } catch (MessagingException | UnsupportedEncodingException ex) {
-                Logger.getLogger(RecoverPasswordBean.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            this.mailControl.sendMail(email, KindOfEmail.FORGOTTENPASSWORD,null);
             MessageBean.addInfo("Recover link sent to the specified email");
         }
         return NavigationBean.redirectToIndex();
     }
     
+    /**
+     * This function controls the data inserted into the form and if correct, change the password
+     * @return the destination page
+     */
     public String setNewPassword(){
         Map<String, String> params =FacesContext.getCurrentInstance().
                    getExternalContext().getRequestParameterMap();
@@ -84,14 +73,14 @@ public class RecoverPasswordBean {
         String emailFromEmail=params.get("email");
         System.out.println(""+ params.keySet());
 
-        
+        //verify that the user exists
         if(!userManager.existsUser(emailFromEmail)){
             MessageBean.addError("User not found");
             return "";
         }
         //verifica che il codice sia corretto
         User user=userManager.findByEmail(emailFromEmail);
-        String aux1=this.getCodeFromUser(user);
+        String aux1=UserManager.getCodeFromUser(user);
         if(!aux1.equals(codeFromEmail)){
             MessageBean.addError("The code is not valid");
             return "";
@@ -99,25 +88,24 @@ public class RecoverPasswordBean {
         //verifica che la password siano corrette
         if(!this.password1.equals(this.password2)){
             MessageBean.addError("password don't match");
-            //returns null implies that the page is the same
+            //returns "" implies that the page is the same
             return "";
         }
         
         //Set the new password
         user.setPassword(password1);
         userManager.update(user);
-        
         return NavigationBean.redirectToIndex();
     }
 
     /**
+     * Get email From "GET" paramenter (if class field are not initializated) or from the class field
      * @return the email
      */
     public String getEmail() {
         if(this.email==null){
             Map<String, String> params =FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
             String emailFromEmail = params.get("email");
-            System.out.println(params.keySet().toString() +"-->"+emailFromEmail+"<--");
             if(emailFromEmail!=null){
                 this.email=emailFromEmail;
             }
@@ -126,6 +114,7 @@ public class RecoverPasswordBean {
     }
 
     /**
+     * 
      * @param email the email to set
      */
     public void setEmail(String email) {
@@ -160,6 +149,10 @@ public class RecoverPasswordBean {
         this.password2 = password2;
     }
 
+    /**
+     * 
+     * @return the code for changing email
+     */
     public String getCode() {
         if(this.code==null){
             String codeFromEmail = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("code");
@@ -172,51 +165,10 @@ public class RecoverPasswordBean {
     }
     
     /**
+     * 
      * @param code the code to set
      */
     public void setCode(String code) {
         this.code = code;
     }
-    
-    /**
-     * 
-     * @param user
-     * @return the absolute path to go to the set new password page with correct parameters
-     */
-    private String getLinkForResetEmail(User user) {
-        return "http://localhost:8080/MeteoCal/setNewPassword.xhtml?faces-redirect=true&code="
-                + this.getCodeFromUser(user) + "&email="+user.getEmail();
-    }
-    
-    /**
-     * 
-     * @param user
-     * @return the string that represents the code
-     */
-    private String getCodeFromUser(User user){
-        String string=user.getEmail()+user.getCity()+user.getLastAccess().toString()+user.getPassword();
-        
-        MessageDigest md=null;
-        try {
-            md = MessageDigest.getInstance("SHA-256");
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(RecoverPasswordBean.class.getName()).log(Level.SEVERE, null, ex);
-        }
-         
-        for(int i=0;i<string.length();i++){
-            md.update(string.getBytes());
-        }
-        
-        byte[] mdbytes = md.digest();
-        
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < mdbytes.length; i++) {
-          sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
-        }
-        System.out.println("Hex format : " + sb.toString());
-
-        return sb.toString();
-    }
-    
-    
 }

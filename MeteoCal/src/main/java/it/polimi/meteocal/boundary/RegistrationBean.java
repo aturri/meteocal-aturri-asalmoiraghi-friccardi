@@ -5,7 +5,8 @@
  */
 package it.polimi.meteocal.boundary;
 
-import it.polimi.meteocal.control.MailControler;
+import it.polimi.meteocal.control.KindOfEmail;
+import it.polimi.meteocal.control.MailController;
 import it.polimi.meteocal.control.NavigationBean;
 import it.polimi.meteocal.entityManager.UserManager;
 import it.polimi.meteocal.entity.User;
@@ -13,13 +14,12 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.mail.MessagingException;
-import javax.mail.Session;
 
 /**
  *
@@ -29,9 +29,8 @@ import javax.mail.Session;
 @RequestScoped
 public class RegistrationBean {
     
-    @Resource(name = "mail/mailSession")
-    private Session mailSession;
-    private MailControler mailControl;
+    @Inject
+    private MailController mailControl;
     
     @EJB
     private UserManager um;
@@ -58,15 +57,8 @@ public class RegistrationBean {
     public String register() {
         try {
             um.save(user);
-            mailControl=new MailControler(mailSession);
-            mailControl.sendMail(user.getEmail(),user.getName()+" "+user.getSurname(),"Confirm registration",
-                    "Congraturation "+user.getName()+" "+user.getSurname()+",<br />Your account is registred succefully!<br />Best regards,<br />       MeteoCal's Team");
+            mailControl.sendMail(user.getEmail(),KindOfEmail.REGISTRATION,null);
             return NavigationBean.redirectToLogin();
-        }catch(MessagingException ex) {
-            Logger.getLogger(RegistrationBean.class.getName()).log(Level.SEVERE, null, ex);
-            return NavigationBean.redirectToLogin();
-        }catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(RegistrationBean.class.getName()).log(Level.SEVERE, null, ex);
         }catch (EJBException e){
             MessageBean.addWarning("Email already registered");
             Logger.getLogger(RegistrationBean.class.getName()).log(Level.SEVERE, null, e);

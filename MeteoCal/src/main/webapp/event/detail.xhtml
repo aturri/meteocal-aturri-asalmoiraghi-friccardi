@@ -19,9 +19,10 @@
         </f:metadata>
         <h:form id="editEventForm">
             <input type="hidden" name="id" value="#{eventBean.event.id}" />
-            <p:panel header="You received an invitation to #{eventBean.event.title} by #{eventBean.event.creator.email}"
+            <p:panel header="You received an invitation by #{eventBean.event.creator.email}"
                      rendered="#{eventBean.isCurrentUserInvitedTo(eventBean.event.id)}" >
-                <p:commandButton value="Accept" action="#{eventBean.acceptInvitation()}" />
+                <p:messages id="errorMsgId" for="errorMsg" />
+                <p:commandButton value="Accept" action="#{eventBean.acceptInvitation()}" update="errorMsgId" />
                 <br />
                 <p:commandButton value="Refuse" action="#{eventBean.refuseInvitation()}" />
             </p:panel>
@@ -41,13 +42,25 @@
             <p>Participating users:</p>
             <ul>
                 <ui:repeat value="#{eventBean.participatingUsers}" var="user">
-                    <li>#{user.name} #{user.surname} (#{user.email})</li>
+                    <li>#{user.name} #{user.surname} (#{user.email}) &nbsp;
+                        <h:form rendered="#{eventBean.canUserBeRemovedFromParticipants(user.email)}">
+                            <p:commandLink value="Remove" action="#{eventBean.removeParticipant(user.email)}" ajax="false">
+                                <f:param name="id" value="#{eventBean.event.id}" />
+                            </p:commandLink>
+                        </h:form>
+                    </li>
                 </ui:repeat>
             </ul>
             <p>Invited users:</p>
             <ul>
                 <ui:repeat value="#{eventBean.listInvitedUsers}" var="user">
-                    <li>#{user.name} #{user.surname} (#{user.email})</li>
+                    <li>#{user.name} #{user.surname} (#{user.email}) &nbsp;
+                        <h:form rendered="#{eventBean.isCurrentUserCreator()}">    
+                            <p:commandLink value="Remove" action="#{eventBean.removeInvitation(user.email)}" ajax="false">
+                                <f:param name="id" value="#{eventBean.event.id}" />
+                            </p:commandLink>
+                        </h:form>
+                    </li>
                 </ui:repeat>
             </ul>
             <hr/>

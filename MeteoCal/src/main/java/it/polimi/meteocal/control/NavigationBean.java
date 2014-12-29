@@ -5,6 +5,8 @@
  */
 package it.polimi.meteocal.control;
 
+import it.polimi.meteocal.entity.User;
+import it.polimi.meteocal.entityManager.UserManager;
 import java.io.Serializable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
@@ -19,7 +21,7 @@ import javax.inject.Named;
 public class NavigationBean implements Serializable {
  
     private static final long serialVersionUID = 1520318172495977648L;
- 
+    
     /**
      * Redirect to login page.
      * @return Login page name.
@@ -130,5 +132,17 @@ public class NavigationBean implements Serializable {
      */
     public static String toEvent(String id){
         return "/event/detail?id="+id;
+    public static String redirectToEventDetailsPage(Integer id){
+        return "/event/detail.xhtml?faces-redirect=true&id="+id;
+    }
+    
+    /**
+     * Return the link to go to the page to set the new password with correct parameter
+     * @param user
+     * @return the absolute path to go to the set new password page with correct parameters
+     */
+    public static String getLinkForResetEmail(User user) {
+        return "http://localhost:8080/MeteoCal/setNewPassword.xhtml?faces-redirect=true&code="
+                + UserManager.getCodeFromUser(user) + "&email="+user.getEmail();
     }
 }

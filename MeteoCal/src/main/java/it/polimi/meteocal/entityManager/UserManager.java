@@ -5,6 +5,7 @@
  */
 package it.polimi.meteocal.entityManager;
 
+import it.polimi.meteocal.control.Utility;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entity.Notification;
 import it.polimi.meteocal.entity.Group;
@@ -66,5 +67,15 @@ public class UserManager {
 
     public User findByEmail(String email) {
         return em.find(User.class, email);
+    }
+    
+    /**
+     * 
+     * @param user
+     * @return the string that represents the code
+     */
+    public static String getCodeFromUser(User user){
+        String string=user.getEmail()+user.getCity()+user.getLastAccess().toString()+user.getPassword();
+        return Utility.getHashSHA256(string);
     }
 }
