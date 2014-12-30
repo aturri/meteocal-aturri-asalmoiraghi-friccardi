@@ -37,6 +37,17 @@
             <hr/>
             <p>#{eventBean.event.city}, #{eventBean.event.address}</p>
             <p>#{eventBean.event.locationInfo}</p>
+            <h:panelGroup rendered="#{eventBean.hasWeather(eventBean.event.id)}">
+                Forecast for #{eventBean.event.weather.city} on #{eventBean.forecastDate()}:
+                <br/>
+                #{eventBean.event.weather.weather}
+                <br/>
+                High #{eventBean.event.weather.maxTemp}°C
+                <br/>
+                Low #{eventBean.event.weather.minTemp}°C
+                <br/>
+                <span style="font-size: 10px">Last update at #{eventBean.forecastUpdatedAt()}, powered by Yahoo Meteo</span>
+            </h:panelGroup>
             <hr/>
             <p>Owner: #{eventBean.event.creator.name} #{eventBean.event.creator.surname} (#{eventBean.event.creator.email})</p>
             <p>Participating users:</p>

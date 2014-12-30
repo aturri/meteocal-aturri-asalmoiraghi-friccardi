@@ -109,7 +109,15 @@ public class WeatherController {
     
     */
     
-    public Weather createWeather(String city, Date when) {
+    /**
+     * This method creates a Weather object for the specified city and in the specified date.
+     * It returns null if the forecast is not available.
+     * @param city: String, the city where you want to obtain the forecast
+     * @param when: Date, the date when you want to obtain the forecast
+     * @param save: Boolean, if true saves the entity into the database
+     * @return weather if available, null if not
+     */
+    public Weather createWeather(String city, Date when, Boolean save) {
         if(this.searchForecast(city, when)) {
             Weather weather = new Weather();
             weather.setCity(city);
@@ -118,7 +126,7 @@ public class WeatherController {
             weather.setMinTemp(this.minTemp);
             weather.setForecastDate(this.forecastDate);
             weather.setLastUpdate(this.date);
-            this.save(weather);
+            if(save) this.save(weather);
             return weather;
         }
         return null;

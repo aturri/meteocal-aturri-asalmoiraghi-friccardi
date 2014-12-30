@@ -9,25 +9,22 @@ import it.polimi.meteocal.control.KindOfEmail;
 import it.polimi.meteocal.control.MailController;
 import it.polimi.meteocal.control.NavigationBean;
 import it.polimi.meteocal.entity.Event;
+import it.polimi.meteocal.entity.Weather;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.EventManager;
 import it.polimi.meteocal.entityManager.UserManager;
 import it.polimi.meteocal.entityManager.WeatherController;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
-import javax.mail.MessagingException;
 
 /**
  *
@@ -36,9 +33,14 @@ import javax.mail.MessagingException;
 @Named
 @RequestScoped
 public class EventBean {
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy", Locale.ENGLISH);
+    private static final SimpleDateFormat EXT_DATE_FORMAT = new SimpleDateFormat("EEE, d MMM yyyy HH:mm", Locale.ENGLISH);
     
     @Inject
     private MailController mailControl;
+
+    @Inject
+    private WeatherController weatherControl;
     
     @EJB
     EventManager eventManager;
@@ -91,7 +93,7 @@ public class EventBean {
         if(!this.areInvitedUserLegalForCreate() || this.areThereOverlaps() || !this.isEndDateLegal()) {
             return "";
         }
-        
+        this.attachWeather();
         //setup creator
         User user = userManager.getLoggedUser(); 
         this.event.setCreator(user);
@@ -133,6 +135,15 @@ public class EventBean {
             this.eventManager.update(event);   
         }
         return NavigationBean.redirectToEventDetailsPage(event.getId());
+    }
+    
+    private void attachWeather() {
+        if(this.event.getCity()!=null && this.event.getBeginDate()!=null) {
+            Weather weather = weatherControl.createWeather(this.event.getCity(), this.event.getBeginDate(), true);
+            if(weather!=null) {
+                this.event.setWeather(weather);
+            }
+        }
     }
     
     public String deleteEvent() {
@@ -247,13 +258,19 @@ public class EventBean {
     }
         
     public String eventBegin() {
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm",Locale.ENGLISH);
-        return sdf.format(event.getBeginDate());
+        return EXT_DATE_FORMAT.format(event.getBeginDate());
     }
     
     public String eventEnd() {
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm",Locale.ENGLISH);
-        return sdf.format(event.getEndDate());
+        return EXT_DATE_FORMAT.format(event.getEndDate());
+    }
+    
+    public String forecastDate() {
+        return DATE_FORMAT.format(event.getWeather().getForecastDate());
+    }
+    
+    public String forecastUpdatedAt() {
+        return EXT_DATE_FORMAT.format(event.getWeather().getLastUpdate());
     }
     
     public void handleInvitedUsersForCreate() {
@@ -349,6 +366,24 @@ public class EventBean {
         }
         return error==0;
     }
+    
+    public String handleWeather() {
+        if(this.event.getCity()!=null && this.event.getBeginDate()!=null) {
+            Weather weather = weatherControl.createWeather(this.event.getCity(), this.event.getBeginDate(), false);
+            if(weather!=null) {
+                this.event.setWeather(weather);
+                String formattedForecast = "Forecast for "+weather.getCity()+
+                        " on "+DATE_FORMAT.format(weather.getForecastDate())+
+                        ": "+weather.getWeather()+
+                        ", with high of "+Float.toString(weather.getMaxTemp())+
+                        "°C and low of "+Float.toString(weather.getMinTemp())+"°C";
+                return formattedForecast;
+            } else {
+                return "Not available";
+            }
+        }
+        return "Please insert start date/time and city.";
+    }
 
     public String getInvitedUsers() {
         return invitedUsers;
@@ -411,5 +446,12 @@ public class EventBean {
                 this.event.getPublicEvent() ||
                 this.isUserInvited(currentUser) ||
                 this.isUserParticipant(currentUser);
+    }
+    
+    public Boolean hasWeather(Integer id) {
+        if(this.event == null) {
+            this.event = eventManager.findById(id);
+        }
+        return event.getWeather()!=null;
     }
 }
