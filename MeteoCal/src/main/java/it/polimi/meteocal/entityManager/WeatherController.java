@@ -12,6 +12,7 @@ import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -36,6 +37,8 @@ public class WeatherController {
     private static final String QUERY_END = "%22)%20and%20u%3D'c'&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
     private static final DateFormat format = new SimpleDateFormat("EEE, d MMM yyyy h:mm a z", Locale.ENGLISH);
     private static final DateFormat formatForecast = new SimpleDateFormat("d MMM yyyy", Locale.ENGLISH);
+    private static final List<String> BAD_WEATHER = Arrays.asList("tornado","storm","hurricane",
+            "thunderstorm","rain","snow","sleet","drizzle","shower","hail","dust","fog","haze","smoky","blustery");
     
     private Date date;
     private Date forecastDate;
@@ -88,6 +91,14 @@ public class WeatherController {
         return "Not available";
     }
     
+    private Boolean isBad() {
+        for(String s: BAD_WEATHER) {
+            if(this.weatherText.toLowerCase().contains(s))
+                return true;
+        }
+        return false;
+    }
+    
     /*
     L'utente inserisce città e data inizio/fine evento, con ajax viene creata l'entità Weather
     in cui sono aggiunti i dettagli della previsione se disponibili (negli eventi che durano
@@ -126,6 +137,8 @@ public class WeatherController {
             weather.setMinTemp(this.minTemp);
             weather.setForecastDate(this.forecastDate);
             weather.setLastUpdate(this.date);
+            if(this.isBad())
+                weather.setBad(true);
             if(save) this.save(weather);
             return weather;
         }

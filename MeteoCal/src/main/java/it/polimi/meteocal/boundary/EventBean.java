@@ -377,6 +377,7 @@ public class EventBean {
                         ": "+weather.getWeather()+
                         ", with high of "+Float.toString(weather.getMaxTemp())+
                         "°C and low of "+Float.toString(weather.getMinTemp())+"°C";
+                if(weather.getBad()) formattedForecast += "\n\nBad weather!";
                 return formattedForecast;
             } else {
                 return "Not available";

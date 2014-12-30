@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -45,6 +46,9 @@ public class Weather implements Serializable {
     
     @NotNull
     private float maxTemp;
+    
+    @Transient
+    private Boolean bad = false;
 
     public Integer getId() {
         return id;
@@ -102,6 +106,12 @@ public class Weather implements Serializable {
         this.maxTemp = maxTemp;
     }
 
+    public Boolean getBad() {
+        return bad;
+    }
 
+    public void setBad(Boolean bad) {
+        this.bad = bad;
+    }
     
 }
