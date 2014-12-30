@@ -5,7 +5,6 @@
  */
 package it.polimi.meteocal.entityManager;
 
-import it.polimi.meteocal.boundary.MessageBean;
 import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
 import java.util.ArrayList;
@@ -51,8 +50,7 @@ public class SearchController {
     
     public List<User> getUsers(String keyword) {
         keywords = java.util.Arrays.asList(keyword.split(" "));
-        String queryText = "SELECT * FROM User u WHERE ";
-        
+        String queryText = "SELECT * FROM User u WHERE privatecalendar = 0 AND ";
         String preText = "";
         for(String word: keywords){
             queryText += preText + "concat_ws(' ',u.email,u.name,u.surname) LIKE '%"+word+"%'";
@@ -82,8 +80,8 @@ public class SearchController {
             for(String key : keywords){
                 if(o1.getTitle().toLowerCase().contains(key.toLowerCase())) score1 += 2;
                 if(o2.getTitle().toLowerCase().contains(key.toLowerCase())) score2 += 2;
-                if(o1.getCity().toLowerCase().contains(key.toLowerCase())) score1 += 1;
-                if(o2.getCity().toLowerCase().contains(key.toLowerCase())) score2 += 1;
+                if(o1.getCity() != null && o1.getCity().toLowerCase().contains(key.toLowerCase())) score1 += 1;
+                if(o2.getCity() != null && o2.getCity().toLowerCase().contains(key.toLowerCase())) score2 += 1;
             }
             return score2-score1;
         }
@@ -105,10 +103,10 @@ public class SearchController {
             for(String key : keywords){
                 if(o1.getEmail().toLowerCase().contains(key.toLowerCase())) score1 += 3;
                 if(o2.getEmail().toLowerCase().contains(key.toLowerCase())) score2 += 3;
-                if(o1.getName().toLowerCase().contains(key.toLowerCase())) score1 += 1;
-                if(o2.getName().toLowerCase().contains(key.toLowerCase())) score2 += 1;
-                if(o1.getSurname().toLowerCase().contains(key.toLowerCase())) score1 += 5;
-                if(o2.getSurname().toLowerCase().contains(key.toLowerCase())) score2 += 5;
+                if(o1.getName().toLowerCase().contains(key.toLowerCase())) score1 += 2;
+                if(o2.getName().toLowerCase().contains(key.toLowerCase())) score2 += 2;
+                if(o1.getSurname().toLowerCase().contains(key.toLowerCase())) score1 += 4;
+                if(o2.getSurname().toLowerCase().contains(key.toLowerCase())) score2 += 4;
             }
             return score2-score1;
         }

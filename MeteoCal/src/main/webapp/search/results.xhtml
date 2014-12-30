@@ -9,7 +9,7 @@
         <title>Search Results | MeteoCal</title>
     </h:head>
     <h:body>
-        Welcome back #{userBean.name} #{userBean.surname}
+        <p:link outcome="/user/home" value="Back to home"/>
         <br/>
         
         <h:form>      
@@ -71,7 +71,7 @@
                         <h:outputText value="#{eventsResult.title}" style="width:30%"/>
                         <h:outputText value="#{eventsResult.city}" style="width:25%"/>
                         <h:outputText value="#{eventsResult.beginDate}" style="width:35%"/>
-                            <p:button value="Show" outcome="#{navigationBean.toEvent(eventsResult.id)}" />
+                            <p:button value="Show" outcome="#{navigationBean.toEventDetailsPage(eventsResult.id)}" />
                     </h:panelGrid>
                 </p:dataScroller>
             </p:tab>

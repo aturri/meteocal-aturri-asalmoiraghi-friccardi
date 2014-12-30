@@ -121,8 +121,7 @@ public class NavigationBean implements Serializable {
      * @return user page name.
      */
     public static String toShowUser(String email){
-//        return "/user/showUser?email="+email;
-        return "/user/home";
+        return "/user/showUser?email="+email;
     }
     
     /**
@@ -130,7 +129,7 @@ public class NavigationBean implements Serializable {
      * @param id of the event
      * @return event detail page name.
      */
-    public static String toEvent(String id){
+    public static String toEventDetailsPage(String id){
         return "/event/detail?id="+id;
     }    
         
