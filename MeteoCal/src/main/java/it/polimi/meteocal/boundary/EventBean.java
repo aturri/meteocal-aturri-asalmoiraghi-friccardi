@@ -377,13 +377,35 @@ public class EventBean {
                         ": "+weather.getWeather()+
                         ", with high of "+Float.toString(weather.getMaxTemp())+
                         "°C and low of "+Float.toString(weather.getMinTemp())+"°C";
-                if(weather.getBad()) formattedForecast += "\n\nBad weather!";
+                if(weather.getBad()) {
+                    formattedForecast += "\n\nBad weather!\n\n\n\n";
+                    Weather firstGood = this.searchFirstSunnyDay();
+                    if(firstGood!=null) {
+                        formattedForecast += "But MeteoCal found good weather! :) On "+
+                        DATE_FORMAT.format(firstGood.getForecastDate())+": "+
+                        firstGood.getWeather()+
+                        ", with high of "+Float.toString(firstGood.getMaxTemp())+
+                        "°C and low of "+Float.toString(firstGood.getMinTemp())+"°C";
+                    } else {
+                        formattedForecast += "\n\nUnfortunately MeteoCal did't find a close good day :(";
+                    }
+                }
                 return formattedForecast;
             } else {
                 return "Not available";
             }
         }
         return "Please insert start date/time and city.";
+    }
+    
+    public Weather searchFirstSunnyDay() {
+        if(this.event.getCity()!=null && this.event.getBeginDate()!=null) {
+            Weather weather = weatherControl.searchFirstGoodDay(this.event.getCity(), this.event.getBeginDate());
+            if(weather!=null) {
+                return weather; 
+            }
+        }
+        return null;
     }
 
     public String getInvitedUsers() {

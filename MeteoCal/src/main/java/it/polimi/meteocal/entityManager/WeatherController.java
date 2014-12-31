@@ -12,6 +12,7 @@ import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -81,6 +82,56 @@ public class WeatherController {
         return false;
     }
     
+    private Boolean searchFirstGoodForecast(String search, Date when) {
+        JSONObject json;
+        String whenStr = formatForecast.format(when);
+        try {
+            json = JsonReader.readJsonFromUrl(API+QUERY_BEGIN+URLEncoder.encode(search,"UTF-8")+QUERY_END);
+            JSONObject result = json.getJSONObject("query").getJSONObject("results").getJSONObject("channel");
+            this.city = result.getJSONObject("location").getString("city") + ", " + result.getJSONObject("location").getString("country");
+            JSONObject weather = result.getJSONObject("item");
+            this.date = format.parse(weather.getString("pubDate"));
+            JSONArray forecasts = weather.getJSONArray("forecast");
+            //index of the searched day
+            int whenIndex = 0;
+            //list containing indexes of good forecast dates
+            List<Integer> goodWeatherIndexes = new ArrayList<>();
+            for(int i=0;i<forecasts.length();i++) {
+                JSONObject forecast = forecasts.getJSONObject(i);
+                String forecastDateStr = forecast.getString("date");
+                if(!forecastDateStr.equals(whenStr)) {
+                    if(!isBadTxt(forecast.getString("text").toLowerCase())) {
+                        goodWeatherIndexes.add(i);
+                    }
+                } else {
+                   whenIndex = i;
+                }
+            }
+            if(goodWeatherIndexes.isEmpty()) return false;
+            //now we search in the list the closest index to the one of the searched day
+            int closer = 0;
+            for(Integer j: goodWeatherIndexes) {
+                if(Math.abs(j-whenIndex)<=Math.abs(closer-whenIndex)) {
+                   closer = j;
+                }
+            }
+            //now i contains the index of the first day of good weather
+            JSONObject forecast = forecasts.getJSONObject(closer);
+            this.weatherText = forecast.getString("text");
+            this.forecastDate = formatForecast.parse(forecast.getString("date"));
+            this.maxTemp = Float.parseFloat(forecast.getString("high"));
+            this.minTemp = Float.parseFloat(forecast.getString("low"));
+            return true;
+        } catch (IOException ex) {
+            Logger.getLogger(WeatherController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JSONException ex) {
+            Logger.getLogger(WeatherController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(WeatherController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
     public String test() {
         Date today = new Date();
         Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24));
@@ -92,10 +143,14 @@ public class WeatherController {
     }
     
     private Boolean isBad() {
+        return this.isBadTxt(this.weatherText);
+    }
+    
+    private Boolean isBadTxt(String text) {
         for(String s: BAD_WEATHER) {
-            if(this.weatherText.toLowerCase().contains(s))
+            if(text.toLowerCase().contains(s))
                 return true;
-        }
+        }   
         return false;
     }
     
@@ -143,6 +198,20 @@ public class WeatherController {
             return weather;
         }
         return null;
+    }
+    
+    public Weather searchFirstGoodDay(String city, Date when) {
+         if(this.searchFirstGoodForecast(city, when)) {
+            Weather weather = new Weather();
+            weather.setCity(city);
+            weather.setWeather(this.weatherText);
+            weather.setMaxTemp(this.maxTemp);
+            weather.setMinTemp(this.minTemp);
+            weather.setForecastDate(this.forecastDate);
+            weather.setLastUpdate(this.date);
+            return weather;
+        }
+        return null;       
     }
     
     public void destroyWeather(Integer id) {
