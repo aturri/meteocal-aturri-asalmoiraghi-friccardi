@@ -52,7 +52,7 @@ public class EventBean {
     WeatherController wc;
     
     private String invitedUsers;
-    
+
     //È necessario per il form dove si modifica l'evento, f:metadata>f:viewParam vogliono un setter su questo attributo
     private Event event;
 
@@ -121,7 +121,11 @@ public class EventBean {
         if(!this.areInvitedUserLegalForEdit() || this.areThereOverlaps() || !this.isEndDateLegal()) {
             return "";
         }
+        Integer widx = -1;
+        if(event.getWeather()!=null) widx = event.getWeather().getId();
+        this.attachWeather();
         this.eventManager.update(event);
+        this.weatherControl.destroyWeather(widx);
         //setup invitations
         if(this.invitedUsers!=null && !"".equals(this.invitedUsers)) {
             String[] split = this.invitedUsers.split(",");
@@ -143,6 +147,8 @@ public class EventBean {
             if(weather!=null) {
                 this.event.setWeather(weather);
             }
+        } else {
+            this.event.setWeather(null);
         }
     }
     
@@ -157,7 +163,10 @@ public class EventBean {
             u.getInvitations().remove(event);
             this.userManager.update(u);
         }    
+        Integer widx = -1;
+        if(event.getWeather()!=null) widx = event.getWeather().getId();
         this.eventManager.delete(event);
+        this.weatherControl.destroyWeather(widx);
         return NavigationBean.redirectToHome();
     }
     
@@ -371,23 +380,24 @@ public class EventBean {
         if(this.event.getCity()!=null && this.event.getBeginDate()!=null) {
             Weather weather = weatherControl.createWeather(this.event.getCity(), this.event.getBeginDate(), false);
             if(weather!=null) {
-                this.event.setWeather(weather);
+                //this.event.setWeather(weather);
                 String formattedForecast = "Forecast for "+weather.getCity()+
                         " on "+DATE_FORMAT.format(weather.getForecastDate())+
                         ": "+weather.getWeather()+
                         ", with high of "+Float.toString(weather.getMaxTemp())+
                         "°C and low of "+Float.toString(weather.getMinTemp())+"°C";
                 if(weather.getBad()) {
-                    formattedForecast += "\n\nBad weather!\n\n\n\n";
                     Weather firstGood = this.searchFirstSunnyDay();
                     if(firstGood!=null) {
-                        formattedForecast += "But MeteoCal found good weather! :) On "+
-                        DATE_FORMAT.format(firstGood.getForecastDate())+": "+
-                        firstGood.getWeather()+
-                        ", with high of "+Float.toString(firstGood.getMaxTemp())+
-                        "°C and low of "+Float.toString(firstGood.getMinTemp())+"°C";
+                        MessageBean.addInfo("growlMsg","There is bad weather for the time and location you chose!\n"
+                                + "But MeteoCal found good weather on "+
+                                DATE_FORMAT.format(firstGood.getForecastDate())+": "+
+                                firstGood.getWeather()+
+                                ", with high of "+Float.toString(firstGood.getMaxTemp())+
+                                "°C and low of "+Float.toString(firstGood.getMinTemp())+"°C");
                     } else {
-                        formattedForecast += "\n\nUnfortunately MeteoCal did't find a close good day :(";
+                        MessageBean.addInfo("growlMsg","There is bad weather for the time and location you chose!\n"
+                                + "Unfortunately MeteoCal did't find a close good day :(");
                     }
                 }
                 return formattedForecast;

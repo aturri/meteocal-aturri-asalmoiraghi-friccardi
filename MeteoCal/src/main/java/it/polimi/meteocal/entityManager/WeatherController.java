@@ -109,7 +109,7 @@ public class WeatherController {
             }
             if(goodWeatherIndexes.isEmpty()) return false;
             //now we search in the list the closest index to the one of the searched day
-            int closer = 0;
+            int closer = -1;
             for(Integer j: goodWeatherIndexes) {
                 if(Math.abs(j-whenIndex)<=Math.abs(closer-whenIndex)) {
                    closer = j;
@@ -214,8 +214,12 @@ public class WeatherController {
         return null;       
     }
     
+    //It is necessary to remove event.weather before!!!
     public void destroyWeather(Integer id) {
-        this.delete(this.find(id));
+        Weather weather = find(id);
+        if(weather!=null) {
+            delete(weather);
+        }
     }
     
     public void checkWeatherUpdate(Integer id) {

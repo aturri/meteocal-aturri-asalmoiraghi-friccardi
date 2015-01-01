@@ -30,14 +30,14 @@
                     <h:outputLabel for="start" value="Starting time *" />
                     <p:calendar id="start" pattern="MM/dd/yyyy HH:mm" value="#{eventBean.event.beginDate}" 
                                 navigator="true" mindate="#{eventBean.today}" required="true">
-                        <p:ajax event="blur" update="startMsg end"/>                       
+                        <p:ajax event="blur" update="startMsg end weather growl" process="start city"/>                       
                     </p:calendar>
                     <p:message id="startMsg" for="start" />
 
                     <h:outputLabel for="end" value="End time *" />
                     <p:calendar id="end" pattern="MM/dd/yyyy HH:mm" value="#{eventBean.event.endDate}"
                                 navigator="true" mindate="#{eventBean.event.beginDate}" required="true">
-                         <p:ajax update="endmsg"/>                                               
+                         <p:ajax event="blur" process="start end city"/>   
                     </p:calendar>
                     <p:message id="endmsg" for="end" />
 
@@ -49,9 +49,13 @@
                     
                     <p:outputLabel for="city" value="City"/>
                     <p:inputText id="city" value="#{eventBean.event.city}" required="false">
-                        <p:ajax update="cityMsg"/>
+                        <p:ajax update="cityMsg weather growl" process="start end city"/>
                     </p:inputText>
                     <p:message id="cityMsg" for="city" />
+                   
+                    <p:outputLabel for="weather" value="Weather"/>
+                    <p:outputPanel id="weather" style="width: 210px;">#{eventBean.handleWeather()}</p:outputPanel> 
+                    <p:message id="weatherMsg" for="weather" />
 
                     <p:outputLabel for="locationInfo" value="Location addtitional info" />
                     <p:inputTextarea cols="23" id="locationInfo" value="#{eventBean.event.locationInfo}" required="false">
@@ -90,6 +94,7 @@
                 <br />
                 * Mandatory fields
             </p:panel>
+            <p:growl for="growlMsg" id="growl" sticky="true" />
         </h:form>
     </h:body>
 </html>

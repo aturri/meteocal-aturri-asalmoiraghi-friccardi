@@ -28,7 +28,7 @@
                     <h:outputLabel for="start" value="Starting time *" />
                     <p:calendar id="start" pattern="MM/dd/yyyy HH:mm" value="#{eventBean.event.beginDate}" 
                                 navigator="true" mindate="#{eventBean.today}" required="true">
-                        <p:ajax event="blur" update="startMsg end weather" process="start city"/>                       
+                        <p:ajax event="blur" update="startMsg end weather growl" process="start city"/>                       
                     </p:calendar>
                     <p:message id="startMsg" for="start" />
                     
@@ -47,7 +47,7 @@
                     
                     <p:outputLabel for="city" value="City"/>
                     <p:inputText id="city" value="#{eventBean.event.city}" required="false">
-                        <p:ajax update="cityMsg weather" process="start end city"/>
+                        <p:ajax update="cityMsg weather growl" process="start end city"/>
                     </p:inputText>
                     <p:message id="cityMsg" for="city" />
                     
@@ -89,6 +89,7 @@
                 <br /> 
                 * Mandatory fields
             </p:panel>
-        </h:form>
+            <p:growl for="growlMsg" id="growl" sticky="true" />
+        </h:form>        
     </h:body>
 </html>
