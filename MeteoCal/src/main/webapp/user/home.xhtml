@@ -7,112 +7,124 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>Home | MeteoCal</title>
+        <link href="#{navigationBean.getAbsolute()}css/style.css" type="text/css" rel="stylesheet" />
     </h:head>
     <h:body>
-        Welcome back #{userBean.loggedUser.name} #{userBean.loggedUser.surname}
-        <p:link outcome="test" value="Weather at Galliate"/>
-        <br/>
-        <p:link outcome="#{navigationBean.toSearchResultsPage()}" value="Results"/>
-        <br/>
-        <p:link outcome="/user/settings" value="Settings"/>
-        <br/>
-        <p:link outcome="/user/favoriteUsers" value="Favorite Users"/>
-        <br/>
-        <p:link outcome="/event/create" value="Create Event"/>
-        <h:form>
-            <p:commandLink action="#{loginBean.logout()}" value="Logout"/>
-        </h:form>
-        <p>Number of notifications to be read: #{userBean.numOfNotReadNotifications}</p>
-        <ul>
-            <ui:repeat value="#{userBean.notifications}" var="notification">
-                <li>
-                    <p>[#{notification.event.title}] #{notification.text}</p>
-                </li>
-            </ui:repeat>
-        </ul>
-        <p>Participating events:</p>
-        <ul>
-            <ui:repeat value="#{userBean.eventsInCalendar}" var="event">
-                <li>
-                    <h:link value="#{event.title}" outcome="/event/detail">
-                        <f:param name="id" value="#{event.id}" />
-                    </h:link>
-                </li>
-            </ui:repeat>
-        </ul>
-        <p>Pending invitations:</p>
-        <ul>
-            <ui:repeat value="#{userBean.eventsInvitedTo}" var="event">
-                <li>
-                    <h:link value="#{event.title}" outcome="/event/detail">
-                        <f:param name="id" value="#{event.id}" />
-                    </h:link>
-                </li>
-            </ui:repeat>
-        </ul>
+	<div id="topbar">
+		<div id="logo">MeteoCal</div>
+		<div id="buttons">
+                        <p:link outcome="/event/create" value="Create Event"/>
+			<p:link outcome="/user/settings" value="Settings"/>
+                        <h:form>
+                            <p:commandLink action="#{loginBean.logout()}" value="Logout"/>
+                        </h:form>
+		</div>
+	</div>
+        <div id="content">
+            <div id="leftSide">
+                Welcome back #{userBean.loggedUser.name} #{userBean.loggedUser.surname}
+                <br/>
+                <p:link outcome="#{navigationBean.toSearchResultsPage()}" value="Results"/>
+                <br/>
+                <p:link outcome="/user/favoriteUsers" value="Favorite Users"/>
+            </div>
         
-        Calendar of user: #{calendarBean.user.name} #{calendarBean.user.surname}
-        <h:form>
-            <p:growl id="messages" showDetail="true" sticky="true"/>
+            <div id="mainContent">
+                Calendar of user: #{calendarBean.user.name} #{calendarBean.user.surname}
+                <h:form>
+                    <p:growl id="messages" showDetail="true" sticky="true"/>
 
-            <h:panelGrid style="width:65%">
-                <p:schedule id="schedule" value="#{calendarBean.eventModel}"
-                            slotMinutes="15" widgetVar="myschedule" timeZone="GMT+1"
-                            draggable="false" resizable="false">
+                    <h:panelGrid style="width:100%">
+                        <p:schedule id="schedule" value="#{calendarBean.eventModel}"
+                                    slotMinutes="15" widgetVar="myschedule" timeZone="GMT+1"
+                                    draggable="false" resizable="false">
 
-                    <p:ajax event="dateSelect" listener="#{calendarBean.onDateSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
-                    <p:ajax event="eventSelect" listener="#{calendarBean.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
-                    <!--<p:ajax event="eventMove" listener="#{calendarBean.onEventMove}" update="messages" />
-                    <p:ajax event="eventResize" listener="#{calendarBean.onEventResize}" update="messages" />-->
+                            <p:ajax event="dateSelect" listener="#{calendarBean.onDateSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+                            <p:ajax event="eventSelect" listener="#{calendarBean.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+                            <!--<p:ajax event="eventMove" listener="#{calendarBean.onEventMove}" update="messages" />
+                            <p:ajax event="eventResize" listener="#{calendarBean.onEventResize}" update="messages" />-->
 
-                </p:schedule>
-            </h:panelGrid>
+                        </p:schedule>
+                    </h:panelGrid>
 
-            <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip">
-                <h:panelGrid id="eventDetails" columns="3">
-                    <p:outputLabel for="title" value="Title:" />
-                    <p:inputText id="title"  required="true" value="#{calendarBean.event.title}">
-                        <p:ajax update="titlemsg"/>
-                    </p:inputText>
-                    <p:message id="titlemsg" for="title" />
-                        
-                    <h:outputLabel for="start" value="From: *" />
-                    <p:calendar id="start" pattern="MM/dd/yyyy HH:mm" value="#{calendarBean.event.beginDate}" 
-                                navigator="true" mindate="#{calendarBean.today}" required="true">
-                        <p:ajax event="blur" update="startMsg end"/>                       
-                    </p:calendar>
-                    <p:message id="startMsg" for="start" />
+                    <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip">
+                        <h:panelGrid id="eventDetails" columns="3">
+                            <p:outputLabel for="title" value="Title:" />
+                            <p:inputText id="title"  required="true" value="#{calendarBean.event.title}">
+                                <p:ajax update="titlemsg"/>
+                            </p:inputText>
+                            <p:message id="titlemsg" for="title" />
 
-                    <h:outputLabel for="end" value="To: *" />
-                    <p:calendar id="end" pattern="MM/dd/yyyy HH:mm" value="#{calendarBean.event.endDate}"
-                                navigator="true" mindate="#{calendarBean.event.beginDate}" required="true">
-                         <p:ajax update="endmsg"/>                                               
-                    </p:calendar>
-                    <p:message id="endmsg" for="end" />
-                    
-                    <p:outputLabel for="visibility" value="Visibility:" />
-                    <p:selectOneMenu id="visibility" value="#{calendarBean.event.publicEvent}" style="width: 210px" required="true">
-                        <f:selectItem itemLabel="Private" itemValue="false" />
-                        <f:selectItem itemLabel="Public" itemValue="true" />
-                        <p:ajax update="visibilitymsg"/>
-                    </p:selectOneMenu>                    
-                    <p:message id="visibilitymsg" for="visibility" /> 
+                            <h:outputLabel for="start" value="From: *" />
+                            <p:calendar id="start" pattern="MM/dd/yyyy HH:mm" value="#{calendarBean.event.beginDate}" 
+                                        navigator="true" mindate="#{calendarBean.today}" required="true">
+                                <p:ajax event="blur" update="startMsg end"/>                       
+                            </p:calendar>
+                            <p:message id="startMsg" for="start" />
 
-                    <p:outputLabel for="indoorRadio" value="Type:"/>
-                    <p:selectOneRadio id="indoorRadio" value="#{calendarBean.event.indoor}" layout="lineDirection" required="true">
-                        <f:selectItem itemLabel="Indoor" itemValue="true" />
-                        <f:selectItem itemLabel="Outdoor" itemValue="false" />
-                    </p:selectOneRadio>
-                    <p:message id="indoorMsg" for="indoorRadio" />  
+                            <h:outputLabel for="end" value="To: *" />
+                            <p:calendar id="end" pattern="MM/dd/yyyy HH:mm" value="#{calendarBean.event.endDate}"
+                                        navigator="true" mindate="#{calendarBean.event.beginDate}" required="true">
+                                 <p:ajax update="endmsg"/>                                               
+                            </p:calendar>
+                            <p:message id="endmsg" for="end" />
 
-                    <!--<h:outputLabel for="allDay" value="All Day:" />
-                    <h:selectBooleanCheckbox id="allDay" value="#{calendarBean.scheduleEvent.allDay}" />-->
+                            <p:outputLabel for="visibility" value="Visibility:" />
+                            <p:selectOneMenu id="visibility" value="#{calendarBean.event.publicEvent}" style="width: 210px" required="true">
+                                <f:selectItem itemLabel="Private" itemValue="false" />
+                                <f:selectItem itemLabel="Public" itemValue="true" />
+                                <p:ajax update="visibilitymsg"/>
+                            </p:selectOneMenu>                    
+                            <p:message id="visibilitymsg" for="visibility" /> 
 
-                    <p:messages id="errorMsgId" for="errorMsg" />
-                    <p:commandButton id="addButton" value="Save" actionListener="#{calendarBean.addEvent}" oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
-                </h:panelGrid>
-            </p:dialog>    
-        </h:form>
+                            <p:outputLabel for="indoorRadio" value="Type:"/>
+                            <p:selectOneRadio id="indoorRadio" value="#{calendarBean.event.indoor}" layout="lineDirection" required="true">
+                                <f:selectItem itemLabel="Indoor" itemValue="true" />
+                                <f:selectItem itemLabel="Outdoor" itemValue="false" />
+                            </p:selectOneRadio>
+                            <p:message id="indoorMsg" for="indoorRadio" />  
+
+                            <!--<h:outputLabel for="allDay" value="All Day:" />
+                            <h:selectBooleanCheckbox id="allDay" value="#{calendarBean.scheduleEvent.allDay}" />-->
+
+                            <p:messages id="errorMsgId" for="errorMsg" />
+                            <p:commandButton id="addButton" value="Save" actionListener="#{calendarBean.addEvent}" oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
+                        </h:panelGrid>
+                    </p:dialog>    
+                </h:form>
+            </div>
+            
+            <div id="rightSide">
+                <p>Number of notifications to be read: #{userBean.numOfNotReadNotifications}</p>
+                <ul>
+                    <ui:repeat value="#{userBean.notifications}" var="notification">
+                        <li>
+                            <p>[#{notification.event.title}] #{notification.text}</p>
+                        </li>
+                    </ui:repeat>
+                </ul>
+                <p>Participating events:</p>
+                <ul>
+                    <ui:repeat value="#{userBean.eventsInCalendar}" var="event">
+                        <li>
+                            <h:link value="#{event.title}" outcome="/event/detail">
+                                <f:param name="id" value="#{event.id}" />
+                            </h:link>
+                        </li>
+                    </ui:repeat>
+                </ul>
+                <p>Pending invitations:</p>
+                <ul>
+                    <ui:repeat value="#{userBean.eventsInvitedTo}" var="event">
+                        <li>
+                            <h:link value="#{event.title}" outcome="/event/detail">
+                                <f:param name="id" value="#{event.id}" />
+                            </h:link>
+                        </li>
+                    </ui:repeat>
+                </ul>                
+            </div>
+        </div>
     </h:body>
 </html>
 

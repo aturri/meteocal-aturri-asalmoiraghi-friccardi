@@ -48,9 +48,6 @@ public class EventBean {
     @EJB
     UserManager userManager;
     
-    @EJB
-    WeatherController wc;
-    
     private String invitedUsers;
 
     //È necessario per il form dove si modifica l'evento, f:metadata>f:viewParam vogliono un setter su questo attributo
@@ -69,10 +66,6 @@ public class EventBean {
         return this.event;
     }
     
-    public String getWeather() {
-        return this.wc.test();
-    }
-
     public void setEvent(Event event) {
         //guardiamo se this.id oppure il paramentro id è impostato, se si facciamo la ricerca nel DB
         /*if(this.event==null&&this.isExistsIdParam()){ 

@@ -132,16 +132,6 @@ public class WeatherController {
         return false;
     }
     
-    public String test() {
-        Date today = new Date();
-        Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24));
-        if(this.searchForecast("Milano", tomorrow)) {        
-            return "(Last update: " + date.toString() + ") Forecast for " + city + " on " + tomorrow.toString() + " " + 
-                    weatherText + " " + Float.toString(minTemp) + " °C - " + Float.toString(maxTemp) + " °C";
-        }
-        return "Not available";
-    }
-    
     private Boolean isBad() {
         return this.isBadTxt(this.weatherText);
     }
