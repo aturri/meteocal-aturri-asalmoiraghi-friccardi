@@ -23,6 +23,14 @@ public class NavigationBean implements Serializable {
     private static final long serialVersionUID = 1520318172495977648L;
     
     /**
+     * 
+     * @return The main folder where the project is placed in the server.
+     */
+    public static String getAbsolute() {
+        return "/MeteoCal/";
+    }
+    
+    /**
      * Redirect to login page.
      * @return Login page name.
      */

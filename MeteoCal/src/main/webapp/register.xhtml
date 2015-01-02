@@ -5,77 +5,87 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui">
     <h:head>
-        <title>Registration | Meteocal</title>
-    </h:head>
-    <h:body>
-        <h:form>
-            <p:panel id="registrationPanel" header="Registration Form">
-                <p:focus context="registrationPanel" />
-                <h:panelGrid columns="3" id="regGrid">
-                    <p:outputLabel for="name" value="Name:" />
-                    <p:inputText id="name"  required="true" value="#{registrationBean.user.name}">
-                        <p:ajax update="namemsg"/>
-                    </p:inputText>
-                    <p:message id="namemsg" for="name" />
-                    
-                    <p:outputLabel for="surname" value="Surname" />
-                    <p:inputText id="surname" value="#{registrationBean.user.surname}" required="true">
-                        <p:ajax update="surnamemsg"/>
-                    </p:inputText>
-                    <p:message id="surnamemsg" for="surname" />
+        <title>Registration | MeteoCal</title>
+        <link href="#{navigationBean.getAbsolute()}css/style.css" type="text/css" rel="stylesheet" />
+   </h:head>
+    <h:body id="homebody">
+	<div id="topbar">
+		<div id="logo">MeteoCal</div>
+		<div id="buttons">
+			<p:link outcome="#{navigationBean.toHome()}" value="Login"/>
+			<p:link outcome="#{navigationBean.toRegister()}" value="Register"/>
+		</div>
+	</div>
+        <div id="content">
+            <h:form style="width: 600px; margin: 20px auto; ">
+                <p:panel id="registrationPanel" header="Registration Form">
+                    <p:focus context="registrationPanel" />
+                    <h:panelGrid columns="3" id="regGrid">
+                        <p:outputLabel for="name" value="Name:" />
+                        <p:inputText id="name"  required="true" value="#{registrationBean.user.name}">
+                            <p:ajax update="namemsg"/>
+                        </p:inputText>
+                        <p:message id="namemsg" for="name" />
 
-                    <p:outputLabel for="gender" value="Gender" />
-                    <p:selectOneMenu id="gender" value="#{registrationBean.user.gender}" style="width: 210px" required="true">
-                        <f:selectItem itemLabel="" itemValue="" />
-                        <f:selectItem itemLabel="Man" itemValue="M" />
-                        <f:selectItem itemLabel="Woman" itemValue="F" />
-                        <p:ajax update="gendermsg"/>
-                    </p:selectOneMenu>                    
-                    <p:message id="gendermsg" for="gender" /> 
+                        <p:outputLabel for="surname" value="Surname" />
+                        <p:inputText id="surname" value="#{registrationBean.user.surname}" required="true">
+                            <p:ajax update="surnamemsg"/>
+                        </p:inputText>
+                        <p:message id="surnamemsg" for="surname" />
 
-                    <h:outputLabel for="birthdate" value="Date of birth" />
-                    <p:calendar id="birthdate" value="#{registrationBean.user.birthDate}" navigator="true" 
-                                maxdate="#{registrationBean.today}" yearRange='1900:c'>
-                         <p:ajax update="birthdatemsg"/>                       
-                    </p:calendar>
-                    <p:message id="birthdatemsg" for="birthdate" />
-                                                           
-                    <p:outputLabel for="address" value="Address" />
-                    <p:inputText id="address" value="#{registrationBean.user.address}" required="false">
-                        <p:ajax update="addressmsg"/>
-                    </p:inputText>
-                    <p:message id="addressmsg" for="address" />    
-                    
-                    <p:outputLabel for="city" value="City"/>
-                    <p:inputText id="city" value="#{registrationBean.user.city}" required="false">
-                        <p:ajax update="citymsg"/>
-                    </p:inputText>
-                    <p:message id="citymsg" for="city" />                        
-                    
-                    <p:outputLabel for="email" value="Email" />
-                    <p:inputText id="email" value="#{registrationBean.user.email}" required="true">
-                        <p:ajax update="emailmsg"/>
-                        <p:ajax update="errorMsg" listener="#{registrationBean.handleExistsUser()}"/>
-                    </p:inputText>
-                    <p:message id="emailmsg" for="email" />
-                    
-                    <p:outputLabel for="password" value="Password" />
-                    <p:password id="password" value="#{registrationBean.user.password}"
-                                feedback="true" match="pwd2" label="Password" required="true" />
-                    <p:message for="password" />
+                        <p:outputLabel for="gender" value="Gender" />
+                        <p:selectOneMenu id="gender" value="#{registrationBean.user.gender}" style="width: 210px" required="true">
+                            <f:selectItem itemLabel="" itemValue="" />
+                            <f:selectItem itemLabel="Man" itemValue="M" />
+                            <f:selectItem itemLabel="Woman" itemValue="F" />
+                            <p:ajax update="gendermsg"/>
+                        </p:selectOneMenu>                    
+                        <p:message id="gendermsg" for="gender" /> 
 
-                    <p:outputLabel for="pwd2" value="Confirm Password" />
-                    <p:password id="pwd2" label="Confirm Password" required="true"/> 
-                    <p:message for="pwd2" />
-                    
-                </h:panelGrid>
-                <p:messages id="errorMsg" />
-                <p:commandButton id="btnRegister" value="Register" update="regGrid"
-                                 action="#{registrationBean.register()}" />
-                <br /> 
-                * Mandatory fields
-            </p:panel>
-        </h:form>
+                        <h:outputLabel for="birthdate" value="Date of birth" />
+                        <p:calendar id="birthdate" value="#{registrationBean.user.birthDate}" navigator="true" 
+                                    maxdate="#{registrationBean.today}" yearRange='1900:c'>
+                             <p:ajax update="birthdatemsg"/>                       
+                        </p:calendar>
+                        <p:message id="birthdatemsg" for="birthdate" />
+
+                        <p:outputLabel for="address" value="Address" />
+                        <p:inputText id="address" value="#{registrationBean.user.address}" required="false">
+                            <p:ajax update="addressmsg"/>
+                        </p:inputText>
+                        <p:message id="addressmsg" for="address" />    
+
+                        <p:outputLabel for="city" value="City"/>
+                        <p:inputText id="city" value="#{registrationBean.user.city}" required="false">
+                            <p:ajax update="citymsg"/>
+                        </p:inputText>
+                        <p:message id="citymsg" for="city" />                        
+
+                        <p:outputLabel for="email" value="Email" />
+                        <p:inputText id="email" value="#{registrationBean.user.email}" required="true">
+                            <p:ajax update="emailmsg"/>
+                            <p:ajax update="errorMsg" listener="#{registrationBean.handleExistsUser()}"/>
+                        </p:inputText>
+                        <p:message id="emailmsg" for="email" />
+
+                        <p:outputLabel for="password" value="Password" />
+                        <p:password id="password" value="#{registrationBean.user.password}"
+                                    feedback="true" match="pwd2" label="Password" required="true" />
+                        <p:message for="password" />
+
+                        <p:outputLabel for="pwd2" value="Confirm Password" />
+                        <p:password id="pwd2" label="Confirm Password" required="true"/> 
+                        <p:message for="pwd2" />
+
+                    </h:panelGrid>
+                    <p:messages id="errorMsg" />
+                    <p:commandButton id="btnRegister" value="Register" update="regGrid"
+                                     action="#{registrationBean.register()}" />
+                    <br /> 
+                    * Mandatory fields
+                </p:panel>
+            </h:form>
+        </div>
     </h:body>
 </html>
 

@@ -5,26 +5,34 @@
       xmlns:p="http://primefaces.org/ui">
     <h:head>
         <title>Login | MeteoCal</title>
+        <link href="#{navigationBean.getAbsolute()}css/style.css" type="text/css" rel="stylesheet" />
     </h:head>
-    <h:body>
-        <h:form style="width: 500px; margin: auto; ">
-            <p:panel id="loginPanel" header="Login Form">
-                <p:focus context="loginPanel"/>
-                <p:panelGrid columns="2" id="loginGrid">
-                    <p:outputLabel for="usernameInput" value="Username"/>
-                    <p:inputText id="usernameInput" value="#{loginBean.username}" 
-                                 required="false" />
-                    <p:outputLabel for="passwordInput" value="Password"/>
-                    <p:password id="passwordInput" value="#{loginBean.password}" 
-                                required="false" />
-                    <p:commandButton id="submit" action="#{loginBean.login()}" value="Login" ajax="true" update="@all"/>                    
-                    <p:messages style="color: red"/>
-                </p:panelGrid>
-            </p:panel>
-        </h:form>
-        <h:link outcome="#{navigationBean.toRegister()}" value="Register"/>
-        <br />
-        <h:link outcome="#{navigationBean.toRecoverPassword()}" value="Recover password"/>
+    <h:body id="homebody">
+	<div id="topbar">
+		<div id="logo">MeteoCal</div>
+		<div id="buttons">
+			<p:link outcome="#{navigationBean.toHome()}" value="Login"/>
+			<p:link outcome="#{navigationBean.toRegister()}" value="Register"/>
+		</div>
+	</div>
+        <div id="content">
+            <h:form style="width: 390px; margin: 20px auto; ">
+                <p:panel id="loginPanel" header="Login">
+                    <p:focus context="loginPanel"/>
+                    <p:panelGrid columns="2" id="loginGrid">
+                        <p:outputLabel for="usernameInput" value="Username"/>
+                        <p:inputText id="usernameInput" value="#{loginBean.username}" 
+                                     required="false" />
+                        <p:outputLabel for="passwordInput" value="Password"/>
+                        <p:password id="passwordInput" value="#{loginBean.password}" 
+                                    required="false" />
+                        <p:commandButton id="submit" action="#{loginBean.login()}" value="Login" ajax="true" update="@all"/>                    
+                        <p:messages style="color: red"/>
+                    </p:panelGrid>
+                </p:panel>
+                <p:link outcome="#{navigationBean.toRecoverPassword()}" value="Recover password"/>
+            </h:form>
+        </div>
     </h:body>
 </html>
 
