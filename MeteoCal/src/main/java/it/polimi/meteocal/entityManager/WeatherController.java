@@ -236,14 +236,20 @@ public class WeatherController {
             weather.setLastUpdate(this.date);
             this.update(weather);
         } else {
-            this.delete(weather);
+            weather.setWeather("An error occurred while updating weather."
+                    + "Please try to edit and save the event.");
+            weather.setMaxTemp(0);
+            weather.setMinTemp(0);
+            weather.setLastUpdate(new Date());
+            this.update(weather);
         }  
     }
     
-    private void checkAllWeather() {
-        Logger.getLogger(WeatherController.class.getName()).log(Level.INFO, "Updating weather for all events...");
+    public void checkAllWeather() {
         List<Weather> listWeather = this.findAll();
         for(Weather w: listWeather) {
+            Logger.getLogger(WeatherController.class.getName()).log(Level.INFO,
+                    "{0} / {1}", new Object[]{w.getForecastDate().toString(), w.getCity()});
             this.checkWeatherUpdate(w);
         }
     }
@@ -266,7 +272,7 @@ public class WeatherController {
     }
     
     private List<Weather> findAll() {
-        TypedQuery<Weather> query = em.createQuery("SELECT w FROM Weather w WHERE w.forecastDate < CURRENT_TIMESTAMP", Weather.class);
+        TypedQuery<Weather> query = em.createQuery("SELECT w FROM Weather w WHERE w.forecastDate >= CURRENT_TIMESTAMP", Weather.class);
         return query.getResultList();
     }
 }

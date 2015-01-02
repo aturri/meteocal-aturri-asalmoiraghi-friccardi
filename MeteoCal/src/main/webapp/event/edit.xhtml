@@ -87,10 +87,9 @@
 
                 </h:panelGrid>
                 <p:messages id="errorMsgId" for="errorMsg" />
-                <p:commandButton id="btnEditEvent" value="Save" update="editEventGrid errorMsgId"
-                                 action="#{eventBean.editEvent()}" />
-                <br />
-                <p:commandButton value="Delete event" action="#{eventBean.deleteEvent()}" />
+                <p:splitButton id="btnEditEvent" value="Save" action="#{eventBean.editEvent()}" ajax="false" update="editEventGrid errorMsgId" icon="ui-icon-disk">
+                    <p:menuitem value="Delete" action="#{eventBean.deleteEvent()}" ajax="false" icon="ui-icon-close" />
+                </p:splitButton>
                 <br />
                 * Mandatory fields
             </p:panel>
