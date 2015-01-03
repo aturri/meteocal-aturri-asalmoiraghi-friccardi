@@ -6,32 +6,36 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Home | MeteoCal</title>
-        <link href="#{navigationBean.getAbsolute()}css/style.css" type="text/css" rel="stylesheet" />
     </h:head>
     <h:body>
-	<div id="topbar">
-		<div id="logo">MeteoCal</div>
-		<div id="buttons">
-                        <p:link outcome="/event/create" value="Create Event"/>
-			<p:link outcome="/user/settings" value="Settings"/>
-                        <h:form>
-                            <p:commandLink action="#{loginBean.logout()}" value="Logout"/>
-                        </h:form>
-		</div>
-	</div>
-        <div id="content">
-            <div id="leftSide">
+        <ui:composition template="/template/main.xhtml">
+            <ui:define name="title">Home</ui:define>
+            
+            <ui:define name="header">
+                <div id="topbar">
+                        <div id="logo"><h:link outcome="/user/home" value="MeteoCal"/></div>
+                        <div id="buttons">
+                                <p:link outcome="/event/create" value="Create Event"/>
+                                <p:link outcome="/user/settings" value="Settings"/>
+                                <h:form>
+                                    <p:commandLink action="#{loginBean.logout()}" value="Logout"/>
+                                </h:form>
+                        </div>
+                </div>
+            </ui:define>
+            
+            <ui:define name="left">
                 Welcome back #{userBean.loggedUser.name} #{userBean.loggedUser.surname}
                 <br/>
                 <p:link outcome="#{navigationBean.toSearchResultsPage()}" value="Results"/>
                 <br/>
-                <p:link outcome="/user/favoriteUsers" value="Favorite Users"/>
-            </div>
-        
-            <div id="mainContent">
-                Calendar of user: #{calendarBean.user.name} #{calendarBean.user.surname}
-                <h:form>
+                <p:link outcome="/user/favoriteUsers" value="Favorite Users"/>                
+            </ui:define>
+
+            <ui:define name="main">
+                <div id="mainContent" style="float: left">
+                    Calendar of user: #{calendarBean.user.name} #{calendarBean.user.surname}
+                    <h:form>
                     <p:growl id="messages" showDetail="true" sticky="true"/>
 
                     <h:panelGrid style="width:100%">
@@ -92,9 +96,10 @@
                         </h:panelGrid>
                     </p:dialog>    
                 </h:form>
-            </div>
+                </div>
+            </ui:define>
             
-            <div id="rightSide">
+            <ui:define name="right">
                 <p>Number of notifications to be read: #{userBean.numOfNotReadNotifications}</p>
                 <ul>
                     <ui:repeat value="#{userBean.notifications}" var="notification">
@@ -123,8 +128,8 @@
                         </li>
                     </ui:repeat>
                 </ul>                
-            </div>
-        </div>
+            </ui:define>
+        </ui:composition>
     </h:body>
 </html>
 

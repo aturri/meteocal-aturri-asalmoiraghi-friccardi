@@ -1,7 +1,3 @@
-#createEventForm{
-    width:450px;
-}
-
 	html, body {
 		margin: 0;
 		padding: 0;
@@ -23,13 +19,17 @@
 		
 		box-shadow: 0px 0px 3px 1px #000000;
 		color: #ffffff;
+                
+                position: fixed;
+                top: 0px; left: 0px;
+                z-index: 999;
 	}
 	#homebody {
 		background-image: url('../images/bg.jpg');
 		background-size: cover;
 		background-repeat: no-repeat;
 	}
-	#logo {
+	#logo, #logo a, #logo a:visited {
 		font-family: Impact;
 		width: 150px;
 		height: 50px;
@@ -39,6 +39,8 @@
 		text-align: center;
 		letter-spacing: 0.6px;
 		text-shadow: 0px 0px 3px #000000;
+                color: #ffffff;
+                text-decoration: none;
 	}
 	#buttons {
 		width: 360px;
@@ -71,19 +73,33 @@
 		border: 1px #8e8e8e solid;
 		border-radius: 6px;
 	}
+        #central {
+            padding: 10px;
+        }
+        #content {
+            width: 100%;
+            margin-top: 50px;
+            display: table;
+        }
         #leftSide {
             width: 240px;
-            display: block;
+            display: table-cell;
             float: left;
         }
         #rightSide {
-            width: 240px;
-            display: block;
+            width: 200px;
+            display: table-cell;
             float: right;
         }
         #mainContent {
-            float: left;
+            display: table-cell;
+      }
+        
+        
+        .meteoCalForm {
+            width: 600px;
+            margin: 10px auto;
         }
-        #content {
-            margin: 10px;
+        .ui-growl {
+            top: 60px !important;
         }

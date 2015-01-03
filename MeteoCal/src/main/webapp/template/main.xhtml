@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title><ui:insert name="title">Home</ui:insert> | MeteoCal</title>
+        <link href="#{navigationBean.getAbsolute()}css/style.css" type="text/css" rel="stylesheet" />
+    </h:head>
+    <h:body>
+        <ui:insert name="header">
+            <div id="topbar">
+                    <div id="logo"><h:link outcome="/user/home" value="MeteoCal"/></div>
+                    <div id="buttons">
+                            <p:link outcome="/event/create" value="Create Event"/>
+                            <p:link outcome="/user/home" value="Home"/>
+                            <p:link outcome="/user/settings" value="Settings"/>
+                            <h:form>
+                                <p:commandLink action="#{loginBean.logout()}" value="Logout"/>
+                            </h:form>
+                    </div>
+            </div>
+        </ui:insert>
+        <div id="central">
+            <div id="content">
+                <div id="leftSide">
+                    <ui:insert name="left"></ui:insert>
+                </div>
+
+                <ui:insert name="main">
+                    <div id="mainContent">Content in this div (#mainContent)!</div>
+                </ui:insert>
+                    
+                <div id="rightSide">
+                     <ui:insert name="right"></ui:insert>               
+                </div>
+            </div>
+        </div>
+    </h:body>
+</html>
+

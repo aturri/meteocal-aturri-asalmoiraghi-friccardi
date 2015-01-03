@@ -6,89 +6,94 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
-        <title>Event Details | Meteocal</title>
-        <link href="css/style.css" rel="stylesheet" type="text/css" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </h:head>
     <h:body>
-       <p:link outcome="/user/home" value="Back to home"/>
-       <br/>
-
         <f:metadata>
             <f:viewParam name="id" value="#{eventBean.event.id}" />
         </f:metadata>
-        <h:form id="editEventForm">
-            <input type="hidden" name="id" value="#{eventBean.event.id}" />
-            <p:panel header="You received an invitation by #{eventBean.event.creator.email}"
-                     rendered="#{eventBean.isCurrentUserInvitedTo(eventBean.event.id)}" >
-                <p:messages id="errorMsgId" for="errorMsg" />
-                <p:commandButton value="Accept" action="#{eventBean.acceptInvitation()}" update="errorMsgId" />
-                <br />
-                <p:commandButton value="Refuse" action="#{eventBean.refuseInvitation()}" />
-            </p:panel>
-        </h:form>
-       
-        <h:panelGroup rendered="#{eventBean.isVisibleForCurrentUser(eventBean.event.id)}">
-            <h3>#{eventBean.event.title}</h3>
-            <p>#{eventBean.event.description}</p>
-            <hr/>
-            <p>From: #{eventBean.eventBegin()}</p>
-            <p>To: #{eventBean.eventEnd()}</p>
-            <hr/>
-            <p>#{eventBean.event.city}, #{eventBean.event.address}</p>
-            <p>#{eventBean.event.locationInfo}</p>
-            <h:panelGroup rendered="#{eventBean.hasWeather(eventBean.event.id)}">
-                Forecast for #{eventBean.event.weather.city} on #{eventBean.forecastDate()}:
-                <br/>
-                #{eventBean.event.weather.weather}
-                <br/>
-                High #{eventBean.event.weather.maxTemp}°C
-                <br/>
-                Low #{eventBean.event.weather.minTemp}°C
-                <br/>
-                <span style="font-size: 10px">Last update at #{eventBean.forecastUpdatedAt()}, powered by Yahoo Meteo</span>
-            </h:panelGroup>
-            <hr/>
-            <p>Owner: #{eventBean.event.creator.name} #{eventBean.event.creator.surname} (#{eventBean.event.creator.email})</p>
-            <p>Participating users:</p>
-            <ul>
-                <ui:repeat value="#{eventBean.participatingUsers}" var="user">
-                    <li>#{user.name} #{user.surname} (#{user.email}) &nbsp;
-                        <h:form rendered="#{eventBean.canUserBeRemovedFromParticipants(user.email)}">
-                            <p:commandLink value="Remove" action="#{eventBean.removeParticipant(user.email)}" ajax="false">
-                                <f:param name="id" value="#{eventBean.event.id}" />
-                            </p:commandLink>
-                        </h:form>
-                    </li>
-                </ui:repeat>
-            </ul>
-            <p>Invited users:</p>
-            <ul>
-                <ui:repeat value="#{eventBean.listInvitedUsers}" var="user">
-                    <li>#{user.name} #{user.surname} (#{user.email}) &nbsp;
-                        <h:form rendered="#{eventBean.isCurrentUserCreator()}">    
-                            <p:commandLink value="Remove" action="#{eventBean.removeInvitation(user.email)}" ajax="false">
-                                <f:param name="id" value="#{eventBean.event.id}" />
-                            </p:commandLink>
-                        </h:form>
-                    </li>
-                </ui:repeat>
-            </ul>
-            <hr/>
-            <p>#{eventBean.eventIndoor()}</p>
-            <p>#{eventBean.eventVisibility()}</p>
-        </h:panelGroup>
-       
-        <h:form id="actionEventForm">
-            <input type="hidden" name="id" value="#{eventBean.event.id}" />
-            <p:panel header="Actions for #{eventBean.event.title}" rendered="#{eventBean.isCurrentUserParticipatingTo(eventBean.event.id)}">
-                <p:button value="Edit event" outcome="/event/edit"
-                                 rendered="#{eventBean.isCurrentUserCreator()}">
-                    <f:param name="id" value="#{eventBean.event.id}" />                 
-                </p:button>
-                <p:commandButton value="Remove from my calendar" action="#{eventBean.removeFromMyCalendar()}"
-                                 rendered="#{eventBean.isCurrentUserParticipatingTo(eventBean.event.id) and !eventBean.isCurrentUserCreator()}" />
-            </p:panel>
-        </h:form>
+        <ui:composition template="/template/main.xhtml">
+            <ui:define name="title">Event Details</ui:define>
+            
+            <ui:define name="left">
+                <h:form id="actionEventForm">
+                    <input type="hidden" name="id" value="#{eventBean.event.id}" />
+                    <p:panel header="Actions for #{eventBean.event.title}" rendered="#{eventBean.isCurrentUserParticipatingTo(eventBean.event.id)}">
+                        <p:button value="Edit event" outcome="/event/edit"
+                                         rendered="#{eventBean.isCurrentUserCreator()}">
+                            <f:param name="id" value="#{eventBean.event.id}" />                 
+                        </p:button>
+                        <p:commandButton value="Remove from my calendar" action="#{eventBean.removeFromMyCalendar()}"
+                                         rendered="#{eventBean.isCurrentUserParticipatingTo(eventBean.event.id) and !eventBean.isCurrentUserCreator()}" />
+                    </p:panel>
+                </h:form> 
+                <h:form id="editEventForm">
+                    <input type="hidden" name="id" value="#{eventBean.event.id}" />
+                    <p:panel header="You received an invitation by #{eventBean.event.creator.email}"
+                             rendered="#{eventBean.isCurrentUserInvitedTo(eventBean.event.id)}" >
+                        <p:messages id="errorMsgId" for="errorMsg" />
+                        <p:commandButton value="Accept" action="#{eventBean.acceptInvitation()}" update="errorMsgId" />
+                        <br />
+                        <p:commandButton value="Refuse" action="#{eventBean.refuseInvitation()}" />
+                    </p:panel>
+                </h:form>
+            </ui:define>
+
+            <ui:define name="main">
+                <div id="mainContent">
+                    <h:panelGroup rendered="#{eventBean.isVisibleForCurrentUser(eventBean.event.id)}">
+                        <h3>#{eventBean.event.title}</h3>
+                        <p>#{eventBean.event.description}</p>
+                        <hr/>
+                        <p>From: #{eventBean.eventBegin()}</p>
+                        <p>To: #{eventBean.eventEnd()}</p>
+                        <hr/>
+                        <p>#{eventBean.event.city}, #{eventBean.event.address}</p>
+                        <p>#{eventBean.event.locationInfo}</p>
+                        <h:panelGroup rendered="#{eventBean.hasWeather(eventBean.event.id)}">
+                            Forecast for #{eventBean.event.weather.city} on #{eventBean.forecastDate()}:
+                            <br/>
+                            #{eventBean.event.weather.weather}
+                            <br/>
+                            High #{eventBean.event.weather.maxTemp}°C
+                            <br/>
+                            Low #{eventBean.event.weather.minTemp}°C
+                            <br/>
+                            <span style="font-size: 10px">Last update at #{eventBean.forecastUpdatedAt()}, powered by Yahoo Meteo</span>
+                        </h:panelGroup>
+                        <hr/>
+                        <p>Owner: #{eventBean.event.creator.name} #{eventBean.event.creator.surname} (#{eventBean.event.creator.email})</p>
+                        <p>Participating users:</p>
+                        <ul>
+                            <ui:repeat value="#{eventBean.participatingUsers}" var="user">
+                                <li>#{user.name} #{user.surname} (#{user.email}) &nbsp;
+                                    <h:form rendered="#{eventBean.canUserBeRemovedFromParticipants(user.email)}">
+                                        <p:commandLink value="Remove" action="#{eventBean.removeParticipant(user.email)}" ajax="false">
+                                            <f:param name="id" value="#{eventBean.event.id}" />
+                                        </p:commandLink>
+                                    </h:form>
+                                </li>
+                            </ui:repeat>
+                        </ul>
+                        <p>Invited users:</p>
+                        <ul>
+                            <ui:repeat value="#{eventBean.listInvitedUsers}" var="user">
+                                <li>#{user.name} #{user.surname} (#{user.email}) &nbsp;
+                                    <h:form rendered="#{eventBean.isCurrentUserCreator()}">    
+                                        <p:commandLink value="Remove" action="#{eventBean.removeInvitation(user.email)}" ajax="false">
+                                            <f:param name="id" value="#{eventBean.event.id}" />
+                                        </p:commandLink>
+                                    </h:form>
+                                </li>
+                            </ui:repeat>
+                        </ul>
+                        <hr/>
+                        <p>#{eventBean.eventIndoor()}</p>
+                        <p>#{eventBean.eventVisibility()}</p>
+                    </h:panelGroup>                     
+                </div>
+            </ui:define>
+
+            <ui:define name="right"></ui:define>
+        </ui:composition> 
     </h:body>
 </html>
