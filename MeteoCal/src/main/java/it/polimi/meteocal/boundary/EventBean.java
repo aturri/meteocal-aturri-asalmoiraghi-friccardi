@@ -480,4 +480,48 @@ public class EventBean {
         }
         return event.getWeather()!=null;
     }
+    
+    public String getWeatherImg() {
+        if(hasWeather(event.getId())) {
+            String weatherTxt = event.getWeather().getWeather();
+            if(weatherTxt.toLowerCase().contains("mostly") && weatherTxt.toLowerCase().contains("cloudy")) {
+                return "mostly_cloudy";
+            } else if(weatherTxt.toLowerCase().contains("mostly") && weatherTxt.toLowerCase().contains("sunny")) {
+                return "mostly_sunny";
+            } else if(weatherTxt.toLowerCase().contains("sun") && weatherTxt.toLowerCase().contains("rain")) {
+                return "sun_rain";
+            } else if(weatherTxt.toLowerCase().contains("sun") && weatherTxt.toLowerCase().contains("snow")) {
+                return "sun_snow";
+            } else if(weatherTxt.toLowerCase().contains("sun") && weatherTxt.toLowerCase().contains("thunder")) {
+                return "sun_thunder";
+            } else if(weatherTxt.toLowerCase().contains("sunny")) {
+                return "sunny";
+            } else if(weatherTxt.toLowerCase().contains("hot")) {
+                return "hot";
+            } else if(weatherTxt.toLowerCase().contains("heavy") && weatherTxt.toLowerCase().contains("rain")) {
+                return "rain_hard";
+            } else if(weatherTxt.toLowerCase().contains("rain") || weatherTxt.toLowerCase().contains("shower")) {
+                return "rain";
+            } else if(weatherTxt.toLowerCase().contains("wind") && weatherTxt.toLowerCase().contains("snow")) {
+                return "wind_snow";
+            } else if(weatherTxt.toLowerCase().contains("wind")) {
+                return "windy";
+            } else if(weatherTxt.toLowerCase().contains("thunder") || weatherTxt.toLowerCase().contains("hurricane") || weatherTxt.toLowerCase().contains("storm")) {
+                return "thunder";
+            } else if(weatherTxt.toLowerCase().contains("snow")) {
+                return "snow";
+            } else if(weatherTxt.toLowerCase().contains("hail")) {
+                return "hail";
+            } else if(weatherTxt.toLowerCase().contains("low") && weatherTxt.toLowerCase().contains("clouds")) {
+                return "low_clouds";
+            } else if(weatherTxt.toLowerCase().contains("fog")) {
+                return "fog";
+            } else if(weatherTxt.toLowerCase().contains("cloud")) {
+                return "cloud";
+            } else {
+                return "na";
+            }
+        }
+        return "na";
+    }
 }
