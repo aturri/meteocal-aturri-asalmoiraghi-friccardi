@@ -5,8 +5,7 @@
  */
 package it.polimi.meteocal.boundary;
 
-import it.polimi.meteocal.control.KindOfEmail;
-import it.polimi.meteocal.control.MailController;
+import it.polimi.meteocal.control.EventController;
 import it.polimi.meteocal.control.NavigationBean;
 import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.Weather;
@@ -14,12 +13,16 @@ import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.EventManager;
 import it.polimi.meteocal.entityManager.UserManager;
 import it.polimi.meteocal.entityManager.WeatherController;
+import it.polimi.meteocal.exception.EventOverlapException;
+import it.polimi.meteocal.exception.IllegalEventDateException;
+import it.polimi.meteocal.exception.IllegalInvitedUserException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
@@ -37,11 +40,11 @@ public class EventBean {
     private static final SimpleDateFormat EXT_DATE_FORMAT = new SimpleDateFormat("EEE, d MMM yyyy HH:mm", Locale.ENGLISH);
     
     @Inject
-    private MailController mailControl;
-
-    @Inject
     private WeatherController weatherControl;
-    
+  
+    @Inject
+    private EventController eventControl;
+        
     @EJB
     EventManager eventManager;
     
@@ -74,149 +77,87 @@ public class EventBean {
         this.event = event;
     }
     
-    public Boolean isEndDateLegal() {
-        if(event.getBeginDate().after(event.getEndDate())) {
-            MessageBean.addError("errorMsg","End date must be after begin date!");
-            return false;
-        }
-        return true;
-    }
-    
-    public String createEvent(){    
-        if(!this.areInvitedUserLegalForCreate() || this.areThereOverlaps() || !this.isEndDateLegal()) {
+    public String createEvent(){  
+        String message;
+        try {
+            eventControl.createEvent(event, invitedUsers);
+        } catch (EventOverlapException ex) {
+            message = "This event overlaps with an existing one!";
+            Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
+            MessageBean.addError("errorMsg",message);
             return "";
-        }
-        this.attachWeather();
-        //setup creator
-        User user = userManager.getLoggedUser(); 
-        this.event.setCreator(user);
-        this.event.getUsers().add(user);
-        this.eventManager.save(event);
-        //add to creator's calendar
-        user.getEvents().add(event);
-        userManager.update(user);
-        //setup invitations
-        if(this.invitedUsers!=null && !"".equals(this.invitedUsers)) {
-            String[] split = this.invitedUsers.split(",");
-            for (String email : split) {
-                User invitedUser=userManager.findByEmail(email);
-                this.event.getInvitedUsers().add(invitedUser);
-                invitedUser.getInvitations().add(event);
-                userManager.update(invitedUser);
-                mailControl.sendMail(email, KindOfEmail.INVITEDTOEVENT,this.event);
-            }
-            this.eventManager.update(event);   
+        } catch (IllegalInvitedUserException ex) {
+            message = "Check the invitation list!";
+            Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
+            MessageBean.addError("errorMsg",message);
+            return "";
+        } catch (IllegalEventDateException ex) {
+            message = "End date must be after begin date!";
+            Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
+            MessageBean.addError("errorMsg",message);
+            return "";
         }
         return NavigationBean.redirectToHome();
     }
     
     public String editEvent() {
-        if(!this.areInvitedUserLegalForEdit() || this.areThereOverlaps() || !this.isEndDateLegal()) {
+        String message;
+        try {
+            eventControl.editEvent(event, invitedUsers);
+        } catch (EventOverlapException ex) {
+            message = "This event overlaps with an existing one!";
+            Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
+            MessageBean.addError("errorMsg",message);
             return "";
-        }
-        Integer widx = -1;
-        if(event.getWeather()!=null) widx = event.getWeather().getId();
-        this.attachWeather();
-        this.eventManager.update(event);
-        this.weatherControl.destroyWeather(widx);
-        //setup invitations
-        if(this.invitedUsers!=null && !"".equals(this.invitedUsers)) {
-            String[] split = this.invitedUsers.split(",");
-            for (String email : split) {
-                User invitedUser=userManager.findByEmail(email);
-                this.event.getInvitedUsers().add(invitedUser);
-                invitedUser.getInvitations().add(event);
-                userManager.update(invitedUser);
-                mailControl.sendMail(email, KindOfEmail.INVITEDTOEVENT,this.event);
-            }
-            this.eventManager.update(event);   
+        } catch (IllegalInvitedUserException ex) {
+            message = "Check the invitation list!";
+            Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
+            MessageBean.addError("errorMsg",message);
+            return "";
+        } catch (IllegalEventDateException ex) {
+            message = "End date must be after begin date!";
+            Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
+            MessageBean.addError("errorMsg",message);
+            return "";
         }
         return NavigationBean.redirectToEventDetailsPage(event.getId());
     }
     
-    private void attachWeather() {
-        if(this.event.getCity()!=null && this.event.getBeginDate()!=null) {
-            Weather weather = weatherControl.createWeather(this.event.getCity(), this.event.getBeginDate(), true);
-            if(weather!=null) {
-                this.event.setWeather(weather);
-            }
-        } else {
-            this.event.setWeather(null);
-        }
-    }
-    
     public String deleteEvent() {
-        List<User> participatingUsers = this.getParticipatingUsers();
-        for(User u: participatingUsers) {
-            u.getEvents().remove(event);
-            this.userManager.update(u);
-        }
-        List<User> listInvitedUsers = this.getListInvitedUsers();
-        for(User u: listInvitedUsers) {
-            u.getInvitations().remove(event);
-            this.userManager.update(u);
-        }    
-        Integer widx = -1;
-        if(event.getWeather()!=null) widx = event.getWeather().getId();
-        this.eventManager.delete(event);
-        this.weatherControl.destroyWeather(widx);
+        eventControl.deleteEvent(event);
         return NavigationBean.redirectToHome();
     }
     
-    private void removeInvitation() {
-        User currentUser = userManager.getLoggedUser();      
-        event.getInvitedUsers().remove(currentUser);
-        eventManager.update(event);   
-        currentUser.getInvitations().remove(event);
-        userManager.update(currentUser);
-    }
-    
     public String acceptInvitation() {
-        if(this.areThereOverlaps()) {
+        String message;
+        try {
+            eventControl.acceptInvitation(event);
+        } catch (EventOverlapException ex) {
+            message = "This event overlaps with an existing one!";
+            Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
+            MessageBean.addError("errorMsg",message);
             return "";
         }
-        this.removeInvitation();
-        User user = userManager.getLoggedUser();        
-        event.getUsers().add(user);
-        eventManager.update(event);
-        user.getEvents().add(event);
-        userManager.update(user);
         return NavigationBean.redirectToHome();
     }
     
     public String refuseInvitation() {
-        this.removeInvitation();
+        eventControl.refuseInvitation(event);
         return NavigationBean.redirectToHome();
     }
     
     public String removeFromMyCalendar() {
-        User currentUser = userManager.getLoggedUser();        
-        event.getUsers().remove(currentUser);
-        eventManager.update(event);   
-        currentUser.getEvents().remove(event);
-        userManager.update(currentUser);
+        eventControl.removeFromCalendar(event);
         return NavigationBean.redirectToHome();
     }
     
     public String removeParticipant(String email) {
-        User user = userManager.findByEmail(email);
-        event.getUsers().remove(user);
-        eventManager.update(event);   
-        user.getEvents().remove(event);
-        userManager.update(user);   
+        eventControl.removeParticipant(event, email);
         return NavigationBean.redirectToEventDetailsPage(event.getId());
-    }
-    
-    public Boolean canUserBeRemovedFromParticipants(String email) {
-        return !(!isCurrentUserCreator() || email.equals(userManager.getLoggedUser().getEmail()));
-    }
+    }    
     
     public String removeInvitation(String email) {
-        User user = userManager.findByEmail(email);
-        event.getInvitedUsers().remove(user);
-        eventManager.update(event);   
-        user.getInvitations().remove(event);
-        userManager.update(user);        
+        eventControl.removeInvitedUser(event, email);
         return NavigationBean.redirectToEventDetailsPage(event.getId());
     }
  
@@ -308,67 +249,6 @@ public class EventBean {
         }
     }
     
-    public Boolean areThereOverlaps() {
-        Set<Event> userEvents = userManager.getLoggedUser().getEvents();
-        userEvents.remove(this.event); //the current event overlaps to the current event if already prensent
-        Date a = this.event.getBeginDate();
-        Date b = this.event.getEndDate();
-        for(Event e: userEvents) {
-            Date c = e.getBeginDate();
-            Date d = e.getEndDate();
-            if((c.after(a) && d.before(b)) || (c.after(a) && b.after(c)) || (c.before(a) && d.after(a))) {
-                MessageBean.addError("errorMsg","This event overlaps with an existing one!");
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    public Boolean areInvitedUserLegalForCreate() {
-        if(this.invitedUsers==null || this.invitedUsers.equals("")) {
-            return true;
-        }
-        int error = 0;
-        String foo = this.invitedUsers;
-        String[] split = foo.split(",");
-        List<String> tmpUsersList = new ArrayList<>();
-        for (String splitted : split) {
-            if(splitted.equals(userManager.getLoggedUser().getEmail())) {
-                error++;
-                MessageBean.addError("errorMsg","You can't invite yourself");
-            } else if(!userManager.existsUser(splitted)) {
-                error++;
-                MessageBean.addError("errorMsg",splitted+" is not registered to MeteoCal");
-            } else if(tmpUsersList.contains(splitted)) {
-                error++;
-                MessageBean.addError("errorMsg",splitted+" has been invited more than once");
-            } else {
-                tmpUsersList.add(splitted);
-            }
-        }
-        return error==0;
-    }
-    
-    public Boolean areInvitedUserLegalForEdit() {
-        if(this.invitedUsers==null || this.invitedUsers.equals("")) {
-            return true;
-        }
-        if(!this.areInvitedUserLegalForCreate()) {
-            return false;
-        }
-        int error = 0;
-        String foo = this.invitedUsers;
-        String[] split = foo.split(",");
-        for (String splitted : split) {
-            if(event.getInvitedUsers().contains(userManager.findByEmail(splitted)) || 
-                        event.getUsers().contains(userManager.findByEmail(splitted))) {
-                error++;
-                MessageBean.addError("errorMsg",splitted+" has already been invited");
-            }
-        }
-        return error==0;
-    }
-    
     public String handleWeather() {
         if(this.event.getCity()!=null && this.event.getBeginDate()!=null) {
             Weather weather = weatherControl.createWeather(this.event.getCity(), this.event.getBeginDate(), false);
@@ -426,6 +306,11 @@ public class EventBean {
     public List<User> getParticipatingUsers() {
         return new ArrayList<>(event.getUsers());
     }
+  
+    public Boolean canUserBeRemovedFromParticipants(String email) {
+        return !(!isCurrentUserCreator() || email.equals(userManager.getLoggedUser().getEmail()));
+    }
+    
     
     public Boolean isUserParticipant(User user) {
        List<User> participants = this.getParticipatingUsers();

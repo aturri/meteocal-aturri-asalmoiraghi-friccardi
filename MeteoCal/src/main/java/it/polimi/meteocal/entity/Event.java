@@ -75,7 +75,7 @@ public class Event implements Serializable {
   
     @ManyToMany
     @JoinTable(name="INVITATION")
-    private Set<User> invitedUsers;
+    private Set<User> invitedUsers = new HashSet<>();
       
     public Integer getId() {
         return id;
