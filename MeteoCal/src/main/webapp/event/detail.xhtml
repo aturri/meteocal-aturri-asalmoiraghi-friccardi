@@ -19,19 +19,23 @@
                     <input type="hidden" name="id" value="#{eventBean.event.id}" />
                     <p:panel header="Actions for #{eventBean.event.title}" rendered="#{eventBean.isCurrentUserParticipatingTo(eventBean.event.id)}">
                         <p:button value="Edit event" outcome="/event/edit"
-                                         rendered="#{eventBean.isCurrentUserCreator()}">
+                                         rendered="#{eventBean.isCurrentUserCreator() and eventBean.isEventAfterNow(eventBean.event.id)}">
                             <f:param name="id" value="#{eventBean.event.id}" />                 
                         </p:button>
-                        <p:commandButton value="Remove from my calendar" action="#{eventBean.removeFromMyCalendar()}"
+                        <p:commandButton value="Remove event" action="#{eventBean.removeFromMyCalendar()}"
                                          rendered="#{eventBean.isCurrentUserParticipatingTo(eventBean.event.id) and !eventBean.isCurrentUserCreator()}" />
+                        <p:commandButton value="Delete event" action="#{eventBean.deleteEvent()}"
+                                         rendered="#{eventBean.isCurrentUserCreator() and !eventBean.isEventAfterNow(eventBean.event.id)}" />
+ 
                     </p:panel>
                 </h:form> 
                 <h:form id="editEventForm">
                     <input type="hidden" name="id" value="#{eventBean.event.id}" />
                     <p:panel header="You received an invitation by #{eventBean.event.creator.email}"
-                             rendered="#{eventBean.isCurrentUserInvitedTo(eventBean.event.id)}" >
+                             rendered="#{eventBean.isCurrentUserInvitedTo(eventBean.event.id)}">
                         <p:messages id="errorMsgId" for="errorMsg" />
-                        <p:commandButton value="Accept" action="#{eventBean.acceptInvitation()}" update="errorMsgId" />
+                        <p:commandButton value="Accept" action="#{eventBean.acceptInvitation()}"
+                                         update="errorMsgId" rendered="#{eventBean.isEventAfterNow(eventBean.event.id)}" />
                         <br />
                         <p:commandButton value="Refuse" action="#{eventBean.refuseInvitation()}" />
                     </p:panel>

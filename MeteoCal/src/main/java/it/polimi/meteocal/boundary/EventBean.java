@@ -342,6 +342,10 @@ public class EventBean {
         return this.isUserInvited(user);
     }
     
+    public Boolean isEventAfterNow(Integer id) {
+        return eventManager.findById(id).getBeginDate().after(new Date());
+    }
+    
     public Boolean isCurrentUserParticipatingTo(Integer id) {
         this.event = eventManager.findById(id);
         User user = userManager.getLoggedUser();

@@ -26,7 +26,7 @@ import org.primefaces.json.JSONException;
 import org.primefaces.json.JSONObject;
 
 /**
- *
+ * This is the business logic class for Weather
  * @author Andrea
  */
 @Stateless
