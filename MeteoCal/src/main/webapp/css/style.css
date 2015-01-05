@@ -3,6 +3,20 @@
 		padding: 0;
 		font-family: 'Helvetica';
 	}
+        hr {
+            width: 94%;
+            height: 1px;
+            background-color: #8e8e8e;
+            border: none;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        a, a:visited {
+            color: #ff0000;
+        }
+        a:hover {
+            color: #000000;
+        }
 	#topbar {
 		background: rgb(73,155,234); /* Old browsers */
 		background: -moz-linear-gradient(top, rgba(73,155,234,1) 0%, rgba(32,124,229,1) 100%); /* FF3.6+ */
@@ -84,21 +98,30 @@
         #leftSide {
             width: 240px;
             display: table-cell;
-            float: left;
+            vertical-align: top;
         }
         #rightSide {
             width: 200px;
             display: table-cell;
-            float: right;
+            vertical-align: top;
         }
         #mainContent {
             display: table-cell;
-      }
+            vertical-align: top;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
         
-        
+        .centredContent {
+            padding-left: 40px !important;
+            padding-right: 40px !important;
+        }
         .meteoCalForm {
             width: 700px;
             margin: 10px auto;
+        }
+        .mail {
+            font-size: 11px;
         }
         .ui-growl {
             top: 60px !important;

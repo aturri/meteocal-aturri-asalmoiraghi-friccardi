@@ -19,39 +19,40 @@
                         <p:panel header="Create event">
                             <h:panelGrid columns="3" id="createEventGrid">
                                 <p:outputLabel for="title" value="Title:" />
-                                <p:inputText id="title"  required="true" value="#{eventBean.event.title}">
+                                <p:inputText id="title"  required="true" value="#{eventBean.event.title}" maxlength="160">
                                     <p:ajax update="titlemsg"/>
                                 </p:inputText>
                                 <p:message id="titlemsg" for="title" />
 
                                 <p:outputLabel for="description" value="Description" />
-                                <p:inputTextarea cols="23" id="description" value="#{eventBean.event.description}" required="false">
+                                <p:inputTextarea cols="23" id="description" value="#{eventBean.event.description}" required="false"
+                                        maxlength="255" >
                                     <p:ajax update="descriptionmsg"/>
                                 </p:inputTextarea>
                                 <p:message id="descriptionmsg" for="description" />
 
                                 <h:outputLabel for="start" value="Starting time *" />
                                 <p:calendar id="start" pattern="MM/dd/yyyy HH:mm" value="#{eventBean.event.beginDate}" 
-                                            navigator="true" mindate="#{eventBean.today}" required="true">
+                                            stepMinute="15" navigator="true" mindate="#{eventBean.today}" required="true">
                                     <p:ajax event="blur" update="startMsg end weather growl" process="start city"/>                       
                                 </p:calendar>
                                 <p:message id="startMsg" for="start" />
 
                                 <h:outputLabel for="end" value="End time *" />
                                 <p:calendar id="end" pattern="MM/dd/yyyy HH:mm" value="#{eventBean.event.endDate}"
-                                            navigator="true" mindate="#{eventBean.event.beginDate}" required="true">
+                                            stepMinute="15" navigator="true" mindate="#{eventBean.event.beginDate}" required="true">
                                      <p:ajax event="blur" process="start end city"/>   
                                 </p:calendar>
                                 <p:message id="endmsg" for="end" />
 
                                 <p:outputLabel for="address" value="Address" />
-                                <p:inputText id="address" value="#{eventBean.event.address}" required="false">
+                                <p:inputText id="address" value="#{eventBean.event.address}" required="false" maxlength="160">
                                     <p:ajax update="addressmsg"/>
                                 </p:inputText>
                                 <p:message id="addressmsg" for="address" />    
 
                                 <p:outputLabel for="city" value="City"/>
-                                <p:inputText id="city" value="#{eventBean.event.city}" required="false">
+                                <p:inputText id="city" value="#{eventBean.event.city}" required="false" maxlength="160">
                                     <p:ajax update="cityMsg weather growl" process="start end city"/>
                                 </p:inputText>
                                 <p:message id="cityMsg" for="city" />
@@ -61,7 +62,8 @@
                                 <p:message id="weatherMsg" for="weather" />
 
                                 <p:outputLabel for="locationInfo" value="Location addtitional info" />
-                                <p:inputTextarea cols="23" id="locationInfo" value="#{eventBean.event.locationInfo}" required="false">
+                                <p:inputTextarea cols="23" id="locationInfo" value="#{eventBean.event.locationInfo}" required="false"
+                                        maxlength="255">
                                     <p:ajax update="locationInfoMsg"/>
                                 </p:inputTextarea>
                                 <p:message id="locationInfoMsg" for="locationInfo" />                    

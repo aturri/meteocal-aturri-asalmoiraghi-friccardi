@@ -3,97 +3,108 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
-        <title>Edit Event | Meteocal</title>
-        <link href="css/style.css" rel="stylesheet" type="text/css" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </h:head>
     <h:body>
-        
-        <h:form id="editEventForm">
-            <input type="hidden" name="id" value="#{eventBean.event.id}" />
-            <p:panel header="Edit event" rendered="#{eventBean.event.creator.email == userBean.email}">
-                <h:panelGrid columns="3" id="editEventGrid">
-                    <p:outputLabel for="title" value="Title:" />
-                    <p:inputText id="title"  required="true" value="#{eventBean.event.title}">
-                        <p:ajax update="titlemsg"/>
-                    </p:inputText>
-                    <p:message id="titlemsg" for="title" />
+        <ui:composition template="/template/main.xhtml">
+            <ui:define name="title">Edit Event</ui:define>
+            
+            <ui:define name="left"></ui:define>
 
-                    <p:outputLabel for="description" value="Description" />
-                    <p:inputTextarea cols="23" id="description" value="#{eventBean.event.description}" required="false">
-                        <p:ajax update="descriptionmsg"/>
-                    </p:inputTextarea>
-                    <p:message id="descriptionmsg" for="description" />
+            <ui:define name="main">
+                <div id="mainContent">
+                    <h:form id="editEventForm" class="meteoCalForm">
+                        <input type="hidden" name="id" value="#{eventBean.event.id}" />
+                        <p:panel header="Edit event" rendered="#{eventBean.event.creator.email == userBean.email}">
+                            <h:panelGrid columns="3" id="editEventGrid">
+                                <p:outputLabel for="title" value="Title:" />
+                                <p:inputText id="title"  required="true" value="#{eventBean.event.title}" maxlength="160">
+                                    <p:ajax update="titlemsg"/>
+                                </p:inputText>
+                                <p:message id="titlemsg" for="title" />
 
-                    <h:outputLabel for="start" value="Starting time *" />
-                    <p:calendar id="start" pattern="MM/dd/yyyy HH:mm" value="#{eventBean.event.beginDate}" 
-                                navigator="true" mindate="#{eventBean.today}" required="true">
-                        <p:ajax event="blur" update="startMsg end weather growl" process="start city"/>                       
-                    </p:calendar>
-                    <p:message id="startMsg" for="start" />
+                                <p:outputLabel for="description" value="Description" />
+                                <p:inputTextarea cols="23" id="description" value="#{eventBean.event.description}" required="false"
+                                        maxlength="255">
+                                    <p:ajax update="descriptionmsg"/>
+                                </p:inputTextarea>
+                                <p:message id="descriptionmsg" for="description" />
 
-                    <h:outputLabel for="end" value="End time *" />
-                    <p:calendar id="end" pattern="MM/dd/yyyy HH:mm" value="#{eventBean.event.endDate}"
-                                navigator="true" mindate="#{eventBean.event.beginDate}" required="true">
-                         <p:ajax event="blur" process="start end city"/>   
-                    </p:calendar>
-                    <p:message id="endmsg" for="end" />
+                                <h:outputLabel for="start" value="Starting time *" />
+                                <p:calendar id="start" pattern="MM/dd/yyyy HH:mm" value="#{eventBean.event.beginDate}" 
+                                            stepMinute="15" navigator="true" mindate="#{eventBean.today}" required="true">
+                                    <p:ajax event="blur" update="startMsg end weather growl" process="start city"/>                       
+                                </p:calendar>
+                                <p:message id="startMsg" for="start" />
 
-                    <p:outputLabel for="address" value="Address" />
-                    <p:inputText id="address" value="#{eventBean.event.address}" required="false">
-                        <p:ajax update="addressmsg"/>
-                    </p:inputText>
-                    <p:message id="addressmsg" for="address" />    
-                    
-                    <p:outputLabel for="city" value="City"/>
-                    <p:inputText id="city" value="#{eventBean.event.city}" required="false">
-                        <p:ajax update="cityMsg weather growl" process="start end city"/>
-                    </p:inputText>
-                    <p:message id="cityMsg" for="city" />
-                   
-                    <p:outputLabel for="weather" value="Weather"/>
-                    <p:outputPanel id="weather" style="width: 210px;">#{eventBean.handleWeather()}</p:outputPanel> 
-                    <p:message id="weatherMsg" for="weather" />
+                                <h:outputLabel for="end" value="End time *" />
+                                <p:calendar id="end" pattern="MM/dd/yyyy HH:mm" value="#{eventBean.event.endDate}"
+                                            stepMinute="15" navigator="true" mindate="#{eventBean.event.beginDate}" required="true">
+                                     <p:ajax event="blur" process="start end city"/>   
+                                </p:calendar>
+                                <p:message id="endmsg" for="end" />
 
-                    <p:outputLabel for="locationInfo" value="Location addtitional info" />
-                    <p:inputTextarea cols="23" id="locationInfo" value="#{eventBean.event.locationInfo}" required="false">
-                        <p:ajax update="locationInfoMsg"/>
-                    </p:inputTextarea>
-                    <p:message id="locationInfoMsg" for="locationInfo" />                    
+                                <p:outputLabel for="address" value="Address" />
+                                <p:inputText id="address" value="#{eventBean.event.address}" required="false" maxlength="160">
+                                    <p:ajax update="addressmsg"/>
+                                </p:inputText>
+                                <p:message id="addressmsg" for="address" />    
 
-                    <p:outputLabel for="visibility" value="Visibility" />
-                    <p:selectOneMenu id="visibility" value="#{eventBean.event.publicEvent}" style="width: 210px" required="true">
-                        <f:selectItem itemLabel="" itemValue="" />
-                        <f:selectItem itemLabel="Private" itemValue="false" />
-                        <f:selectItem itemLabel="Public" itemValue="true" />
-                        <p:ajax update="visibilitymsg"/>
-                    </p:selectOneMenu>                    
-                    <p:message id="visibilitymsg" for="visibility" />  
+                                <p:outputLabel for="city" value="City"/>
+                                <p:inputText id="city" value="#{eventBean.event.city}" required="false" maxlength="160">
+                                    <p:ajax update="cityMsg weather growl" process="start end city"/>
+                                </p:inputText>
+                                <p:message id="cityMsg" for="city" />
 
-                    <p:outputLabel for="indoorRadio" value="Type"/>
-                    <p:selectOneRadio id="indoorRadio" value="#{eventBean.event.indoor}" layout="lineDirection" required="true">
-                        <f:selectItem itemLabel="Indoor" itemValue="true" />
-                        <f:selectItem itemLabel="Outdoor" itemValue="false" />
-                    </p:selectOneRadio>
-                    <p:message id="indoorMsg" for="indoorRadio" /> 
-                    
-                    <p:outputLabel for="invitations" value="Invite users (inset emails separated by a comma)" style="width: 200px; display: block" />
-                    <p:inputTextarea cols="23" id="invitations" value="#{eventBean.invitedUsers}" required="false">
-                        <p:ajax update="errorMsgId" listener="#{eventBean.handleInvitedUsersForEdit()}"/>
-                    </p:inputTextarea>
-                    <p:message id="invitationsMsg" for="invitations"/> 
+                                <p:outputLabel for="weather" value="Weather"/>
+                                <p:outputPanel id="weather" style="width: 210px;">#{eventBean.handleWeather()}</p:outputPanel> 
+                                <p:message id="weatherMsg" for="weather" />
 
-                </h:panelGrid>
-                <p:messages id="errorMsgId" for="errorMsg" />
-                <p:splitButton id="btnEditEvent" value="Save" action="#{eventBean.editEvent()}" ajax="false" update="editEventGrid errorMsgId" icon="ui-icon-disk">
-                    <p:menuitem value="Delete" action="#{eventBean.deleteEvent()}" ajax="false" icon="ui-icon-close" />
-                </p:splitButton>
-                <br />
-                * Mandatory fields
-            </p:panel>
-            <p:growl for="growlMsg" id="growl" sticky="true" />
-        </h:form>
+                                <p:outputLabel for="locationInfo" value="Location addtitional info" />
+                                <p:inputTextarea cols="23" id="locationInfo" value="#{eventBean.event.locationInfo}" required="false"
+                                        maxlength="255">
+                                    <p:ajax update="locationInfoMsg"/>
+                                </p:inputTextarea>
+                                <p:message id="locationInfoMsg" for="locationInfo" />                    
+
+                                <p:outputLabel for="visibility" value="Visibility" />
+                                <p:selectOneMenu id="visibility" value="#{eventBean.event.publicEvent}" style="width: 210px" required="true">
+                                    <f:selectItem itemLabel="" itemValue="" />
+                                    <f:selectItem itemLabel="Private" itemValue="false" />
+                                    <f:selectItem itemLabel="Public" itemValue="true" />
+                                    <p:ajax update="visibilitymsg"/>
+                                </p:selectOneMenu>                    
+                                <p:message id="visibilitymsg" for="visibility" />  
+
+                                <p:outputLabel for="indoorRadio" value="Type"/>
+                                <p:selectOneRadio id="indoorRadio" value="#{eventBean.event.indoor}" layout="lineDirection" required="true">
+                                    <f:selectItem itemLabel="Indoor" itemValue="true" />
+                                    <f:selectItem itemLabel="Outdoor" itemValue="false" />
+                                </p:selectOneRadio>
+                                <p:message id="indoorMsg" for="indoorRadio" /> 
+
+                                <p:outputLabel for="invitations" value="Invite users (inset emails separated by a comma)" style="width: 200px; display: block" />
+                                <p:inputTextarea cols="23" id="invitations" value="#{eventBean.invitedUsers}" required="false">
+                                    <p:ajax update="errorMsgId" listener="#{eventBean.handleInvitedUsersForEdit()}"/>
+                                </p:inputTextarea>
+                                <p:message id="invitationsMsg" for="invitations"/> 
+
+                            </h:panelGrid>
+                            <p:messages id="errorMsgId" for="errorMsg" />
+                            <p:splitButton id="btnEditEvent" value="Save" action="#{eventBean.editEvent()}" ajax="false" update="editEventGrid errorMsgId" icon="ui-icon-disk">
+                                <p:menuitem value="Delete" action="#{eventBean.deleteEvent()}" ajax="false" icon="ui-icon-close" />
+                            </p:splitButton>
+                            <br />
+                            * Mandatory fields
+                        </p:panel>
+                        <p:growl for="growlMsg" id="growl" sticky="true" />
+                    </h:form>               
+                </div>
+            </ui:define>
+            
+            <ui:define name="right"></ui:define>
+        </ui:composition>
     </h:body>
 </html>
