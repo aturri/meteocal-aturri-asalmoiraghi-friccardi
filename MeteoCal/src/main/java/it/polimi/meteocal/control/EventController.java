@@ -10,7 +10,6 @@ import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entity.Weather;
 import it.polimi.meteocal.entityManager.EventManager;
 import it.polimi.meteocal.entityManager.UserManager;
-import it.polimi.meteocal.entityManager.WeatherController;
 import it.polimi.meteocal.exception.EventOverlapException;
 import it.polimi.meteocal.exception.IllegalEventDateException;
 import it.polimi.meteocal.exception.IllegalInvitedUserException;

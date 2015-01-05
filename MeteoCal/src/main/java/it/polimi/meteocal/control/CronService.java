@@ -5,7 +5,6 @@
  */
 package it.polimi.meteocal.control;
 
-import it.polimi.meteocal.entityManager.WeatherController;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;

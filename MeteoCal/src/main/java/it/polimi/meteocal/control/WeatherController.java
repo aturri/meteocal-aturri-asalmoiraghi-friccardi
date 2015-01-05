@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.polimi.meteocal.entityManager;
+package it.polimi.meteocal.control;
 
 import it.polimi.meteocal.entity.Weather;
-import it.polimi.meteocal.control.JsonReader;
+import it.polimi.meteocal.entityManager.WeatherManager;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.DateFormat;
@@ -19,10 +19,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import org.primefaces.json.JSONArray;
 import org.primefaces.json.JSONException;
 import org.primefaces.json.JSONObject;
@@ -48,9 +46,16 @@ public class WeatherController {
     private float minTemp;
     private float maxTemp; 
     
-    @PersistenceContext
-    private EntityManager em;
+    @EJB
+    WeatherManager weatherManager;
     
+    /**
+     * This method searches for weather in the specified city (search) and date (when).
+     * When finds the forecasts, it sets all the parameters in the current object.
+     * @param search the name of the city where to search forecast
+     * @param when the date when to search forecast
+     * @return true if found forecast, false if not available
+     */
     private Boolean searchForecast(String search, Date when) {
         JSONObject json;
         String whenStr = formatForecast.format(when);
@@ -82,6 +87,13 @@ public class WeatherController {
         return false;
     }
     
+    /**
+     * This method searches the first good day forecast in the specified city (search), close to the date (when)
+     * When finds the forecasts, it sets all the parameters in the current object.
+     * @param search the name of the city where to search forecast
+     * @param when the target date on which is based the search
+     * @return true if found forecast which is good, false if not available
+     */
     private Boolean searchFirstGoodForecast(String search, Date when) {
         JSONObject json;
         String whenStr = formatForecast.format(when);
@@ -132,10 +144,19 @@ public class WeatherController {
         return false;
     }
     
+    /**
+     * This method returns true if the current weather is bad
+     * @return true if bad weather
+     */
     private Boolean isBad() {
         return this.isBadTxt(this.weatherText);
     }
     
+    /**
+     * Thsi method returns if the specified text contains bad weather
+     * @param text to be analyzed
+     * @return true if bad weather
+     */
     private Boolean isBadTxt(String text) {
         for(String s: BAD_WEATHER) {
             if(text.toLowerCase().contains(s))
@@ -143,27 +164,6 @@ public class WeatherController {
         }   
         return false;
     }
-    
-    /*
-    L'utente inserisce città e data inizio/fine evento, con ajax viene creata l'entità Weather
-    in cui sono aggiunti i dettagli della previsione se disponibili (negli eventi che durano
-    più di un giorno si guarda il giorno con le previsioni peggiori).
-    Quando fa submit l'utente, il weather è già creato e viene associato all'evento.
-    Quando cancella i campi città, date durante la creazione, viene cancellata l'entità weather.
-    
-    Quando l'utente aggiorna l'evento, weather esiste già se ci sono città e date, quando modifica,
-    sempre con ajax viene distrutta e creata l'entità.
-    
-    La creazione e distruzione entità saranno due metodi in questa classe che usano il metodo di ricerca
-    previsioni e si interfacciano al database. La creazione deve restituire il meteo se disponibile, altrimenti
-    null, ci penserà EventBean a mostrare qualcosa all'utente.
-    
-    Qui verrà implementato anche un metodo per aggiornare tutti i Weather presenti nel database che verrà
-    chiamato periodicamente (ogni 12 ore) in automatico.
-    
-    Verrà implemetato anche un metodo per aggiornare il Weather quando l'utente vede i dettagli dell'evento.
-    
-    */
     
     /**
      * This method creates a Weather object for the specified city and in the specified date.
@@ -190,6 +190,13 @@ public class WeatherController {
         return null;
     }
     
+    /**
+     * This method creates a Weather object for the first good weather day found around the specified date, in the specified city.
+     * It returns null if the forecast is not available.
+     * @param city: String, the city where you want to obtain the forecast
+     * @param when: Date, the date when you want to obtain the forecast
+     * @return weather if available, null if not
+     */
     public Weather searchFirstGoodDay(String city, Date when) {
          if(this.searchFirstGoodForecast(city, when)) {
             Weather weather = new Weather();
@@ -204,19 +211,31 @@ public class WeatherController {
         return null;       
     }
     
-    //It is necessary to remove event.weather before!!!
+    /**
+     * This method destroys weather with specified id
+     * IMPORTANT: first set null event.weather
+     * @param id of the weather to be destroyed
+     */
     public void destroyWeather(Integer id) {
-        Weather weather = find(id);
+        Weather weather = weatherManager.find(id);
         if(weather!=null) {
             delete(weather);
         }
     }
     
+    /**
+     * This method checks for updates on the specified weather id
+     * @param id of the weather to be updated
+     */
     public void checkWeatherUpdate(Integer id) {
-        Weather weather = this.find(id);
+        Weather weather = weatherManager.find(id);
         this.checkWeatherUpdate(weather);
     }
     
+    /**
+     * This method checks if there is an update for the specified weather
+     * @param weather to be updated
+     */
     private void checkWeatherUpdate(Weather weather) {
         if(weather==null) return;
         if(this.searchForecast(weather.getCity(), weather.getForecastDate())) {
@@ -235,8 +254,11 @@ public class WeatherController {
         }  
     }
     
+    /**
+     * This method checks updates for all future forecasts
+     */
     public void checkAllWeather() {
-        List<Weather> listWeather = this.findAll();
+        List<Weather> listWeather = weatherManager.findAllFuture();
         for(Weather w: listWeather) {
             Logger.getLogger(WeatherController.class.getName()).log(Level.INFO,
                     "{0} / {1}", new Object[]{w.getForecastDate().toString(), w.getCity()});
@@ -244,25 +266,27 @@ public class WeatherController {
         }
     }
     
+    /**
+     * This method forwards the save request to the entityManager
+     * @param weather to be saved
+     */
     private void save(Weather weather) {
-        em.persist(weather);
+        weatherManager.save(weather);
     }
-    
+ 
+    /**
+     * This method forwards the update request to the entityManager
+     * @param weather to be updated
+     */
     private void update(Weather weather) {
-        em.merge(weather);
+        weatherManager.update(weather);
     }
-    
+ 
+    /**
+     * This method forwards the delete request to the entityManager
+     * @param weather to be deleted
+     */
     private void delete(Weather weather) {
-        Weather toBeDeleted = em.merge(weather);
-        em.remove(toBeDeleted);
-    }
-    
-    private Weather find(Integer id) {
-        return em.find(Weather.class, id);
-    }
-    
-    private List<Weather> findAll() {
-        TypedQuery<Weather> query = em.createQuery("SELECT w FROM Weather w WHERE w.forecastDate >= CURRENT_TIMESTAMP", Weather.class);
-        return query.getResultList();
+        weatherManager.delete(weather);
     }
 }
