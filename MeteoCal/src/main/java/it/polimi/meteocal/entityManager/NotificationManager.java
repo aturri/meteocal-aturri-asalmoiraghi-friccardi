@@ -55,20 +55,18 @@ public class NotificationManager {
      * @param email of the user
      * @return list of notifications
      */
-    public List<Notification> findAllNotifications(String email) {
+    public List<Notification> findAllNotificationsByUser(String email) {
         TypedQuery<Notification> query = em.createQuery("SELECT n FROM Notification n WHERE n.user.email = :param_email", Notification.class).setParameter("param_email", email).setMaxResults(MAX_NOTIF);
         return query.getResultList();
     }
     
     /**
-     * This method returns all notifications associated to user's email and event's id
-     * @param email
+     * This method returns all notifications associated to event's id
      * @param id
      * @return list of all notifications
      */
-    public List<Notification> findAllNotificationsByUserAndEvent(String email, Integer id) {
-        TypedQuery<Notification> query = em.createQuery("SELECT n FROM Notification n WHERE n.user.email = :param_email and n.event.id = :param_id", Notification.class).
-                setParameter("param_email", email).setParameter("param_id", id);
+    public List<Notification> findAllNotificationsByEvent(Integer id) {
+        TypedQuery<Notification> query = em.createQuery("SELECT n FROM Notification n WHERE n.event.id = :param_id", Notification.class).setParameter("param_id", id);
         return query.getResultList();       
     }
     

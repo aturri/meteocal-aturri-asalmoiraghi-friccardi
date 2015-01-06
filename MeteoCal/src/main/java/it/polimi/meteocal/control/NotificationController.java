@@ -112,12 +112,11 @@ public class NotificationController {
     }
     
     /**
-     * This method destroys all notifications associated to the specified user and event
-     * @param user to find notifications associated
+     * This method destroys all notifications associated to the specified event
      * @param event to find notifications associated
      */
-    public void destroyNotifications(User user, Event event) {
-        List<Notification> toBeDeleted = notificationManager.findAllNotificationsByUserAndEvent(user.getEmail(), event.getId());
+    public void destroyNotifications(Event event) {
+        List<Notification> toBeDeleted = notificationManager.findAllNotificationsByEvent(event.getId());
         for(Notification n: toBeDeleted) {
             notificationManager.remove(n);
         }
