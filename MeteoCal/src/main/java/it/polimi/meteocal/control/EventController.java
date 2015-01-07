@@ -27,9 +27,9 @@ import javax.inject.Inject;
  */
 @Stateless
 public class EventController {
-
+    
     @Inject
-    private MailController mailControl;
+    private NotificationController notificationControl;
     
     @Inject
     private WeatherController weatherControl;
@@ -169,7 +169,7 @@ public class EventController {
                 this.event.getInvitedUsers().add(invitedUser);
                 invitedUser.getInvitations().add(this.event);
                 userManager.update(invitedUser);
-                mailControl.sendMail(email, KindOfEmail.INVITEDTOEVENT,this.event);
+                notificationControl.sendNotification(email, KindOfNotification.INVITEDTOEVENT, this.event);
             }
             eventManager.update(this.event);   
         }        
@@ -195,11 +195,17 @@ public class EventController {
         if(!this.isEndDateLegal()) {
             throw new IllegalEventDateException();
         }
+        //weather & update
         Integer widx = -1;
         if(this.event.getWeather()!=null) widx = this.event.getWeather().getId();
         this.attachWeather();
         this.eventManager.update(this.event);
         this.weatherControl.destroyWeather(widx);
+        //notify users
+        Set<User> participants = this.event.getUsers();
+        participants.remove(this.event.getCreator());
+        notificationControl.sendNotificationToGroup(participants, KindOfNotification.EVENTUPDATED, this.event);
+        notificationControl.sendNotificationToGroup(this.event.getInvitedUsers(), KindOfNotification.EVENTUPDATED, this.event);
         //setup invitations
         if(this.invitedUsers!=null && !"".equals(this.invitedUsers)) {
             String[] split = this.invitedUsers.split(",");
@@ -208,7 +214,8 @@ public class EventController {
                 this.event.getInvitedUsers().add(invitedUser);
                 invitedUser.getInvitations().add(this.event);
                 userManager.update(invitedUser);
-                mailControl.sendMail(email, KindOfEmail.INVITEDTOEVENT,this.event);
+                notificationControl.sendNotification(email, KindOfNotification.INVITEDTOEVENT, this.event);
+                //mailControl.sendMail(email, KindOfEmail.INVITEDTOEVENT,this.event);
             }
             this.eventManager.update(this.event);   
         }
@@ -235,6 +242,13 @@ public class EventController {
         }    
         Integer widx = -1;
         if(this.event.getWeather()!=null) widx = this.event.getWeather().getId();
+        //notify users
+        Set<User> participants = this.event.getUsers();
+        participants.remove(this.event.getCreator());
+        notificationControl.sendNotificationToGroup(participants, KindOfNotification.EVENTCANCELLED, this.event);
+        notificationControl.sendNotificationToGroup(this.event.getInvitedUsers(), KindOfNotification.EVENTCANCELLED, this.event);
+        //delete
+        notificationControl.destroyNotifications(this.event);
         this.eventManager.delete(this.event);
         this.weatherControl.destroyWeather(widx);
     }

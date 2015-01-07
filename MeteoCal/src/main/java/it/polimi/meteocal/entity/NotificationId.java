@@ -20,7 +20,7 @@ public class NotificationId implements Serializable {
     private static final long serialVersionUID = 1L;
     
     @Temporal(TemporalType.TIMESTAMP)
-    private Date created;
+    private Date created = new Date();
     private String userId;
     private Integer eventId;
 

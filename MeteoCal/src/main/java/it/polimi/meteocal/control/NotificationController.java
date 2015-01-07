@@ -13,6 +13,7 @@ import it.polimi.meteocal.entityManager.UserManager;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -42,12 +43,24 @@ public class NotificationController {
     @PostConstruct
     private void init(){
         messages.put(KindOfNotification.INVITEDTOEVENT, "You are invited to partecipate to %s. Click for further details.");
-        messages.put(KindOfNotification.EVENTCANCELLED, "\"%s\" has been cancelled!");
+        messages.put(KindOfNotification.EVENTCANCELLED, null);
         messages.put(KindOfNotification.EVENTUPDATED, "\"%s\" has been updated. Click for further details.");         
         messages.put(KindOfNotification.SEVEREWEATHER, "\"%s\": bad weather!");         
         messages.put(KindOfNotification.SEVEREWEATHER_MOD, "\"%s\": bad weather! Click for further details.");         
         messages.put(KindOfNotification.WEATHERCHANGED, "\"%s\": changed weather conditions!");         
     }  
+    
+    /**
+     * This method sends a notificatin to a list of users
+     * @param users list of users
+     * @param kindOfNotif type of notification
+     * @param event referring to
+     */
+    public void sendNotificationToGroup(Set<User> users, KindOfNotification kindOfNotif, Event event) {
+        for(User u: users) {
+            this.sendNotification(u.getEmail(), kindOfNotif, event);
+        }
+    }
     
     /**
      * This methods sends a notification
@@ -64,34 +77,36 @@ public class NotificationController {
                 message = String.format(this.messages.get(KindOfNotification.INVITEDTOEVENT), event.getTitle());
                 type = 'A';
                 mailControl.sendMail(destination, KindOfEmail.INVITEDTOEVENT,event);
+                createNotification(user, event, message, type);
                 break;
             case EVENTCANCELLED:
-                message = String.format(this.messages.get(KindOfNotification.EVENTCANCELLED), event.getTitle());
-                type = 'B';
                 mailControl.sendMail(destination, KindOfEmail.EVENTCANCELLED,event);
                 break;
             case EVENTUPDATED:
                 message = String.format(this.messages.get(KindOfNotification.EVENTUPDATED), event.getTitle());
-                type = 'C';
+                type = 'B';
                 mailControl.sendMail(destination, KindOfEmail.EVENTUPDATED,event);
+                createNotification(user, event, message, type);
                 break;
             case SEVEREWEATHER:
                 message = String.format(this.messages.get(KindOfNotification.SEVEREWEATHER), event.getTitle());
-                type = 'D';
+                type = 'C';
                 mailControl.sendMail(destination, KindOfEmail.SEVEREWEATHER,event);
+                createNotification(user, event, message, type);
                 break;
             case SEVEREWEATHER_MOD:
                 message = String.format(this.messages.get(KindOfNotification.SEVEREWEATHER_MOD), event.getTitle());
-                type = 'E';
+                type = 'D';
                 mailControl.sendMail(destination, KindOfEmail.SEVEREWEATHER_MOD,event);
+                createNotification(user, event, message, type);
                 break;
             case WEATHERCHANGED:
                 message = String.format(this.messages.get(KindOfNotification.WEATHERCHANGED), event.getTitle());
-                type = 'F';
+                type = 'E';
                 mailControl.sendMail(destination, KindOfEmail.WEATHERCHANGED,event);
+                createNotification(user, event, message, type);
                 break;
         }
-        createNotification(user, event, message, type);
     }
     
     /**
