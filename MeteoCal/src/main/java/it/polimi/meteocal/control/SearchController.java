@@ -3,10 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.polimi.meteocal.entityManager;
+package it.polimi.meteocal.control;
 
 import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
+import it.polimi.meteocal.entityManager.EventManager;
+import it.polimi.meteocal.entityManager.UserManager;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -34,8 +36,7 @@ public class SearchController {
 
     public List<Event> getEvents(String keyword) {
         keywords = java.util.Arrays.asList(keyword.split(" "));
-        String queryText = "SELECT * FROM Event e WHERE e.publicEvent = 1 AND ";
-        
+        String queryText = "SELECT * FROM Event e WHERE e.publicEvent = 1 AND ";        
         String preText = "";
         for(String word: keywords){
             queryText += preText + "concat_ws(' ',e.title,e.city) LIKE '%"+word+"%'";
