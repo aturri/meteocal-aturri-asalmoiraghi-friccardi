@@ -7,7 +7,7 @@ package it.polimi.meteocal.boundary;
 
 import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
-import it.polimi.meteocal.entityManager.SearchController;
+import it.polimi.meteocal.control.SearchController;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
