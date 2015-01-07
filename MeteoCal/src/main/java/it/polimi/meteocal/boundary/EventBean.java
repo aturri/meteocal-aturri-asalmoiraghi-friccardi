@@ -102,7 +102,7 @@ public class EventBean {
             MessageBean.addError("errorMsg",message);
             return "";
         }
-        return NavigationBean.redirectToHome();
+        return NavigationBean.redirectToEventDetailsPage(event.getId());
     }
     
     /**
@@ -472,6 +472,14 @@ public class EventBean {
      */
     public Boolean isCurrentUserCreator() {
         return event.getCreator().getEmail().equals(userManager.getLoggedUser().getEmail());
+    }
+    
+    /**
+     * This method says if the current user is the creator of the specified event
+     * @return true if the current user is creator
+     */
+    public Boolean isCurrentUserCreatorOf(Integer id) {
+        return eventManager.findById(id).getCreator().getEmail().equals(userManager.getLoggedUser().getEmail());
     }
     
     /**

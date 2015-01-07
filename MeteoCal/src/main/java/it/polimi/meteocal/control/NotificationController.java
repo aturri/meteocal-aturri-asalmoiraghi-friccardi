@@ -136,4 +136,16 @@ public class NotificationController {
             notificationManager.remove(n);
         }
     }
+    
+    /**
+     * This method updates all user's notifications, marking them as read
+     * @param user whose notifications are marked as read
+     */
+    public void setAsRead(User user) {
+        List<Notification> toBeMarkedAsRead = notificationManager.findAllNotificationsByUser(user.getEmail());
+        for(Notification n: toBeMarkedAsRead) {
+            n.setReadByUser(true);
+            notificationManager.update(n);
+        }
+    }
 }

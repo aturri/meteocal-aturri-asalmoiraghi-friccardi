@@ -392,7 +392,7 @@ public class EventController {
         for(Event e: events) {
             this.event = e;
             this.updateWeather();
-            if(this.event.getWeather()!=null) {
+            if(this.event.getWeather()!=null && !this.event.getIndoor()) {
                 if(weatherControl.isBadTxt(this.event.getWeather().getWeather())) {
                     notificationControl.sendNotificationToGroup(this.event.getUsers(), KindOfNotification.ALERTWEATHER1, this.event);                    
                     notificationControl.sendNotificationToGroup(this.event.getInvitedUsers(), KindOfNotification.ALERTWEATHER1, this.event);                    
@@ -414,7 +414,7 @@ public class EventController {
         for(Event e: events) {
             this.event = e;
             this.updateWeather();
-            if(this.event.getWeather()!=null) {
+            if(this.event.getWeather()!=null && !this.event.getIndoor()) {
                 notificationControl.sendNotification(this.event.getCreator().getEmail(), KindOfNotification.ALERTWEATHER3, this.event);
             }
         }

@@ -15,7 +15,7 @@
 
             <ui:define name="main">
                 <div id="mainContent">
-                    <h:form id="editEventForm" class="meteoCalForm">
+                    <h:form id="editEventForm" class="meteoCalForm" rendered="#{eventBean.isCurrentUserCreatorOf(eventBean.event.id)}">
                         <input type="hidden" name="id" value="#{eventBean.event.id}" />
                         <p:panel header="Edit event" rendered="#{eventBean.event.creator.email == userBean.email}">
                             <h:panelGrid columns="3" id="editEventGrid">

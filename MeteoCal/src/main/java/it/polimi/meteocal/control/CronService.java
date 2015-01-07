@@ -22,28 +22,28 @@ public class CronService {
     @Inject
     EventController eventControl;
     
-    @Schedule(hour="*/2", persistent=false)
+    @Schedule(hour="*/1", persistent=false)
     public void updateWeather() {
         Logger.getLogger(CronService.class.getName()).log(Level.INFO,"SCHEDULED TASK #1 BEGIN");
-        Logger.getLogger(CronService.class.getName()).log(Level.INFO,"Repeated every 2 hrs");
+        Logger.getLogger(CronService.class.getName()).log(Level.INFO,"Repeated every hour");
         Logger.getLogger(CronService.class.getName()).log(Level.INFO,new Date().toString());
         eventControl.checkWeatherFutureEvents();
         Logger.getLogger(CronService.class.getName()).log(Level.INFO,"SCHEDULED TASK #1 END");
     }
     
-    @Schedule(dayOfWeek="*", persistent=false)
+    @Schedule(hour="10", dayOfWeek="*", persistent=false)
     public void sendBadWeatherAlerts() {
         Logger.getLogger(CronService.class.getName()).log(Level.INFO,"SCHEDULED TASK #3 BEGIN");
-        Logger.getLogger(CronService.class.getName()).log(Level.INFO,"Repeated every day");
+        Logger.getLogger(CronService.class.getName()).log(Level.INFO,"Repeated every day at 10:00 am");
         Logger.getLogger(CronService.class.getName()).log(Level.INFO,new Date().toString());
         eventControl.checkBadWeatherTomorrow();
         Logger.getLogger(CronService.class.getName()).log(Level.INFO,"SCHEDULED TASK #3 END");
     }
     
-    @Schedule(dayOfWeek="*", persistent=false)
+    @Schedule(hour="10", dayOfWeek="*", persistent=false)
     public void sendClosestSunnyDay() {
         Logger.getLogger(CronService.class.getName()).log(Level.INFO,"SCHEDULED TASK #3 BEGIN");
-        Logger.getLogger(CronService.class.getName()).log(Level.INFO,"Repeated every day");
+        Logger.getLogger(CronService.class.getName()).log(Level.INFO,"Repeated every day at 10:00 am");
         Logger.getLogger(CronService.class.getName()).log(Level.INFO,new Date().toString());
         eventControl.checkBadWeatherAndSearch();
         Logger.getLogger(CronService.class.getName()).log(Level.INFO,"SCHEDULED TASK #3 END");

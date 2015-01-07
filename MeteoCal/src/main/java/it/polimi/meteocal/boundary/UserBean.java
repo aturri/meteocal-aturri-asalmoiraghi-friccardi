@@ -8,6 +8,7 @@ package it.polimi.meteocal.boundary;
 import it.polimi.meteocal.entity.Notification;
 import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
+import it.polimi.meteocal.entityManager.NotificationManager;
 import it.polimi.meteocal.entityManager.UserManager;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,9 @@ public class UserBean {
 
     @EJB
     UserManager um;
+    
+    @EJB
+    NotificationManager notificationManager;
     
     public UserBean() {
     }
@@ -49,11 +53,11 @@ public class UserBean {
     }
     
     public int getNumOfNotReadNotifications() {
-        return um.countNotReadNotifications();
+        return notificationManager.countNotReadNotifications(um.getLoggedUser().getEmail());
     }
     
     public List<Notification> getNotifications() {
-        return um.findAllNotifications();
+        return notificationManager.findAllNotificationsByUser(um.getLoggedUser().getEmail());
     }
     
     public List<Event> getEventsInCalendar() {
