@@ -81,7 +81,7 @@ public class MailController {
                 + "Title: %s<br />"
                 + "Description: %s<br />"
                 + "<br />"
-                + "All the partecipating are be notified. Sorry for the drawback.<br />"
+                + "All the partecipating users and invited users are be notified. Sorry for the drawback.<br />"
                 + this.meteocalsSignature);
         subjects.put(KindOfEmail.EVENTUPDATED, "An event that you l'll partecipate is updated");
         messages.put(KindOfEmail.EVENTUPDATED, ""
@@ -91,33 +91,40 @@ public class MailController {
                 + "<a href=\""+meteocalURL+"event/detail.xhtml?id=%d\">%s</a><br />"
                 + "<br />"
                 + "Click on the link to see more details.<br />"
+                + "<br />"
+                + "All the partecipating users and invited users are be notified. Sorry for the drawback.<br />"
                 + this.meteocalsSignature);
-        subjects.put(KindOfEmail.SEVEREWEATHER, "Bad weather alert");
-        messages.put(KindOfEmail.SEVEREWEATHER, ""
+        subjects.put(KindOfEmail.ALERTWEATHER1, "Bad weather alert");
+        messages.put(KindOfEmail.ALERTWEATHER1, ""
                 + this.meteocalsHello
                 + "For the following event we detected bad weather:<br />"
                 + "<br />"
                 + "<a href=\""+meteocalURL+"event/detail.xhtml?id=%d\">%s</a><br />"
                 + "<br />"
                 + "Click on the link to see more details.<br />"
+                + "<br />"
+                + "All the partecipating users and invited users are be notified. Sorry for the drawback.<br />"
                 + this.meteocalsSignature);
-        subjects.put(KindOfEmail.SEVEREWEATHER_MOD, "Bad weather alert");
-        messages.put(KindOfEmail.SEVEREWEATHER_MOD, ""
+        subjects.put(KindOfEmail.ALERTWEATHER3, "Update the event with a sunny day");
+        messages.put(KindOfEmail.ALERTWEATHER3, ""
                 + this.meteocalsHello
                 + "For the following event we detected bad weather:<br />"
                 + "<br />"
-                + "<a href=\""+meteocalURL+"event/detail.xhtml?id=%d\">%s</a><br />"
+                + "<a href=\""+meteocalURL+"event/edit.xhtml?id=%d\">%s</a><br />"
                 + "<br />"
-                + "Click on the link to see more details and to update the event.<br />"
+                + "but there may be good weather on a close day!"
+                + "Click on the link to see it and to update the event.<br />"
                 + this.meteocalsSignature);
         subjects.put(KindOfEmail.WEATHERCHANGED, "An event that you l'll partecipate has changed forecasts");
         messages.put(KindOfEmail.WEATHERCHANGED, ""
                 + this.meteocalsHello
-                + "The following event has weather forecasts changed:<br />"
+                + "The following event has weather forecasts changed to %s:<br />"
                 + "<br />"
                 + "<a href=\""+meteocalURL+"event/detail.xhtml?id=%d\">%s</a><br />"
                 + "<br />"
                 + "Click on the link to see more details.<br />"
+                + "<br />"
+                + "All the partecipating users and invited users are be notified. Sorry for the drawback.<br />"
                 + this.meteocalsSignature);
     }
     
@@ -153,17 +160,19 @@ public class MailController {
                 subject=this.subjects.get(KindOfEmail.EVENTUPDATED);
                 message=String.format(this.messages.get(KindOfEmail.EVENTUPDATED), user.getName(),user.getSurname(),event.getCreator().getName(),event.getCreator().getSurname(),event.getCreator().getEmail(),event.getId(),event.getTitle());
                 break;
-            case SEVEREWEATHER:
-                subject=this.subjects.get(KindOfEmail.SEVEREWEATHER);
-                message=String.format(this.messages.get(KindOfEmail.SEVEREWEATHER),event.getId(),event.getTitle());
+            case ALERTWEATHER1:
+                subject=this.subjects.get(KindOfEmail.ALERTWEATHER1);
+                message=String.format(this.messages.get(KindOfEmail.ALERTWEATHER1), user.getName(),user.getSurname(),event.getId(),event.getTitle());
                 break;
-            case SEVEREWEATHER_MOD:
-                subject=this.subjects.get(KindOfEmail.SEVEREWEATHER_MOD);
-                message=String.format(this.messages.get(KindOfEmail.SEVEREWEATHER_MOD),event.getId(),event.getTitle());
+            case ALERTWEATHER3:
+                subject=this.subjects.get(KindOfEmail.ALERTWEATHER3);
+                message=String.format(this.messages.get(KindOfEmail.ALERTWEATHER3), user.getName(),user.getSurname(),event.getId(),event.getTitle());
                 break;
             case WEATHERCHANGED:
                 subject=this.subjects.get(KindOfEmail.WEATHERCHANGED);
-                message=String.format(this.messages.get(KindOfEmail.WEATHERCHANGED),event.getId(),event.getTitle());
+                String weatherStr = "not available";
+                if(event.getWeather()!=null) weatherStr = event.getWeather().getWeather();
+                message=String.format(this.messages.get(KindOfEmail.WEATHERCHANGED),user.getName(),user.getSurname(),weatherStr,event.getId(),event.getTitle());
                 break;
             case GENERIC:
                 throw new InvalidArgumentException("You must use sendGenericEmail() and set manually subject and message email");

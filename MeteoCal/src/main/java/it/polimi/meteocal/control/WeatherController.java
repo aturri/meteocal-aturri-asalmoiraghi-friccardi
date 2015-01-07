@@ -157,7 +157,7 @@ public class WeatherController {
      * @param text to be analyzed
      * @return true if bad weather
      */
-    private Boolean isBadTxt(String text) {
+    public Boolean isBadTxt(String text) {
         for(String s: BAD_WEATHER) {
             if(text.toLowerCase().contains(s))
                 return true;

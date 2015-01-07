@@ -5,42 +5,56 @@
  */
 package it.polimi.meteocal.control;
 
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
+import javax.inject.Inject;
 
 /**
- *
+ * This class contains the business logic for the scheduled tasks
  * @author Andrea
  */
 @Singleton
 public class CronService {
 
-    @EJB
-    WeatherController weatherControl;
+    @Inject
+    EventController eventControl;
     
-    //@Schedule(minute="*/1", hour="*", persistent=false)
-    @Schedule(hour="*/4", persistent=false)
+    @Schedule(hour="*/2", persistent=false)
     public void updateWeather() {
-        Logger.getLogger(CronService.class.getName()).log(Level.INFO,
-                "Updating weather...");
-        weatherControl.checkAllWeather();
-        Logger.getLogger(CronService.class.getName()).log(Level.INFO,
-                "Weather updated");
+        Logger.getLogger(CronService.class.getName()).log(Level.INFO,"SCHEDULED TASK #1 BEGIN");
+        Logger.getLogger(CronService.class.getName()).log(Level.INFO,"Repeated every 2 hrs");
+        Logger.getLogger(CronService.class.getName()).log(Level.INFO,new Date().toString());
+        eventControl.checkWeatherFutureEvents();
+        Logger.getLogger(CronService.class.getName()).log(Level.INFO,"SCHEDULED TASK #1 END");
     }
     
-    /*
-    Schedule 1: ogni ora deve scorrere tutti gli eventi futuri per aggiungere/aggiornare il meteo
-                    la logica che verifica l'effettivo avvenimento di una aggiunta o di un aggiornamento 
-                    in cui le condizioni meteo cambiano -> deve essere in EventController e manda le notifiche
+    @Schedule(dayOfWeek="*", persistent=false)
+    public void sendBadWeatherAlerts() {
+        Logger.getLogger(CronService.class.getName()).log(Level.INFO,"SCHEDULED TASK #3 BEGIN");
+        Logger.getLogger(CronService.class.getName()).log(Level.INFO,"Repeated every day");
+        Logger.getLogger(CronService.class.getName()).log(Level.INFO,new Date().toString());
+        eventControl.checkBadWeatherTomorrow();
+        Logger.getLogger(CronService.class.getName()).log(Level.INFO,"SCHEDULED TASK #3 END");
+    }
     
-    Schedule 2: ogni giorno ad un'ora fissa controlla gli eventi di domani -> EventController farà il controllo
-                    e se il tempo fa schifo deve mandare al creatore la notifica speciale, agli altri utenti
-                    la notifica normale
+    @Schedule(dayOfWeek="*", persistent=false)
+    public void sendClosestSunnyDay() {
+        Logger.getLogger(CronService.class.getName()).log(Level.INFO,"SCHEDULED TASK #3 BEGIN");
+        Logger.getLogger(CronService.class.getName()).log(Level.INFO,"Repeated every day");
+        Logger.getLogger(CronService.class.getName()).log(Level.INFO,new Date().toString());
+        eventControl.checkBadWeatherAndSearch();
+        Logger.getLogger(CronService.class.getName()).log(Level.INFO,"SCHEDULED TASK #3 END");
+    }
     
-    Schedule 3: ogni giorno ad un'ora fissa controlla gli eventi tra 3 giorni e manda in caso di brutto tempo 
-                    la notifica con la proposta di cambio data
-    */
+    //@Schedule(minute="*/1", hour="*", persistent=false)
+    public void test() {
+        Logger.getLogger(CronService.class.getName()).log(Level.INFO,"SCHEDULED TASK TEST BEGIN");
+        eventControl.checkWeatherFutureEvents();
+        eventControl.checkBadWeatherTomorrow();
+        eventControl.checkBadWeatherAndSearch();
+        Logger.getLogger(CronService.class.getName()).log(Level.INFO,"SCHEDULED TASK TEST END");
+    }
 }

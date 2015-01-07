@@ -14,6 +14,7 @@ import it.polimi.meteocal.exception.EventOverlapException;
 import it.polimi.meteocal.exception.IllegalEventDateException;
 import it.polimi.meteocal.exception.IllegalInvitedUserException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -132,6 +133,17 @@ public class EventController {
     }
     
     /**
+     * This method updates the weather for the current event
+     */
+    private void updateWeather() {
+        Integer widx = -1;
+        if(this.event.getWeather()!=null) widx = this.event.getWeather().getId();
+        this.attachWeather();
+        this.eventManager.update(this.event);
+        this.weatherControl.destroyWeather(widx);
+    }
+    
+    /**
      * This method creates the event
      * @param event to be created
      * @param invitedUsers list of users to be invited (comma separated)
@@ -196,11 +208,7 @@ public class EventController {
             throw new IllegalEventDateException();
         }
         //weather & update
-        Integer widx = -1;
-        if(this.event.getWeather()!=null) widx = this.event.getWeather().getId();
-        this.attachWeather();
-        this.eventManager.update(this.event);
-        this.weatherControl.destroyWeather(widx);
+        this.updateWeather();
         //notify users
         Set<User> participants = this.event.getUsers();
         participants.remove(this.event.getCreator());
@@ -215,7 +223,6 @@ public class EventController {
                 invitedUser.getInvitations().add(this.event);
                 userManager.update(invitedUser);
                 notificationControl.sendNotification(email, KindOfNotification.INVITEDTOEVENT, this.event);
-                //mailControl.sendMail(email, KindOfEmail.INVITEDTOEVENT,this.event);
             }
             this.eventManager.update(this.event);   
         }
@@ -346,5 +353,70 @@ public class EventController {
         eventManager.update(this.event);   
         user.getEvents().remove(this.event);
         userManager.update(user);
+    }
+    
+    /**
+     * This method checks weather updates for all future events and notifies
+     * all invited user and participants if the weather conditions changes.
+     */
+    public void checkWeatherFutureEvents() {
+        List<Event> events = eventManager.findAllFuture();
+        for(Event e: events) {
+            this.event = e;
+            System.out.println(this.event.getId().toString());
+            String oldWeather = "", newWeather = "";
+            if(this.event.getWeather()!=null) {
+                oldWeather = this.event.getWeather().getWeather();
+            }
+            this.updateWeather();
+            if(this.event.getWeather()!=null) {
+                newWeather = this.event.getWeather().getWeather();
+            }
+            if(!oldWeather.equals(newWeather)) {
+                notificationControl.sendNotificationToGroup(this.event.getUsers(), KindOfNotification.WEATHERCHANGED, this.event);
+                notificationControl.sendNotificationToGroup(this.event.getInvitedUsers(), KindOfNotification.WEATHERCHANGED, this.event);
+            }
+        }
+    }
+    
+    /**
+     * This method checks weather updates for events of tomorrow and notifies 
+     * all invited users and participants if there will be bad weather.
+     */
+    public void checkBadWeatherTomorrow() {
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+        c.add(Calendar.DATE, 1);
+        Date tomorrow = c.getTime();
+        List<Event> events = eventManager.findTomorrowEvents(tomorrow);
+        for(Event e: events) {
+            this.event = e;
+            this.updateWeather();
+            if(this.event.getWeather()!=null) {
+                if(weatherControl.isBadTxt(this.event.getWeather().getWeather())) {
+                    notificationControl.sendNotificationToGroup(this.event.getUsers(), KindOfNotification.ALERTWEATHER1, this.event);                    
+                    notificationControl.sendNotificationToGroup(this.event.getInvitedUsers(), KindOfNotification.ALERTWEATHER1, this.event);                    
+                }
+            }
+        }
+    }
+    
+    /**
+     * This method checks weather updates for events of 3 days next and notifies
+     * the creator in case that it is bad.
+     */
+    public void checkBadWeatherAndSearch() {
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+        c.add(Calendar.DATE, 3);
+        Date date = c.getTime();        
+        List<Event> events = eventManager.findTomorrowEvents(date);
+        for(Event e: events) {
+            this.event = e;
+            this.updateWeather();
+            if(this.event.getWeather()!=null) {
+                notificationControl.sendNotification(this.event.getCreator().getEmail(), KindOfNotification.ALERTWEATHER3, this.event);
+            }
+        }
     }
 }

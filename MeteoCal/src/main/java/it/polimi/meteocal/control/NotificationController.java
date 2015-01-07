@@ -45,8 +45,8 @@ public class NotificationController {
         messages.put(KindOfNotification.INVITEDTOEVENT, "You are invited to partecipate to %s. Click for further details.");
         messages.put(KindOfNotification.EVENTCANCELLED, null);
         messages.put(KindOfNotification.EVENTUPDATED, "\"%s\" has been updated. Click for further details.");         
-        messages.put(KindOfNotification.SEVEREWEATHER, "\"%s\": bad weather!");         
-        messages.put(KindOfNotification.SEVEREWEATHER_MOD, "\"%s\": bad weather! Click for further details.");         
+        messages.put(KindOfNotification.ALERTWEATHER1, "\"%s\": bad weather!");         
+        messages.put(KindOfNotification.ALERTWEATHER3, "\"%s\": change date with a sunny day!");         
         messages.put(KindOfNotification.WEATHERCHANGED, "\"%s\": changed weather conditions!");         
     }  
     
@@ -88,16 +88,16 @@ public class NotificationController {
                 mailControl.sendMail(destination, KindOfEmail.EVENTUPDATED,event);
                 createNotification(user, event, message, type);
                 break;
-            case SEVEREWEATHER:
-                message = String.format(this.messages.get(KindOfNotification.SEVEREWEATHER), event.getTitle());
+            case ALERTWEATHER1:
+                message = String.format(this.messages.get(KindOfNotification.ALERTWEATHER1), event.getTitle());
                 type = 'C';
-                mailControl.sendMail(destination, KindOfEmail.SEVEREWEATHER,event);
+                mailControl.sendMail(destination, KindOfEmail.ALERTWEATHER1,event);
                 createNotification(user, event, message, type);
                 break;
-            case SEVEREWEATHER_MOD:
-                message = String.format(this.messages.get(KindOfNotification.SEVEREWEATHER_MOD), event.getTitle());
+            case ALERTWEATHER3:
+                message = String.format(this.messages.get(KindOfNotification.ALERTWEATHER3), event.getTitle());
                 type = 'D';
-                mailControl.sendMail(destination, KindOfEmail.SEVEREWEATHER_MOD,event);
+                mailControl.sendMail(destination, KindOfEmail.ALERTWEATHER3,event);
                 createNotification(user, event, message, type);
                 break;
             case WEATHERCHANGED:

@@ -6,9 +6,19 @@
 package it.polimi.meteocal.entityManager;
 
 import it.polimi.meteocal.entity.Event;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TemporalType;
+import javax.persistence.TypedQuery;
 
 /**
  * This class manages the CRUD operation on Event
@@ -62,5 +72,34 @@ public class EventManager {
     public Event findById(Integer id) {
         return em.find(Event.class, id);
     }
-           
+    
+    /**
+     * This method finds all event objects with future begin date
+     * @return list of event ojbects with begin date >= current date
+     */
+    public List<Event> findAllFuture() {
+        TypedQuery<Event> query = em.createQuery("SELECT e FROM Event e WHERE e.beginDate >= CURRENT_TIMESTAMP", Event.class);
+        return query.getResultList();
+    }
+
+    /**
+     * This method finds all event objects that start on a specified date
+     * @param date where to search events
+     * @return list of event ojbects with begin date = specified date
+     */
+    public List<Event> findTomorrowEvents(Date date) {
+        List<Event> events = new ArrayList<>();
+        try {
+            String dateString = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH).format(date);
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd HH:mm", Locale.ENGLISH);
+            Date date1 = format.parse(dateString+" 00:00");
+            Date date2 = format.parse(dateString+" 23:59");
+            TypedQuery<Event> query = em.createQuery("SELECT e FROM Event e WHERE e.beginDate >= :bdate and e.endDate <= :edate", Event.class).
+                    setParameter("bdate", date1, TemporalType.TIMESTAMP).setParameter("edate", date2, TemporalType.TIMESTAMP);
+            events = query.getResultList();
+        } catch (ParseException ex) {
+            Logger.getLogger(EventManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return events;
+    }    
 }
