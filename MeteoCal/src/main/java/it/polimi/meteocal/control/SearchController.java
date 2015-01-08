@@ -51,7 +51,7 @@ public class SearchController {
     
     public List<User> getUsers(String keyword) {
         keywords = java.util.Arrays.asList(keyword.split(" "));
-        String queryText = "SELECT * FROM User u WHERE privatecalendar = 0 AND ";
+        String queryText = "SELECT * FROM User u WHERE u.email NOT LIKE '"+um.getLoggedUser().getEmail()+"' AND ";
         String preText = "";
         for(String word: keywords){
             queryText += preText + "concat_ws(' ',u.email,u.name,u.surname) LIKE '%"+word+"%'";

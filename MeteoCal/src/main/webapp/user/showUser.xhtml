@@ -14,7 +14,7 @@
         <br/>
        
         Calendar of user: #{calendarBean.user.name} #{calendarBean.user.surname}
-        <h:form rendered="#{calendarBean.isPublicCalendar()}">
+        <h:form rendered="#{calendarBean.publicCalendar}">
             <p:growl id="messages" showDetail="true" sticky="true"/>
 
             <h:panelGrid columnClasses="value">
@@ -75,6 +75,10 @@
                 </h:panelGrid>
             </p:dialog>    
         </h:form>
+        
+        <p:panel rendered="#{!calendarBean.publicCalendar}">
+            The calendar is private
+        </p:panel>
     </h:body>
     
     <style type="text/css">
