@@ -1,7 +1,7 @@
 	html, body {
 		margin: 0;
 		padding: 0;
-		font-family: 'Helvetica';
+		font-family: 'Helvetica','Arial';
 	}
         hr {
             width: 94%;
@@ -135,13 +135,15 @@
             background: -ms-linear-gradient(top, #eeeeee 0%,#eeeeee 100%);
             background: linear-gradient(to bottom, #eeeeee 0%,#eeeeee 100%);
             filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#eeeeee',GradientType=0 );
-            color: #000000;
+            color: #464646;
+            font-family: 'Helvetica','Arial';
             font-weight: lighter;
             font-size: 15px;
             text-shadow: none;
-            border-radius: 3px;
+            border-radius: 8px;
         }
         .ui-growl-item-container {
+            border-radius: 8px;
             box-shadow: 0px 0px 14px 0px #363636;
         }
         
