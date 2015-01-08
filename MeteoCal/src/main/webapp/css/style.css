@@ -126,3 +126,41 @@
         .ui-growl {
             top: 60px !important;
         }
+        
+        /*SEARCH PANEL STYLE*/
+        .searchPanel{
+            /*width: 30%;*/
+            text-align: center;
+        }
+        .searchPanel .ui-overlaypanel-content, 
+        .searchTabView .ui-tabs, .searchTabView .ui-tabs-panel, 
+        .searchData .ui-datascroller, .searchData .ui-datascroller-content,
+        .searchData .ui-datascroller-loader{
+            padding: 0px !important;
+        }
+        .ui-datascroller-item{
+            padding: 8px 5px 0px 5px !important;
+        }
+        .searchTabView, .searchTab, .searchData{
+            padding: 0px !important;
+        }
+        .searchSeparator{
+            width: 97%;
+            margin: 7px;
+        }
+        
+        a.searchLink{
+            text-decoration: none;
+            font-weight: bold;
+            
+        }
+        a.searchLink:link{
+            color: blue;
+        }
+        a.searchLink:visited{
+            color: #8e8e8e;
+        }
+        a.searchLink:hover{
+            color: navy;
+        }
+        

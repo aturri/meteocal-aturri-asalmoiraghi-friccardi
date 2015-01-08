@@ -4,5 +4,34 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:p="http://primefaces.org/ui"
     xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <p:inputText/>
+    <p:growl id="searchMessages" for="resultsMessage"/>
+    <h:form>
+        <p:inputText id="txtSearch" value="#{searchBean.keyword}" required="true" label="Keyword" placeholder="Search">
+            <f:validateLength minimum="3" />
+            <p:ajax listener="#{searchBean.searchKeyword()}" update="resultsSearch :searchMessages" event="keyup" />
+        </p:inputText>
+        
+        <p:overlayPanel for="txtSearch" class="searchPanel">
+            <p:tabView id="resultsSearch" class="searchTabView">
+                <p:tab title="Users (#{searchBean.users.size()})" class="searchTab">
+                    <p:dataScroller value="#{searchBean.users}" var="usersResult" chunkSize="20" class="searchData">
+                        <p:link value="#{usersResult.name} #{usersResult.surname}" 
+                                outcome="#{navigationBean.toShowUser(usersResult.email)}" 
+                                class="searchLink"/>
+                        <p:separator class="searchSeparator"/>
+                    </p:dataScroller>
+                </p:tab>
+
+                <p:tab title="Events (#{searchBean.events.size()})" class="searchTab">
+                    <p:dataScroller value="#{searchBean.events}" var="eventsResult" chunkSize="20" class="searchData">
+                        <p:link value="#{eventsResult.title}" 
+                                outcome="#{navigationBean.toShowUser(usersResult.email)}" 
+                                class="searchLink"/>
+                        (#{eventsResult.city}) - #{eventsResult.beginDate}
+                        <p:separator class="searchSeparator"/>
+                    </p:dataScroller>
+                </p:tab>
+            </p:tabView>
+        </p:overlayPanel>
+    </h:form>
 </ui:composition>
