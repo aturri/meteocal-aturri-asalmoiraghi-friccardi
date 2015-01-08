@@ -7,15 +7,9 @@ package it.polimi.meteocal.entity;
 
 import it.polimi.meteocal.control.Utility;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -23,6 +17,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
@@ -82,7 +77,7 @@ public class User implements Serializable {
     @ManyToMany
     @JoinTable(name = "CONTACTS", joinColumns = {
         @JoinColumn(name = "User_EMAIL", referencedColumnName = "EMAIL", nullable = false)}, inverseJoinColumns = {
-        @JoinColumn(name = "Contact_EMAIL", referencedColumnName = "EMAIL", nullable = false)})
+            @JoinColumn(name = "Contact_EMAIL", referencedColumnName = "EMAIL", nullable = false)})
     private Set<User> contacts;
     
     public String getEmail() {
