@@ -12,6 +12,7 @@ import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.inject.Inject;
 import javax.inject.Named;
  
 import org.primefaces.event.ScheduleEntryMoveEvent;
@@ -26,11 +27,11 @@ import org.primefaces.model.ScheduleModel;
 @ViewScoped
 public class CalendarBean implements Serializable {
     
+    @Inject
+    private EventBean eb;
     @EJB
     private UserManager um;
-    @EJB
-    private EventManager em;
- 
+    
     private ScheduleModel eventModel;
      
     private ScheduleEvent scheduleEvent;
@@ -42,7 +43,7 @@ public class CalendarBean implements Serializable {
     @PostConstruct
     public void init() {        
         eventModel = new DefaultScheduleModel();
-        
+    
         if(this.user == null && existsParam("email")){
             setUserByParam();
         }
@@ -191,26 +192,28 @@ public class CalendarBean implements Serializable {
     }
     
     private void updateEvent(){
-        em.update(event);
+        eb.setEvent(event);
+        eb.editEvent();
+//        em.update(event);
         eventModel.deleteEvent(scheduleEvent);
         eventModel.addEvent(new DefaultScheduleEvent(event.getTitle(), event.getBeginDate(), event.getEndDate(), event));
         MessageBean.addInfo("Event succesfully updated.");
     }
     
     private void saveEvent() {
-        //setup creator
-        User owner = um.getLoggedUser(); 
-        this.event.setCreator(owner);
-        this.event.getUsers().add(owner);
-        em.save(event);
-        
+        eb.setEvent(event);
+        eb.createEvent();
+//        //setup creator
+//        User owner = um.getLoggedUser(); 
+//        this.event.setCreator(owner);
+//        this.event.getUsers().add(owner);
+//        em.save(event);        
         eventModel.addEvent(new DefaultScheduleEvent(event.getTitle(), event.getBeginDate(), event.getEndDate(), event));
-        
         MessageBean.addInfo("New event succesfully created.");
     }
     
-    public Date getToday() {
-        return new Date();
-    }
+//    public Date getToday() {
+//        return new Date();
+//    }
 
 }
