@@ -14,6 +14,10 @@
         <ui:composition template="/template/main.xhtml">
             <ui:define name="title">Event Details</ui:define>
             
+            <ui:define name="paramLogout">
+                <input type="hidden" name="id" value="#{eventBean.event.id}" />
+            </ui:define>
+            
             <ui:define name="left">
                 <h:form id="actionEventForm">
                     <input type="hidden" name="id" value="#{eventBean.event.id}" />

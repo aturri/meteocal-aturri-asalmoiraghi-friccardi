@@ -11,20 +11,6 @@
         <ui:composition template="/template/main.xhtml">
             <ui:define name="title">Home</ui:define>
             
-            <ui:define name="header">
-                <div id="topbar">
-                        <div id="logo"><h:link outcome="/user/home" value="MeteoCal"/></div>
-                        <ui:include src="/search/search.xhtml" />
-                        <div id="buttons">
-                                <p:link outcome="/event/create" value="Create Event"/>
-                                <p:link outcome="/user/settings" value="Settings"/>
-                                <h:form>
-                                    <p:commandLink action="#{loginBean.logout()}" value="Logout"/>
-                                </h:form>
-                        </div>
-                </div>
-            </ui:define>
-            
             <ui:define name="left">
                 Welcome back #{userBean.loggedUser.name} #{userBean.loggedUser.surname}
                 <br/>
