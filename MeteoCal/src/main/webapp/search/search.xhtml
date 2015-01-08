@@ -25,7 +25,7 @@
                 <p:tab title="Events (#{searchBean.events.size()})" class="searchTab">
                     <p:dataScroller value="#{searchBean.events}" var="eventsResult" chunkSize="20" class="searchData">
                         <p:link value="#{eventsResult.title}" 
-                                outcome="#{navigationBean.toShowUser(usersResult.email)}" 
+                                outcome="#{navigationBean.toEventDetailsPage(eventsResult.id)}" 
                                 class="searchLink"/>
                         (#{eventsResult.city}) - #{eventsResult.beginDate}
                         <p:separator class="searchSeparator"/>

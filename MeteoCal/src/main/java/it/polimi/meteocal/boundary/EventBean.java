@@ -102,7 +102,7 @@ public class EventBean {
             MessageBean.addError("errorMsg",message);
             return "";
         }
-        return NavigationBean.redirectToEventDetailsPage(event.getId());
+        return NavigationBean.redirectToEventDetailsPage(event.getId().toString());
     }
     
     /**
@@ -129,7 +129,7 @@ public class EventBean {
             MessageBean.addError("errorMsg",message);
             return "";
         }
-        return NavigationBean.redirectToEventDetailsPage(event.getId());
+        return NavigationBean.redirectToEventDetailsPage(event.getId().toString());
     }
     
     /**
@@ -183,7 +183,7 @@ public class EventBean {
      */
     public String removeParticipant(String email) {
         eventControl.removeParticipant(event, email);
-        return NavigationBean.redirectToEventDetailsPage(event.getId());
+        return NavigationBean.redirectToEventDetailsPage(event.getId().toString());
     }    
     
     /**
@@ -193,7 +193,7 @@ public class EventBean {
      */
     public String removeInvitation(String email) {
         eventControl.removeInvitedUser(event, email);
-        return NavigationBean.redirectToEventDetailsPage(event.getId());
+        return NavigationBean.redirectToEventDetailsPage(event.getId().toString());
     }
  
     /**

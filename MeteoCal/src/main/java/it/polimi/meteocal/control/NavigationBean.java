@@ -116,14 +116,6 @@ public class NavigationBean implements Serializable {
     }
     
     /**
-     * Go to search results page.
-     * @return search results page name.
-     */
-    public static String toSearchResultsPage(){
-        return "/search/results";
-    }
-    
-    /**
      * Go to user page.
      * @param email of the user
      * @return user page name.
@@ -141,8 +133,8 @@ public class NavigationBean implements Serializable {
         return "/event/detail?id="+id;
     }    
         
-    public static String redirectToEventDetailsPage(Integer id){
-        return "/event/detail.xhtml?faces-redirect=true&id="+id.toString();
+    public static String redirectToEventDetailsPage(String id){
+        return "/event/detail.xhtml?faces-redirect=true&id="+id;
     }
     
     /**

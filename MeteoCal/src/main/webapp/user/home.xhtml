@@ -14,8 +14,6 @@
             <ui:define name="left">
                 Welcome back #{userBean.loggedUser.name} #{userBean.loggedUser.surname}
                 <br/>
-                <p:link outcome="#{navigationBean.toSearchResultsPage()}" value="Results"/>
-                <br/>
                 <p:link outcome="/user/favoriteUsers" value="Favorite Users"/>                
             </ui:define>
 
