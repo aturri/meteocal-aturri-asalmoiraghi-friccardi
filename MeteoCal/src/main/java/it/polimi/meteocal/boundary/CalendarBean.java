@@ -2,7 +2,6 @@ package it.polimi.meteocal.boundary;
 
 import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
-import it.polimi.meteocal.entityManager.EventManager;
 import it.polimi.meteocal.entityManager.UserManager;
 import java.io.Serializable;
 import java.util.Date;

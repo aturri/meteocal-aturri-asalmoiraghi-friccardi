@@ -180,6 +180,13 @@ public class Event implements Serializable {
     public void setIndoor(Boolean indoor) {
         this.indoor = indoor;
     }
+    
+    public String getIndoorString(){
+        if(getIndoor())
+            return "Indoor";
+        else
+            return "Outdoor";
+    }
 
     public Set<User> getUsers() {
         return users;

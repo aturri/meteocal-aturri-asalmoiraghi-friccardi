@@ -1,91 +1,52 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <h:head>
-        <title>Show user | MeteoCal</title>
-    </h:head>
-    <h:body>
-        
-        <p:link outcome="/user/home" value="Back to home"/>
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    template="/template/main.xhtml">
+    
+    <ui:define name="title">Home</ui:define>
+    
+    <ui:define name="left">
+        Welcome back #{userBean.loggedUser.name} #{userBean.loggedUser.surname}
         <br/>
-       
+        <p:link outcome="/user/favoriteUsers" value="Favorite Users"/>                
+    </ui:define>
+    
+    <ui:define name="main">
         Calendar of user: #{calendarBean.user.name} #{calendarBean.user.surname}
         <h:form rendered="#{calendarBean.publicCalendar}">
             <p:growl id="messages" showDetail="true" sticky="true"/>
 
-            <h:panelGrid columnClasses="value">
+            <h:panelGrid style="width:100%">
                 <p:schedule id="schedule" value="#{calendarBean.eventModel}"
                             slotMinutes="15" widgetVar="myschedule" timeZone="GMT+1"
                             draggable="false" resizable="false">
-
-                    <p:ajax event="dateSelect" listener="#{calendarBean.onDateSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
                     <p:ajax event="eventSelect" listener="#{calendarBean.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
-                    <!--<p:ajax event="eventMove" listener="#{calendarBean.onEventMove}" update="messages" />
-                    <p:ajax event="eventResize" listener="#{calendarBean.onEventResize}" update="messages" />-->
-
                 </p:schedule>
             </h:panelGrid>
 
             <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip">
                 <h:panelGrid id="eventDetails" columns="3">
-                    <p:outputLabel for="title" value="Title:" />
-                    <p:inputText id="title"  required="true" value="#{calendarBean.event.title}">
-                        <p:ajax update="titlemsg"/>
-                    </p:inputText>
-                    <p:message id="titlemsg" for="title" />
-                        
-                    <h:outputLabel for="start" value="From: *" />
-                    <p:calendar id="start" pattern="MM/dd/yyyy HH:mm" value="#{calendarBean.event.beginDate}" 
-                                navigator="true" mindate="#{calendarBean.today}" required="true">
-                        <p:ajax event="blur" update="startMsg end"/>                       
-                    </p:calendar>
-                    <p:message id="startMsg" for="start" />
-
-                    <h:outputLabel for="end" value="To: *" />
-                    <p:calendar id="end" pattern="MM/dd/yyyy HH:mm" value="#{calendarBean.event.endDate}"
-                                navigator="true" mindate="#{calendarBean.event.beginDate}" required="true">
-                         <p:ajax update="endmsg"/>                                               
-                    </p:calendar>
-                    <p:message id="endmsg" for="end" />
+                    <div><i>Title:</i> #{calendarBean.scheduleEvent.title}</div>                  
+                    <div><i>From:</i> #{calendarBean.scheduleEvent.startDate}</div> 
+                    <div><i>To:</i> #{calendarBean.scheduleEvent.endDate}</div> 
                     
-                    <p:outputLabel for="visibility" value="Visibility:" />
-                    <p:selectOneMenu id="visibility" value="#{calendarBean.event.publicEvent}" style="width: 210px" required="true">
-                        <f:selectItem itemLabel="Private" itemValue="false" />
-                        <f:selectItem itemLabel="Public" itemValue="true" />
-                        <p:ajax update="visibilitymsg"/>
-                    </p:selectOneMenu>                    
-                    <p:message id="visibilitymsg" for="visibility" /> 
-
-                    <p:outputLabel for="indoorRadio" value="Type:"/>
-                    <p:selectOneRadio id="indoorRadio" value="#{calendarBean.event.indoor}" layout="lineDirection" required="true">
-                        <f:selectItem itemLabel="Indoor" itemValue="true" />
-                        <f:selectItem itemLabel="Outdoor" itemValue="false" />
-                    </p:selectOneRadio>
-                    <p:message id="indoorMsg" for="indoorRadio" />  
-
-                    <!--<h:outputLabel for="allDay" value="All Day:" />
-                    <h:selectBooleanCheckbox id="allDay" value="#{calendarBean.scheduleEvent.allDay}" />-->
-
-                    <p:messages id="errorMsgId" for="errorMsg" />
-                    <p:commandButton id="addButton" value="Save" actionListener="#{calendarBean.addEvent}" oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
+                    <p:link rendered="#{calendarBean.event.publicEvent}" value="See details..." outcome="#{navigationBean.toEventDetailsPage(calendarBean.event.id)}" />
                 </h:panelGrid>
             </p:dialog>    
         </h:form>
         
         <p:panel rendered="#{!calendarBean.publicCalendar}">
-            The calendar is private
+            <div class='divCalendarPrivate'>
+                You can't view the calendar of this user cause the owner set his calendar PRIVATE
+            </div>
         </p:panel>
-    </h:body>
+    </ui:define>
     
-    <style type="text/css">
-    .value {
-        width: 1000px;
-    }
-</style>
-
-</html>
-
+    <ui:define name="right">
+        
+    </ui:define>
+    
+</ui:composition>
