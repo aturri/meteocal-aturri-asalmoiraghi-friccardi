@@ -193,7 +193,6 @@ public class CalendarBean implements Serializable {
     private void updateEvent(){
         eb.setEvent(event);
         eb.editEvent();
-//        em.update(event);
         eventModel.deleteEvent(scheduleEvent);
         eventModel.addEvent(new DefaultScheduleEvent(event.getTitle(), event.getBeginDate(), event.getEndDate(), event));
         MessageBean.addInfo("Event succesfully updated.");
@@ -201,18 +200,13 @@ public class CalendarBean implements Serializable {
     
     private void saveEvent() {
         eb.setEvent(event);
-        eb.createEvent();
-//        //setup creator
-//        User owner = um.getLoggedUser(); 
-//        this.event.setCreator(owner);
-//        this.event.getUsers().add(owner);
-//        em.save(event);        
+        eb.createEvent();       
         eventModel.addEvent(new DefaultScheduleEvent(event.getTitle(), event.getBeginDate(), event.getEndDate(), event));
         MessageBean.addInfo("New event succesfully created.");
     }
     
-//    public Date getToday() {
-//        return new Date();
-//    }
+    public Boolean showDetailsLink(){
+        return this.scheduleEvent != null && !"".equals(this.scheduleEvent.getTitle());
+    }
 
 }

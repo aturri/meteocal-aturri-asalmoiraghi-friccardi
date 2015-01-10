@@ -80,6 +80,7 @@
 
                             <!--<p:messages id="errorMsgId" for="errorMsg" />-->
                             <p:commandButton id="addButton" update="messages" value="Save" actionListener="#{calendarBean.addEvent}" oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
+                            <p:commandButton id="detailsButton" rendered="#{calendarBean.showDetailsLink()}" value="Details" action="#{navigationBean.redirectToEventDetailsPage(calendarBean.event.id)}" update="messages" />
                         </h:panelGrid>
                     </p:dialog>    
                 </h:form>
