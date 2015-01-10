@@ -9,10 +9,12 @@ import it.polimi.meteocal.control.Utility;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entity.Group;
 import java.security.Principal;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 /**
  * This class manages the CRUD operation on User
@@ -85,5 +87,11 @@ public class UserManager {
     public static String getCodeFromUser(User user){
         String string=user.getEmail()+user.getCity()+user.getLastAccess().toString()+user.getPassword();
         return Utility.getHashSHA256(string);
+    }
+
+    public List<User> getOtherUsers() {
+        TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.email <> :loggedUser", User.class).
+                setParameter("loggedUser", this.getLoggedUser().getEmail());
+        return query.getResultList();
     }
 }

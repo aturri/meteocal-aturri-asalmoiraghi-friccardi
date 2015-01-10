@@ -16,6 +16,7 @@ import it.polimi.meteocal.control.WeatherController;
 import it.polimi.meteocal.exception.EventOverlapException;
 import it.polimi.meteocal.exception.IllegalEventDateException;
 import it.polimi.meteocal.exception.IllegalInvitedUserException;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,17 +27,18 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.inject.Named;
-import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
+import org.primefaces.event.SelectEvent;
 
 /**
  *
  * @author Andrea
  */
 @Named
-@RequestScoped
-public class EventBean {
+@ViewScoped
+public class EventBean implements Serializable{
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy", Locale.ENGLISH);
     private static final SimpleDateFormat EXT_DATE_FORMAT = new SimpleDateFormat("EEE, d MMM yyyy HH:mm", Locale.ENGLISH);
     
@@ -53,9 +55,11 @@ public class EventBean {
     UserManager userManager;
     
     private String invitedUsers;
-
+    
+    private List invitedUsersList = new ArrayList<>();
+    
     private Event event;
-
+    
     /**
      * This method return the current event
      * @return current event
@@ -84,6 +88,7 @@ public class EventBean {
      */
     public String createEvent(){  
         String message;
+        invitedUsers = String.join(",", invitedUsersList);
         try {
             eventControl.createEvent(event, invitedUsers);
         } catch (EventOverlapException ex) {
@@ -424,6 +429,48 @@ public class EventBean {
      */
     public void setInvitedUsers(String invitedUsers) {
         this.invitedUsers = invitedUsers;
+    }
+    
+    /**
+     * This method returns the invitedUsers list
+     * @return invitedUsers
+     */
+    public List<String> getInvitedUsersList() {
+        return invitedUsersList;
+    }
+
+    /**
+     * This method sets the invitedUsers list
+     * @param invitedUsers 
+     */
+    public void setInvitedUsersList(List<String> invitedUsers) {
+        this.invitedUsersList = invitedUsers;
+    }
+    /**
+     * This method returns suggestions list for user invitation list
+     * @param query for filtering
+     * @return users can invite
+     */
+    public List<String> completeUsersCanInvite(String query) {
+        List<User> allUser = userManager.getOtherUsers();
+        List<String> filteredUser = new ArrayList<>();
+        
+        for(User u: allUser){
+            if(u.getEmail().toLowerCase().contains(query.toLowerCase()))
+                filteredUser.add(u.getEmail());
+        }
+        
+        if(this.invitedUsersList != null)
+            filteredUser.removeAll(this.invitedUsersList);
+
+        return filteredUser;
+    }
+    
+    public void onItemSelect(SelectEvent event) {
+        this.invitedUsersList.add(event.getObject().toString());
+    }
+    public void onItemUnselect(SelectEvent event) {
+        this.invitedUsersList.remove(event.getObject().toString());
     }
 
     /**
