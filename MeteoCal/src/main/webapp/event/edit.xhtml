@@ -89,10 +89,12 @@
                                 </p:selectOneRadio>
                                 <p:message id="indoorMsg" for="indoorRadio" /> 
 
-                                <p:outputLabel for="invitations" value="Invite users (inset emails separated by a comma)" style="width: 200px; display: block" />
-                                <p:inputTextarea cols="23" id="invitations" value="#{eventBean.invitedUsers}" required="false">
-                                    <p:ajax update="errorMsgId" listener="#{eventBean.handleInvitedUsersForEdit()}"/>
-                                </p:inputTextarea>
+                                <p:outputLabel for="invitations" value="Invite users" style="width: 200px; display: block" />
+                                <p:autoComplete id="invitations" multiple="true" value="#{eventBean.invitedUsersList}" completeMethod="#{eventBean.completeUsersCanInvite}" 
+                                                forceSelection="true">
+                                    <p:ajax event="itemSelect" listener="#{eventBean.onItemSelect}"/>
+                                    <p:ajax event="itemUnselect" listener="#{eventBean.onItemUnselect}"/>
+                                </p:autoComplete>
                                 <p:message id="invitationsMsg" for="invitations"/> 
 
                             </h:panelGrid>

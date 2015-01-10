@@ -56,7 +56,7 @@ public class NotificationController {
      * @param kindOfNotif type of notification
      * @param event referring to
      */
-    public void sendNotificationToGroup(Set<User> users, KindOfNotification kindOfNotif, Event event) {
+    public void sendNotificationToGroup(List<User> users, KindOfNotification kindOfNotif, Event event) {
         for(User u: users) {
             this.sendNotification(u.getEmail(), kindOfNotif, event);
         }

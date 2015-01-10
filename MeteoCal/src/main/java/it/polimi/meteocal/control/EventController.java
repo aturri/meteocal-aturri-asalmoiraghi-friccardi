@@ -210,10 +210,10 @@ public class EventController {
         //weather & update
         this.updateWeather();
         //notify users
-        Set<User> participants = this.event.getUsers();
+        List<User> participants = getParticipatingUsers();
         participants.remove(this.event.getCreator());
         notificationControl.sendNotificationToGroup(participants, KindOfNotification.EVENTUPDATED, this.event);
-        notificationControl.sendNotificationToGroup(this.event.getInvitedUsers(), KindOfNotification.EVENTUPDATED, this.event);
+        notificationControl.sendNotificationToGroup(getListInvitedUsers(), KindOfNotification.EVENTUPDATED, this.event);
         //setup invitations
         if(this.invitedUsers!=null && !"".equals(this.invitedUsers)) {
             String[] split = this.invitedUsers.split(",");
@@ -250,10 +250,10 @@ public class EventController {
         Integer widx = -1;
         if(this.event.getWeather()!=null) widx = this.event.getWeather().getId();
         //notify users
-        Set<User> participants = this.event.getUsers();
+        List<User> participants = getParticipatingUsers();
         participants.remove(this.event.getCreator());
         notificationControl.sendNotificationToGroup(participants, KindOfNotification.EVENTCANCELLED, this.event);
-        notificationControl.sendNotificationToGroup(this.event.getInvitedUsers(), KindOfNotification.EVENTCANCELLED, this.event);
+        notificationControl.sendNotificationToGroup(getListInvitedUsers(), KindOfNotification.EVENTCANCELLED, this.event);
         //delete
         notificationControl.destroyNotifications(this.event);
         this.eventManager.delete(this.event);
@@ -373,8 +373,8 @@ public class EventController {
                 newWeather = this.event.getWeather().getWeather();
             }
             if(!oldWeather.equals(newWeather)) {
-                notificationControl.sendNotificationToGroup(this.event.getUsers(), KindOfNotification.WEATHERCHANGED, this.event);
-                notificationControl.sendNotificationToGroup(this.event.getInvitedUsers(), KindOfNotification.WEATHERCHANGED, this.event);
+                notificationControl.sendNotificationToGroup(getParticipatingUsers(), KindOfNotification.WEATHERCHANGED, this.event);
+                notificationControl.sendNotificationToGroup(getListInvitedUsers(), KindOfNotification.WEATHERCHANGED, this.event);
             }
         }
     }
@@ -394,8 +394,8 @@ public class EventController {
             this.updateWeather();
             if(this.event.getWeather()!=null && !this.event.getIndoor()) {
                 if(weatherControl.isBadTxt(this.event.getWeather().getWeather())) {
-                    notificationControl.sendNotificationToGroup(this.event.getUsers(), KindOfNotification.ALERTWEATHER1, this.event);                    
-                    notificationControl.sendNotificationToGroup(this.event.getInvitedUsers(), KindOfNotification.ALERTWEATHER1, this.event);                    
+                    notificationControl.sendNotificationToGroup(getParticipatingUsers(), KindOfNotification.ALERTWEATHER1, this.event);                    
+                    notificationControl.sendNotificationToGroup(getListInvitedUsers(), KindOfNotification.ALERTWEATHER1, this.event);                    
                 }
             }
         }

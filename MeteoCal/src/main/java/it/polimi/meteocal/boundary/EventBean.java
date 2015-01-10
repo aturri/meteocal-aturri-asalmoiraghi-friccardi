@@ -19,12 +19,14 @@ import it.polimi.meteocal.exception.IllegalInvitedUserException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.faces.context.FacesContext;
@@ -56,21 +58,27 @@ public class EventBean implements Serializable{
     
     private String invitedUsers;
     
-    private List invitedUsersList = new ArrayList<>();
+    private List<String> invitedUsersList;
     
     private Event event;
     
-    /**
-     * This method return the current event
-     * @return current event
-     */
-    public Event getEvent() {
+    @PostConstruct
+    public void init(){
         if(this.event==null&&this.isExistsIdParam()){
             this.setEventByParam();
         }else if(this.event==null){
             this.event=new Event();
             this.event.setBeginDate(this.getToday());
         }
+        
+        invitedUsersList = new ArrayList<>();
+    }
+    
+    /**
+     * This method return the current event
+     * @return current event
+     */
+    public Event getEvent() {
         return this.event;
     }
     
@@ -88,7 +96,9 @@ public class EventBean implements Serializable{
      */
     public String createEvent(){  
         String message;
-        invitedUsers = String.join(",", invitedUsersList);
+        invitedUsers = "";
+        if(invitedUsersList != null && !invitedUsersList.isEmpty())
+            invitedUsers = String.join(",", invitedUsersList);
         try {
             eventControl.createEvent(event, invitedUsers);
         } catch (EventOverlapException ex) {
@@ -116,6 +126,9 @@ public class EventBean implements Serializable{
      */
     public String editEvent() {
         String message;
+        invitedUsers = "";
+        if(invitedUsersList != null && !invitedUsersList.isEmpty())
+            invitedUsers = String.join(",", invitedUsersList);
         try {
             eventControl.editEvent(event, invitedUsers);
         } catch (EventOverlapException ex) {
@@ -460,16 +473,24 @@ public class EventBean implements Serializable{
                 filteredUser.add(u.getEmail());
         }
         
+        //From the filtered users i remove also:
+        //partecipating users
+        for(User u: event.getUsers())
+            filteredUser.remove(u.getEmail());
+        //already invited users
+        for(User u: event.getInvitedUsers())
+            filteredUser.remove(u.getEmail());
+        //already selected users
         if(this.invitedUsersList != null)
             filteredUser.removeAll(this.invitedUsersList);
 
         return filteredUser;
     }
     
-    public void onItemSelect(SelectEvent event) {
+    public void handleUserSelected(SelectEvent event) {
         this.invitedUsersList.add(event.getObject().toString());
     }
-    public void onItemUnselect(SelectEvent event) {
+    public void handleUserUnselected(SelectEvent event) {
         this.invitedUsersList.remove(event.getObject().toString());
     }
 

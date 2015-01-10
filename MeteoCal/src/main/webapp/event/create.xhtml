@@ -87,8 +87,8 @@
                                 <p:outputLabel for="invitations" value="Invite users" style="width: 200px; display: block" />
                                 <p:autoComplete id="invitations" multiple="true" value="#{eventBean.invitedUsersList}" completeMethod="#{eventBean.completeUsersCanInvite}" 
                                                 forceSelection="true">
-                                    <p:ajax event="itemSelect" listener="#{eventBean.onItemSelect}"/>
-                                    <p:ajax event="itemUnselect" listener="#{eventBean.onItemUnselect}"/>
+                                    <p:ajax event="itemSelect" listener="#{eventBean.handleUserSelected}"/>
+                                    <p:ajax event="itemUnselect" listener="#{eventBean.handleUserUnselected}"/>
                                 </p:autoComplete>
                                 <p:message id="invitationsMsg" for="invitations"/> 
                             </h:panelGrid>
