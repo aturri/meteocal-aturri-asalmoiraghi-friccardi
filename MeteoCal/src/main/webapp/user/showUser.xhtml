@@ -6,7 +6,7 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     template="/template/main.xhtml">
     
-    <ui:define name="title">Home</ui:define>
+    <ui:define name="title">Show User</ui:define>
     
     <ui:define name="left">
         Welcome back #{userBean.loggedUser.name} #{userBean.loggedUser.surname}
@@ -22,7 +22,7 @@
             <h:panelGrid style="width:100%">
                 <p:schedule id="schedule" value="#{calendarBean.eventModel}"
                             slotMinutes="15" widgetVar="myschedule" timeZone="GMT+1"
-                            draggable="false" resizable="false">
+                            draggable="false" resizable="false" allDaySlot="false">
                     <p:ajax event="eventSelect" listener="#{calendarBean.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
                 </p:schedule>
             </h:panelGrid>

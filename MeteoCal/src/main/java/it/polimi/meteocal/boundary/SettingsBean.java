@@ -59,6 +59,13 @@ public class SettingsBean {
         MessageBean.addInfo("VisibilityMessages","Calendar's visibility correctly changed");
         return "";
     }
+    
+    public String changeTheme(){
+        userManager.update(this.user);
+        MessageBean.addInfo("ThemeMessages","Theme correctly changed");
+        return "";
+    }
+    
     /**
      * @return the oldPassword
      */

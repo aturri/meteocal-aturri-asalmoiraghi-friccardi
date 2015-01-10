@@ -1,22 +1,23 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
-    <h:head>
-        <title>Settings | MeteoCal</title>
-    </h:head>
-    <h:body>
-        Welcome back #{userBean.name} #{userBean.surname}
-        <p:link outcome="home" value="Back to home"/>
-        <h:form>
-            <p:commandLink action="#{loginBean.logout()}" value="logout"/>
-        </h:form>
-        
-        <h:form style="width: 500px; margin: auto;">
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    template="/template/main.xhtml">
+    
+    <ui:define name="title">Show User</ui:define>
+    
+    <ui:define name="left">
+         Welcome back #{userBean.loggedUser.name} #{userBean.loggedUser.surname}
+        <br/>
+        <p:link outcome="/user/favoriteUsers" value="Favorite Users"/> 
+    </ui:define>
+    
+    <ui:define name="main">
+        <h:form class='settingsPanel'>
             <p:panel header="Change Password Form">
-                <p:panelGrid columns="3" id="changePasswordGrid">
+                <h:panelGrid columns="3" id="changePasswordGrid">
                     <p:outputLabel for="passwordInput" value="Old Password"/>
                     <p:password id="passwordInput" value="#{settingsBean.oldPassword}" 
                                  required="true" requiredMessage="Old password is required"/>
@@ -30,18 +31,17 @@
                     <p:password id="confirmNewPasswordInput" /> 
                     <p:message id="confirmPwdMsg" for="confirmNewPasswordInput" />
 
-                    <p:commandButton id="submit" action="#{settingsBean.changePassword()}" value="Set New Password" ajax="true" update="@all"/>                   
-                </p:panelGrid>
+                    <p:commandButton id="submit" action="#{settingsBean.changePassword()}" value="Set New Password" 
+                                     ajax="true" update="@form"/>                   
+                </h:panelGrid>
                 <p:growl for="PasswordMessages" sticky="true" severity="info"/>
                 <p:messages for="PasswordMessages" severity="error"/>
             </p:panel>
         </h:form>
-        <br />
-        <br />
-        <br />
-        <h:form style="width: 500px; margin: auto;">
+        
+        <h:form class='settingsPanel'>
             <p:panel header="Change User's Data Form">
-                <p:panelGrid columns="3" id="usersDataGrid">
+                <h:panelGrid columns="3" id="usersDataGrid">
                     <p:outputLabel for="name" value="Name" />
                     <p:inputText id="name"  required="true" value="#{settingsBean.user.name}"
                                   requiredMessage="Insert your name">
@@ -84,20 +84,18 @@
                         <p:ajax update="citymsg"/>
                     </p:inputText>
                     <p:message id="citymsg" for="city" />                        
-                </p:panelGrid>
+                </h:panelGrid>
                 <p:growl for="UserDataMessages" sticky="true"/>
                 
-                <p:commandButton id="btnSave" value="Save" ajax="true" update="@all"
+                <p:commandButton id="btnSave" value="Save" ajax="true" update="@form"
                                  action="#{settingsBean.changeUsersData()}" />
                 <br /> 
                 * Mandatory fields
             </p:panel>
         </h:form>
-        <br />
-        <br />
-        <br />
-        <h:form style="width: 500px; margin: auto;">
-            <p:panel header="Change Calendar visibility Form">
+        
+        <h:form class="settingsPanel">
+            <p:panel header="Change Calendar Visibility Form">
                 <h:panelGrid columns="3" id="visibilityDataGrid">
                     <p:outputLabel for="visibility" value="Visibility " />
                     <p:selectOneMenu id="visibility" value="#{settingsBean.user.privateCalendar}" 
@@ -110,11 +108,24 @@
                     <p:message id="visibilitymsg" for="visibility" />
                 </h:panelGrid>
                 <p:growl for="VisibilityMessages" sticky="true"/>
-                <p:commandButton id="btnSave" value="Save"  ajax="true" update="@all"
+                <p:commandButton id="btnSave" value="Save"  ajax="true" update="@form"
                                  action="#{settingsBean.changeCalendarVisibilityData()}" />
                 <br /> 
                 * Mandatory fields
             </p:panel>
         </h:form>
-    </h:body>
-</html>
+    </ui:define>
+    
+    <ui:define name="right">
+        <h:form>
+            <p:panel header="Change Theme">
+                <p:themeSwitcher style="width:150px" value="#{settingsBean.user.theme}">
+                    <f:selectItem itemLabel="Choose Theme" itemValue="" />
+                    <f:selectItems value="#{themeSwitcherBean.themes}" />
+                    <p:ajax listener="#{settingsBean.changeTheme()}" update="@form"/>
+                </p:themeSwitcher>
+            </p:panel>
+            <p:growl for="ThemeMessages"/>
+        </h:form>
+    </ui:define>
+</ui:composition>

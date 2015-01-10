@@ -80,6 +80,16 @@ public class User implements Serializable {
             @JoinColumn(name = "Contact_EMAIL", referencedColumnName = "EMAIL", nullable = false)})
     private Set<User> contacts;
     
+    @NotNull
+    private String theme = "cupertino";
+    
+    public String getTheme(){
+        return theme;
+    }
+    public void setTheme(String theme){
+        this.theme = theme;
+    }
+    
     public String getEmail() {
         return email;
     }

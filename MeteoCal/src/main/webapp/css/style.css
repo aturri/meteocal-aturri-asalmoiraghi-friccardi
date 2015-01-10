@@ -190,3 +190,8 @@
             font-weight: bold;
         }
         
+        .settingsPanel{
+            width: 70%;
+            margin: auto;
+        }
+        
