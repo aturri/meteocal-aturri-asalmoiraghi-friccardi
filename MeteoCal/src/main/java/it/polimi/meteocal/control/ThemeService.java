@@ -15,7 +15,7 @@ public class ThemeService {
      
     private List<Theme> themes;
     
-    private static String DEFAULT_THEME = "cupertino";
+    private static String DEFAULT_THEME = "delta";
     
     @EJB
     UserManager um;

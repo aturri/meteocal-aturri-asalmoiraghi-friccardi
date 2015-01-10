@@ -2,37 +2,43 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
-        <title>Login | MeteoCal</title>
-        <link href="#{navigationBean.getAbsolute()}css/style.css" type="text/css" rel="stylesheet" />
     </h:head>
-    <h:body id="homebody">
-	<div id="topbar">
-		<div id="logo">MeteoCal</div>
-		<div id="buttons">
-			<p:link outcome="#{navigationBean.toHome()}" value="Login"/>
-			<p:link outcome="#{navigationBean.toRegister()}" value="Register"/>
-		</div>
-	</div>
-        <div id="content">
-            <h:form style="width: 390px; margin: 20px auto; ">
-                <p:panel id="loginPanel" header="Login">
-                    <p:focus context="loginPanel"/>
-                    <p:panelGrid columns="2" id="loginGrid">
-                        <p:outputLabel for="usernameInput" value="Username"/>
-                        <p:inputText id="usernameInput" value="#{loginBean.username}" 
-                                     required="false" />
-                        <p:outputLabel for="passwordInput" value="Password"/>
-                        <p:password id="passwordInput" value="#{loginBean.password}" 
-                                    required="false" />
-                        <p:commandButton id="submit" action="#{loginBean.login()}" value="Login" ajax="true" update="@all"/>                    
-                        <p:messages style="color: red"/>
-                    </p:panelGrid>
-                </p:panel>
-                <p:link outcome="#{navigationBean.toRecoverPassword()}" value="Recover password"/>
-            </h:form>
-        </div>
+    <h:body>
+        <ui:composition template="/template/main.xhtml">
+            <ui:define name="title">Login</ui:define>
+            <ui:define name="header">
+                <div id="topbar">
+                    <div id="logo"><h:link outcome="/index" value="MeteoCal"/></div>
+                    <div id="buttons">
+                            <p:link outcome="#{navigationBean.toHome()}" value="Login"/>
+                            <p:link outcome="#{navigationBean.toRegister()}" value="Register"/>
+                    </div>
+                </div>                
+            </ui:define>
+            <ui:define name="main">
+                <div id="mainContent" class="centerMain">
+                    <h:form style="width: 390px; margin: 20px auto; ">
+                        <p:panel id="loginPanel" header="Login">
+                            <p:focus context="loginPanel"/>
+                            <p:panelGrid columns="2" id="loginGrid">
+                                <p:outputLabel for="usernameInput" value="Username"/>
+                                <p:inputText id="usernameInput" value="#{loginBean.username}" 
+                                             required="false" />
+                                <p:outputLabel for="passwordInput" value="Password"/>
+                                <p:password id="passwordInput" value="#{loginBean.password}" 
+                                            required="false" />
+                                <p:commandButton id="submit" action="#{loginBean.login()}" value="Login" ajax="true" update="@all"/>                    
+                                <p:messages style="color: red"/>
+                            </p:panelGrid>
+                        </p:panel>
+                        <p:link outcome="#{navigationBean.toRecoverPassword()}" value="Recover password"/>
+                    </h:form>
+                </div>                
+            </ui:define>
+        </ui:composition>
     </h:body>
 </html>
 

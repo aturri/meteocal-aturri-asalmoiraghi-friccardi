@@ -2,19 +2,30 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
-        <title>Welcome to MeteoCal</title>
-        <link href="#{navigationBean.getAbsolute()}css/style.css" type="text/css" rel="stylesheet" />
     </h:head>
-    <h:body id="homebody">
-	<div id="topbar">
-		<div id="logo">MeteoCal</div>
-		<div id="buttons">
-			<p:link outcome="#{navigationBean.toHome()}" value="Login"/>
-			<p:link outcome="#{navigationBean.toRegister()}" value="Register"/>
-		</div>
-	</div>
+    <h:body>
+        <ui:composition template="/template/main.xhtml">
+            <ui:define name="title">Welcome</ui:define>
+            <ui:define name="header">
+                <div id="topbar">
+                    <div id="logo"><h:link outcome="/index" value="MeteoCal"/></div>
+                    <div id="buttons">
+                            <p:link outcome="#{navigationBean.toHome()}" value="Login"/>
+                            <p:link outcome="#{navigationBean.toRegister()}" value="Register"/>
+                    </div>
+                </div>                
+            </ui:define>
+            <ui:define name="main">
+                <div id="homepageCentral" class="centerMain">
+                    <img src="images/meteocal.png" />
+                    <h1>Your personal calendar with weather forecasts.</h1>
+                </div>
+            </ui:define>
+        </ui:composition>
     </h:body>
 </html>
 

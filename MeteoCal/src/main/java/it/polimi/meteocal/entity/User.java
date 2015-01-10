@@ -81,7 +81,7 @@ public class User implements Serializable {
     private Set<User> contacts;
     
     @NotNull
-    private String theme = "cupertino";
+    private String theme = "delta";
     
     public String getTheme(){
         return theme;
