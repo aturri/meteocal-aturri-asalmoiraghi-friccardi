@@ -114,6 +114,18 @@
                 * Mandatory fields
             </p:panel>
         </h:form>
+        
+        <h:form class="exportPanel">
+            <p:panel header="Export your data form">
+                <h:panelGrid columns="2" id="exportGrid">
+                    <p:outputLabel value="Export" />
+                    <p:commandButton value="Download" ajax="false">
+                        <p:fileDownload value="#{settingsBean.file}" />
+                    </p:commandButton>
+                </h:panelGrid>
+                <p:growl for="ExportMessages" sticky="true"/>
+            </p:panel>
+        </h:form>
     </ui:define>
     
     <ui:define name="right">
