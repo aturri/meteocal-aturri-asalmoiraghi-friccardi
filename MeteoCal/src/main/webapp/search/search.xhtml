@@ -13,21 +13,48 @@
         
         <p:overlayPanel for="txtSearch" class="searchPanel">
             <p:tabView id="resultsSearch" class="searchTabView">
-                <p:tab title="Users (#{searchBean.users.size()})" class="searchTab">
+                <p:tab class="searchTab">
+                    <f:facet name="title">
+                        <h:graphicImage library="images" name="users.png" class="iconSearchTab"/>
+                        <p:outputPanel autoUpdate="true">
+                            <div class="searchBubble">#{searchBean.users.size()}</div>
+                        </p:outputPanel>
+                     </f:facet>
                     <p:dataScroller value="#{searchBean.users}" var="usersResult" chunkSize="20" class="searchData">
-                        <p:link value="#{usersResult.name} #{usersResult.surname}" 
-                                outcome="#{navigationBean.toShowUser(usersResult.email)}" 
-                                class="searchLink"/>
+                        <h:link outcome="#{navigationBean.toShowUser(usersResult.email)}" >
+                            <div class="notificationItem">
+                                <div style="vertical-align:middle; float:left;">
+                                    <h:graphicImage library="images" name="user2.png" 
+                                                    class="notificationIcon"/>
+                                </div>
+                                <div style="vertical-align:middle; float:left; margin-left:4px;">
+                                    #{usersResult.name} #{usersResult.surname}
+                                </div>
+                            </div>
+                        </h:link>
                         <p:separator class="searchSeparator"/>
                     </p:dataScroller>
                 </p:tab>
 
                 <p:tab title="Events (#{searchBean.events.size()})" class="searchTab">
+                    <f:facet name="title">
+                        <h:graphicImage library="images" name="calendar.png" class="iconSearchTab"/>
+                        <p:outputPanel autoUpdate="true">
+                            <div class="searchBubble">#{searchBean.events.size()}</div>
+                        </p:outputPanel>
+                     </f:facet>
                     <p:dataScroller value="#{searchBean.events}" var="eventsResult" chunkSize="20" class="searchData">
-                        <p:link value="#{eventsResult.title}" 
-                                outcome="#{navigationBean.toEventDetailsPage(eventsResult.id)}" 
-                                class="searchLink"/>
-                        (#{eventsResult.city}) - #{eventsResult.beginDate}
+                        <h:link outcome="#{navigationBean.toEventDetailsPage(eventsResult.id)}" >
+                            <div class="notificationItem">
+                                <div style="vertical-align:middle; float:left;">
+                                    <h:graphicImage library="images" name="inviteNotification.png" 
+                                                    class="notificationIcon"/>
+                                </div>
+                                <div style="vertical-align:middle; float:left; margin-left:4px;">
+                                    #{eventsResult.title} (#{eventsResult.city}) - #{eventsResult.beginDate}
+                                </div>
+                            </div>
+                        </h:link>
                         <p:separator class="searchSeparator"/>
                     </p:dataScroller>
                 </p:tab>
