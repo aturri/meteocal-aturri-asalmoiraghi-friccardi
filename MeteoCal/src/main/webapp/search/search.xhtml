@@ -8,57 +8,65 @@
     <h:form>
         <p:inputText id="txtSearch" value="#{searchBean.keyword}" required="true" label="Keyword" placeholder="Search">
             <f:validateLength minimum="3" />
-            <p:ajax listener="#{searchBean.searchKeyword()}" update="resultsSearch :searchMessages" event="keyup" />
+            <p:ajax listener="#{searchBean.searchKeyword()}"
+                    update=":searchMessages" event="keyup" />
         </p:inputText>
-        
+
         <p:overlayPanel for="txtSearch" class="searchPanel">
             <p:tabView id="resultsSearch" class="searchTabView">
-                <p:tab class="searchTab">
+                <p:tab id="usersResultsSearch" class="searchTab">
+
                     <f:facet name="title">
                         <h:graphicImage library="images" name="users.png" class="iconSearchTab"/>
                         <p:outputPanel autoUpdate="true">
                             <div class="searchBubble">#{searchBean.users.size()}</div>
                         </p:outputPanel>
-                     </f:facet>
-                    <p:dataScroller value="#{searchBean.users}" var="usersResult" chunkSize="20" class="searchData">
-                        <h:link outcome="#{navigationBean.toShowUser(usersResult.email)}" >
-                            <div class="notificationItem">
-                                <div style="vertical-align:middle; float:left;">
-                                    <h:graphicImage library="images" name="user2.png" 
-                                                    class="notificationIcon"/>
+                    </f:facet>
+                    <p:outputPanel autoUpdate="true">
+                        <p:dataScroller value="#{searchBean.users}" var="usersResult" chunkSize="20" class="searchData">
+                            <h:link outcome="#{navigationBean.toShowUser(usersResult.email)}" >
+                                <div class="notificationItem">
+                                    <div style="vertical-align:middle; float:left;">
+                                        <h:graphicImage library="images" name="user2.png" 
+                                                        class="notificationIcon"/>
+                                    </div>
+                                    <div style="vertical-align:middle; float:left; margin-left:4px;">
+                                        #{usersResult.name} #{usersResult.surname}
+                                    </div>
                                 </div>
-                                <div style="vertical-align:middle; float:left; margin-left:4px;">
-                                    #{usersResult.name} #{usersResult.surname}
-                                </div>
-                            </div>
-                        </h:link>
-                        <p:separator class="searchSeparator"/>
-                    </p:dataScroller>
+                            </h:link>
+                            <p:separator class="searchSeparator"/>
+                        </p:dataScroller>
+                    </p:outputPanel>
                 </p:tab>
 
-                <p:tab title="Events (#{searchBean.events.size()})" class="searchTab">
+                <p:tab id="eventsResultsSearch" class="searchTab">
+
                     <f:facet name="title">
                         <h:graphicImage library="images" name="calendar.png" class="iconSearchTab"/>
                         <p:outputPanel autoUpdate="true">
                             <div class="searchBubble">#{searchBean.events.size()}</div>
                         </p:outputPanel>
-                     </f:facet>
-                    <p:dataScroller value="#{searchBean.events}" var="eventsResult" chunkSize="20" class="searchData">
-                        <h:link outcome="#{navigationBean.toEventDetailsPage(eventsResult.id)}" >
-                            <div class="notificationItem">
-                                <div style="vertical-align:middle; float:left;">
-                                    <h:graphicImage library="images" name="inviteNotification.png" 
-                                                    class="notificationIcon"/>
+                    </f:facet>
+                    <p:outputPanel autoUpdate="true">
+                        <p:dataScroller value="#{searchBean.events}" var="eventsResult" chunkSize="20" class="searchData">
+                            <h:link outcome="#{navigationBean.toEventDetailsPage(eventsResult.id)}" >
+                                <div class="notificationItem">
+                                    <div style="vertical-align:middle; float:left;">
+                                        <h:graphicImage library="images" name="inviteNotification.png" 
+                                                        class="notificationIcon"/>
+                                    </div>
+                                    <div style="vertical-align:middle; float:left; margin-left:4px;">
+                                        #{eventsResult.title} (#{eventsResult.city}) - #{eventsResult.beginDate}
+                                    </div>
                                 </div>
-                                <div style="vertical-align:middle; float:left; margin-left:4px;">
-                                    #{eventsResult.title} (#{eventsResult.city}) - #{eventsResult.beginDate}
-                                </div>
-                            </div>
-                        </h:link>
-                        <p:separator class="searchSeparator"/>
-                    </p:dataScroller>
+                            </h:link>
+                            <p:separator class="searchSeparator"/>
+                        </p:dataScroller>
+                    </p:outputPanel>
                 </p:tab>
             </p:tabView>
         </p:overlayPanel>
+
     </h:form>
 </ui:composition>
