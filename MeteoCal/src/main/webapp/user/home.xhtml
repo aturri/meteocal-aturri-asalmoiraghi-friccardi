@@ -20,7 +20,7 @@
             <ui:define name="main">
                 <div id="mainContent" style="float: left">
                     Calendar of user: #{calendarBean.user.name} #{calendarBean.user.surname}
-                    <h:form>
+                <h:form>
                     <p:growl id="messages" sticky="true"/>
 
                     <h:panelGrid style="width:100%">
@@ -88,14 +88,6 @@
             </ui:define>
             
             <ui:define name="right">
-                <p>Number of notifications to be read: #{userBean.numOfNotReadNotifications}</p>
-                <ul>
-                    <ui:repeat value="#{userBean.notifications}" var="notification">
-                        <li>
-                            <p>[#{notification.event.title}] #{notification.text}</p>
-                        </li>
-                    </ui:repeat>
-                </ul>
                 <p>Pending invitations:</p>
                 <ul>
                     <ui:repeat value="#{userBean.eventsInvitedTo}" var="event">

@@ -9,6 +9,7 @@ import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.UserManager;
 import java.io.Serializable;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
 /**
@@ -134,6 +135,8 @@ public class NavigationBean implements Serializable {
     }    
         
     public static String redirectToEventDetailsPage(String id){
+        if(id==null)
+            id = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id");
         return "/event/detail.xhtml?faces-redirect=true&id="+id;
     }
     

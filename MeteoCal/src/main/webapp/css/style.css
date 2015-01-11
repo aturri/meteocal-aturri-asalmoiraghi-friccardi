@@ -11,12 +11,12 @@ hr {
     margin-top: 20px;
     margin-bottom: 20px;
 }
-a, a:visited {
+/*a, a:visited {
     color: #ff0000;
 }
 a:hover {
     color: #000000;
-}
+}*/
 #topbar {
         background: rgb(73,155,234); /* Old browsers */
         background: -moz-linear-gradient(top, rgba(73,155,234,1) 0%, rgba(32,124,229,1) 100%); /* FF3.6+ */
@@ -150,7 +150,7 @@ a:hover {
 /*SEARCH PANEL STYLE*/
 .searchPanel{
     /*width: 30%;*/
-    text-align: center;
+    max-height: 400px;
 }
 .searchPanel .ui-overlaypanel-content, 
 .searchTabView .ui-tabs, .searchTabView .ui-tabs-panel, 
@@ -169,7 +169,7 @@ a:hover {
     margin: 7px;
 }
 
-a.searchLink{
+/*a.searchLink{
     text-decoration: none;
     font-weight: bold;
 
@@ -182,7 +182,7 @@ a.searchLink:visited{
 }
 a.searchLink:hover{
     color: navy;
-}
+}*/
 
 .divCalendarPrivate{
     text-align: center;
@@ -234,4 +234,45 @@ a.searchLink:hover{
 }
 .privateOtherEvent{
     background-color: grey;
+}
+
+/* NOTIFICATION PANEL */
+#notification{
+    width: 50px;
+    float: left;
+}
+.notificationButton, .notificationButtonDiv{
+    height: 50px;
+    width: 50px;
+    cursor: pointer;
+}
+.notificationBubble{
+    background-color: rgba(255,0,0,0.8);
+    position: relative;
+    padding: 2px;
+    font-size: x-small;
+    width: 12px;
+    height: 12px;
+    border-radius: 5px;
+    text-align: center;
+    vertical-align: middle;
+    margin-top: -50px;
+    float: right;
+    margin-right: -2px;
+}
+.notificationIcon{
+    height:25px;
+}
+.notificationItem{
+    height:25px;
+    border-radius: 7px;
+    padding: 3px;
+}
+.notificationItem:hover{
+    cursor: pointer;
+    background-color: rgba(0,100,255,0.4);
+}
+.notReadNotification{
+    font-weight:bold;
+    font-style:italic;
 }

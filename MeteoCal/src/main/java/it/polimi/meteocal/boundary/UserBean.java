@@ -5,6 +5,7 @@
  */
 package it.polimi.meteocal.boundary;
 
+import it.polimi.meteocal.control.NotificationController;
 import it.polimi.meteocal.entity.Notification;
 import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
@@ -15,6 +16,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 
 /**
  *
@@ -29,6 +31,9 @@ public class UserBean {
     
     @EJB
     NotificationManager notificationManager;
+    
+    @Inject
+    NotificationController notificationController;
     
     public UserBean() {
     }
@@ -66,5 +71,31 @@ public class UserBean {
 
     public List<Event> getEventsInvitedTo() {
         return new ArrayList<>(um.getLoggedUser().getInvitations());
+    }
+    
+    public void hasReadNotification(){
+        notificationController.setAsRead(getLoggedUser());
+    }
+    
+    public String getNotificationClass(Notification notification){
+        String style;
+        if(!notification.getReadByUser())
+            style = "notReadNotification";
+        else
+            style = "readNotification";
+        
+        if(notification.getType()=='A')
+            return style + " inviteNotification";
+        if(notification.getType()=='B')
+            return style + " updateNotification";
+        return style + " weatherNotification";
+    }
+    
+    public String getNotificationIcon(Notification notification){
+        if(notification.getType()=='A')
+            return "inviteNotification.png";
+        if(notification.getType()=='B')
+            return "updateNotification.png";
+        return "weatherNotification.png";
     }
 }

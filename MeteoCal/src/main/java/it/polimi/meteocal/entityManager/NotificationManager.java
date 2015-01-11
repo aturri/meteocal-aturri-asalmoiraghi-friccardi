@@ -56,7 +56,8 @@ public class NotificationManager {
      * @return list of notifications
      */
     public List<Notification> findAllNotificationsByUser(String email) {
-        TypedQuery<Notification> query = em.createQuery("SELECT n FROM Notification n WHERE n.user.email = :param_email", Notification.class).setParameter("param_email", email).setMaxResults(MAX_NOTIF);
+        TypedQuery<Notification> query = em.createQuery("SELECT n FROM Notification n WHERE n.user.email = :param_email", Notification.class).
+                setParameter("param_email", email).setMaxResults(MAX_NOTIF);
         return query.getResultList();
     }
     
