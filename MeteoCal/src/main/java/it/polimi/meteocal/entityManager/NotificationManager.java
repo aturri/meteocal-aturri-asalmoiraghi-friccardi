@@ -20,7 +20,7 @@ import javax.persistence.TypedQuery;
 @Stateless
 public class NotificationManager {
 
-    private static final int MAX_NOTIF = 20;
+    private static final int MAX_NOTIF = 30;
 
     @PersistenceContext
     private EntityManager em;
@@ -56,7 +56,7 @@ public class NotificationManager {
      * @return list of notifications
      */
     public List<Notification> findAllNotificationsByUser(String email) {
-        TypedQuery<Notification> query = em.createQuery("SELECT n FROM Notification n WHERE n.user.email = :param_email", Notification.class).
+        TypedQuery<Notification> query = em.createQuery("SELECT n FROM Notification n WHERE n.user.email = :param_email ORDER BY n.id.created DESC", Notification.class).
                 setParameter("param_email", email).setMaxResults(MAX_NOTIF);
         return query.getResultList();
     }

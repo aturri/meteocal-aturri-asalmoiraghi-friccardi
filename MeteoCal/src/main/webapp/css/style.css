@@ -1,3 +1,4 @@
+@font-face { font-family: Impact; src: url('../fonts/Impact.ttf'); } 
 html, body {
         margin: 0;
         padding: 0;
@@ -44,7 +45,7 @@ a:hover {
         background-repeat: no-repeat;
 }
 #logo, #logo a, #logo a:visited {
-        font-family: Impact;
+        font-family: Impact, Charcoal, sans-serif;
         width: 150px;
         height: 50px;
         float: left;
@@ -239,13 +240,14 @@ a.searchLink:hover{
 
 /* NOTIFICATION PANEL */
 #notification{
-    width: 50px;
-    float: left;
+    width: 36px;
+    float: right;
 }
 .notificationButton, .notificationButtonDiv{
-    height: 50px;
-    width: 50px;
+    height: 36px;
+    width: 36px;
     cursor: pointer;
+    margin-top: 3px;
 }
 .notificationBubble{
     background-color: rgba(255,0,0,0.8);
@@ -254,26 +256,34 @@ a.searchLink:hover{
     font-size: x-small;
     width: 12px;
     height: 12px;
-    border-radius: 5px;
+    border-radius: 12px;
     text-align: center;
     vertical-align: middle;
-    margin-top: -50px;
+    margin-top: -45px;
     float: right;
-    margin-right: -2px;
+    margin-right: -6px;
 }
 .notificationIcon{
-    height:25px;
+    height: 25px;
+    margin-right: 10px;
+    margin-top: 3px;
+    float: left;
+    vertical-align: middle;
 }
 .notificationItem{
-    height:25px;
+    height: 31px;
     border-radius: 7px;
     padding: 3px;
+    text-overflow: ellipsis;
+    font-size: 12px;
 }
 .notificationItem:hover{
     cursor: pointer;
     background-color: rgba(0,100,255,0.4);
 }
 .notReadNotification{
-    font-weight:bold;
-    font-style:italic;
+    background-color: rgb(255, 254, 201);
+}
+.notificationButton a {
+    text-decoration: none;
 }

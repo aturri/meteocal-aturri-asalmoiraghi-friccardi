@@ -42,7 +42,7 @@ public class EventController {
     UserManager userManager;
     
     private Event event;
-    private String invitedUsers;
+    private List<String> invitedUsers;
     
     /**
      * This method returns true if the dates selected for the event are coherent, i.e. the end date is after the begin date
@@ -57,7 +57,7 @@ public class EventController {
      * @return is there some overlap?
      */
     public Boolean areThereOverlaps() {
-        Set<Event> userEvents = userManager.getLoggedUser().getEvents();
+        List<Event> userEvents = new ArrayList<>(userManager.getLoggedUser().getEvents());
         userEvents.remove(event); //the current event overlaps to the current event if already prensent
         Date a = event.getBeginDate();
         Date b = event.getEndDate();
@@ -76,20 +76,18 @@ public class EventController {
      * @return are all the invited users legal?
      */
     private Boolean areInvitedUserLegalForCreate() {
-        if(invitedUsers==null || invitedUsers.equals("")) {
+        if(invitedUsers==null || invitedUsers.isEmpty()) {
             return true;
         }
         int error = 0;
-        String foo = invitedUsers;
-        String[] split = foo.split(",");
         List<String> tmpUsersList = new ArrayList<>();
-        for (String splitted : split) {
-            if(splitted.equals(userManager.getLoggedUser().getEmail())
-                    || !userManager.existsUser(splitted)
-                    || tmpUsersList.contains(splitted)) {
+        for (String email : invitedUsers) {
+            if(email.equals(userManager.getLoggedUser().getEmail())
+                    || !userManager.existsUser(email)
+                    || tmpUsersList.contains(email)) {
                 error++;
             } else {
-                tmpUsersList.add(splitted);
+                tmpUsersList.add(email);
             }
         }
         return error==0;
@@ -100,18 +98,16 @@ public class EventController {
      * @return are all the invited users legal?
      */
     private Boolean areInvitedUserLegalForEdit() {
-        if(invitedUsers==null || invitedUsers.equals("")) {
+        if(invitedUsers==null || invitedUsers.isEmpty()) {
             return true;
         }
         if(!this.areInvitedUserLegalForCreate()) {
             return false;
         }
         int error = 0;
-        String foo = invitedUsers;
-        String[] split = foo.split(",");
-        for (String splitted : split) {
-            if(event.getInvitedUsers().contains(userManager.findByEmail(splitted)) || 
-                        event.getUsers().contains(userManager.findByEmail(splitted))) {
+        for (String email : invitedUsers) {
+            if(event.getInvitedUsers().contains(userManager.findByEmail(email)) || 
+                        event.getUsers().contains(userManager.findByEmail(email))) {
                 error++;
             }
         }
@@ -151,7 +147,7 @@ public class EventController {
      * @throws IllegalInvitedUserException
      * @throws IllegalEventDateException 
      */
-    public void createEvent(Event event, String invitedUsers) throws EventOverlapException, IllegalInvitedUserException, IllegalEventDateException {
+    public void createEvent(Event event, List<String> invitedUsers) throws EventOverlapException, IllegalInvitedUserException, IllegalEventDateException {
         this.event = event;
         this.invitedUsers = invitedUsers;
         //controls
@@ -174,9 +170,8 @@ public class EventController {
         user.getEvents().add(this.event);
         userManager.update(user);
         //setup invitations
-        if(this.invitedUsers!=null && !"".equals(this.invitedUsers)) {
-            String[] split = this.invitedUsers.split(",");
-            for (String email : split) {
+        if(this.invitedUsers!=null && !this.invitedUsers.isEmpty()) {
+            for (String email : this.invitedUsers) {
                 User invitedUser = userManager.findByEmail(email);
                 this.event.getInvitedUsers().add(invitedUser);
                 invitedUser.getInvitations().add(this.event);
@@ -195,7 +190,7 @@ public class EventController {
      * @throws IllegalInvitedUserException
      * @throws IllegalEventDateException 
      */
-    public void editEvent(Event event, String invitedUsers) throws EventOverlapException, IllegalInvitedUserException, IllegalEventDateException {
+    public void editEvent(Event event, List<String> invitedUsers) throws EventOverlapException, IllegalInvitedUserException, IllegalEventDateException {
         this.event = event;
         this.invitedUsers = invitedUsers;
         if(this.areThereOverlaps()) {
@@ -215,9 +210,8 @@ public class EventController {
         notificationControl.sendNotificationToGroup(participants, KindOfNotification.EVENTUPDATED, this.event);
         notificationControl.sendNotificationToGroup(getListInvitedUsers(), KindOfNotification.EVENTUPDATED, this.event);
         //setup invitations
-        if(this.invitedUsers!=null && !"".equals(this.invitedUsers)) {
-            String[] split = this.invitedUsers.split(",");
-            for (String email : split) {
+        if(this.invitedUsers!=null && !this.invitedUsers.isEmpty()) {
+            for (String email : this.invitedUsers) {
                 User invitedUser = userManager.findByEmail(email);
                 this.event.getInvitedUsers().add(invitedUser);
                 invitedUser.getInvitations().add(this.event);
@@ -226,9 +220,9 @@ public class EventController {
             }
             this.eventManager.update(this.event);   
         }
-        User user = userManager.getLoggedUser(); 
-        user.getEvents().add(this.event);
-        userManager.update(user);
+//        User user = userManager.getLoggedUser(); 
+//        user.getEvents().add(this.event);
+//        userManager.update(user);
     }
     
     /**

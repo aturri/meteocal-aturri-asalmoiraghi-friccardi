@@ -21,11 +21,9 @@
         <p:dataScroller value="#{userBean.notifications}" var="notification" chunkSize="10" class="searchData">
             <h:link outcome="#{navigationBean.toEventDetailsPage(notification.event.id)}" >
                 <div class="notificationItem #{userBean.getNotificationClass(notification)}">
-                    <div style="vertical-align:middle; float:left;">
                         <h:graphicImage library="images" name="#{userBean.getNotificationIcon(notification)}" 
                                         class="notificationIcon"/>
-                    </div>
-                    <div style="vertical-align:middle; float:left;">#{notification.text}</div>
+                    <span>#{notification.text}</span>
                 </div>
             </h:link>
             <p:separator class="searchSeparator"/>

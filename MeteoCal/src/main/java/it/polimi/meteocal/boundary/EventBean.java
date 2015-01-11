@@ -19,7 +19,6 @@ import it.polimi.meteocal.exception.IllegalInvitedUserException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -97,10 +96,8 @@ public class EventBean implements Serializable{
     public String createEvent(){  
         String message;
         invitedUsers = "";
-        if(invitedUsersList != null && !invitedUsersList.isEmpty())
-            invitedUsers = String.join(",", invitedUsersList);
         try {
-            eventControl.createEvent(event, invitedUsers);
+            eventControl.createEvent(event, invitedUsersList);
         } catch (EventOverlapException ex) {
             message = "This event overlaps with an existing one!";
             Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
@@ -126,11 +123,8 @@ public class EventBean implements Serializable{
      */
     public String editEvent() {
         String message;
-        invitedUsers = "";
-        if(invitedUsersList != null && !invitedUsersList.isEmpty())
-            invitedUsers = String.join(",", invitedUsersList);
         try {
-            eventControl.editEvent(event, invitedUsers);
+            eventControl.editEvent(event, invitedUsersList);
         } catch (EventOverlapException ex) {
             message = "This event overlaps with an existing one!";
             Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
