@@ -36,12 +36,15 @@ public class SearchController {
 
     public List<Event> getEvents(String keyword) {
         keywords = java.util.Arrays.asList(keyword.split(" "));
-        String queryText = "SELECT * FROM Event e WHERE e.publicEvent = 1 AND ";        
+        String queryText = "SELECT * FROM Event e WHERE e.publicEvent = 1 AND (";        
         String preText = "";
         for(String word: keywords){
-            queryText += preText + "concat_ws(' ',e.title,e.city) LIKE '%"+word+"%'";
-            preText = " OR ";
+            if(word.length()>2){
+                queryText += preText + "concat_ws(' ',e.title,e.city) LIKE '%"+word+"%'";
+                preText = " OR ";
+            }
         }
+        queryText += ")";
         
         Query query = em.createNativeQuery(queryText,Event.class);
         List<Event> results = new ArrayList<>(query.getResultList());
@@ -51,12 +54,15 @@ public class SearchController {
     
     public List<User> getUsers(String keyword) {
         keywords = java.util.Arrays.asList(keyword.split(" "));
-        String queryText = "SELECT * FROM User u WHERE u.email NOT LIKE '"+um.getLoggedUser().getEmail()+"' AND ";
+        String queryText = "SELECT * FROM User u WHERE u.email NOT LIKE '"+um.getLoggedUser().getEmail()+"' AND (";
         String preText = "";
         for(String word: keywords){
-            queryText += preText + "concat_ws(' ',u.email,u.name,u.surname) LIKE '%"+word+"%'";
-            preText = " OR ";
+            if(word.length()>2){
+                queryText += preText + "concat_ws(' ',u.email,u.name,u.surname) LIKE '%"+word+"%'";
+                preText = " OR ";
+            }
         }
+        queryText += ")";
         
         Query query = em.createNativeQuery(queryText,User.class);
         List<User> results = new ArrayList<>(query.getResultList());
