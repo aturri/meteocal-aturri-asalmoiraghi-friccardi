@@ -42,9 +42,9 @@ public class NotificationController {
      */
     @PostConstruct
     private void init(){
-        messages.put(KindOfNotification.INVITEDTOEVENT, "You are invited to partecipate to %s. Click for further details.");
+        messages.put(KindOfNotification.INVITEDTOEVENT, "You are invited to partecipate to %s.");
         messages.put(KindOfNotification.EVENTCANCELLED, null);
-        messages.put(KindOfNotification.EVENTUPDATED, "\"%s\" has been updated. Click for further details.");         
+        messages.put(KindOfNotification.EVENTUPDATED, "\"%s\" has been updated.");         
         messages.put(KindOfNotification.ALERTWEATHER1, "\"%s\": bad weather!");         
         messages.put(KindOfNotification.ALERTWEATHER3, "\"%s\": change date with a sunny day!");         
         messages.put(KindOfNotification.WEATHERCHANGED, "\"%s\": changed weather conditions!");         
@@ -147,5 +147,27 @@ public class NotificationController {
             n.setReadByUser(true);
             notificationManager.update(n);
         }
+    }
+    
+    public String getNotificationClass(Notification notification){
+        String style;
+        if(!notification.getReadByUser())
+            style = "notReadNotification";
+        else
+            style = "readNotification";
+        
+        if(notification.getType()=='A')
+            return style + " inviteNotification";
+        if(notification.getType()=='B')
+            return style + " updateNotification";
+        return style + " weatherNotification";
+    }
+    
+    public String getNotificationIcon(Notification notification){
+        if(notification.getType()=='A')
+            return "inviteNotification.png";
+        if(notification.getType()=='B')
+            return "updateNotification.png";
+        return "weatherNotification.png";
     }
 }

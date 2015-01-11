@@ -151,6 +151,7 @@ a:hover {
 .searchPanel{
     /*width: 30%;*/
     max-height: 400px;
+    overflow:scroll;
 }
 .searchPanel .ui-overlaypanel-content, 
 .searchTabView .ui-tabs, .searchTabView .ui-tabs-panel, 

@@ -18,7 +18,7 @@
     </panel>
     
     <p:overlayPanel for="notificationButton" class="searchPanel">
-        <p:dataScroller value="#{userBean.notifications}" var="notification" chunkSize="20" class="searchData">
+        <p:dataScroller value="#{userBean.notifications}" var="notification" chunkSize="10" class="searchData">
             <h:link outcome="#{navigationBean.toEventDetailsPage(notification.event.id)}" >
                 <div class="notificationItem #{userBean.getNotificationClass(notification)}">
                     <div style="vertical-align:middle; float:left;">

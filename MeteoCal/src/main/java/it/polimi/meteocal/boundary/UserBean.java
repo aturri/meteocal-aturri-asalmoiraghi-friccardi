@@ -78,24 +78,11 @@ public class UserBean {
     }
     
     public String getNotificationClass(Notification notification){
-        String style;
-        if(!notification.getReadByUser())
-            style = "notReadNotification";
-        else
-            style = "readNotification";
-        
-        if(notification.getType()=='A')
-            return style + " inviteNotification";
-        if(notification.getType()=='B')
-            return style + " updateNotification";
-        return style + " weatherNotification";
+        return notificationController.getNotificationClass(notification);
     }
     
     public String getNotificationIcon(Notification notification){
-        if(notification.getType()=='A')
-            return "inviteNotification.png";
-        if(notification.getType()=='B')
-            return "updateNotification.png";
-        return "weatherNotification.png";
+                return notificationController.getNotificationIcon(notification);
+
     }
 }
