@@ -12,10 +12,9 @@
                     update=":searchMessages" event="keyup" />
         </p:inputText>
 
-        <p:overlayPanel for="txtSearch" class="searchPanel">
+        <p:overlayPanel for="txtSearch" class="searchPanel" showEvent="keypress">
             <p:tabView id="resultsSearch" class="searchTabView">
                 <p:tab id="usersResultsSearch" class="searchTab">
-
                     <f:facet name="title">
                         <h:graphicImage library="images" name="users.png" class="iconSearchTab"/>
                         <p:outputPanel autoUpdate="true">
@@ -41,7 +40,6 @@
                 </p:tab>
 
                 <p:tab id="eventsResultsSearch" class="searchTab">
-
                     <f:facet name="title">
                         <h:graphicImage library="images" name="calendar.png" class="iconSearchTab"/>
                         <p:outputPanel autoUpdate="true">
