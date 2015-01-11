@@ -20,7 +20,7 @@ import javax.persistence.TypedQuery;
 @Stateless
 public class NotificationManager {
 
-    private static final int MAX_NOTIF = 30;
+    private static final int MAX_NOTIF = 50;
 
     @PersistenceContext
     private EntityManager em;
