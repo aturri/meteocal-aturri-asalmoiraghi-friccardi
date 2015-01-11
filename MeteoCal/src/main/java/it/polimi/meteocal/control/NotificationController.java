@@ -44,10 +44,10 @@ public class NotificationController {
     private void init(){
         messages.put(KindOfNotification.INVITEDTOEVENT, "You are invited to partecipate to %s.");
         messages.put(KindOfNotification.EVENTCANCELLED, null);
-        messages.put(KindOfNotification.EVENTUPDATED, "\"%s\" has been updated.");         
-        messages.put(KindOfNotification.ALERTWEATHER1, "\"%s\": bad weather!");         
-        messages.put(KindOfNotification.ALERTWEATHER3, "\"%s\": change date with a sunny day!");         
-        messages.put(KindOfNotification.WEATHERCHANGED, "\"%s\": changed weather conditions!");         
+        messages.put(KindOfNotification.EVENTUPDATED, "%s has been updated.");         
+        messages.put(KindOfNotification.ALERTWEATHER1, "%s: bad weather!");         
+        messages.put(KindOfNotification.ALERTWEATHER3, "%s: change date with a sunny day!");         
+        messages.put(KindOfNotification.WEATHERCHANGED, "%s: changed weather conditions!");         
     }  
     
     /**

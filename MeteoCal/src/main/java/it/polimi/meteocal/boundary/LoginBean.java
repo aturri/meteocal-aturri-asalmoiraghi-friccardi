@@ -59,7 +59,7 @@ public class LoginBean {
             return NavigationBean.toLogin();
         }
         System.out.println("Is User = "+request.isUserInRole("USER"));
-        return NavigationBean.toHome();
+        return NavigationBean.redirectToHome();
     }
 
 
