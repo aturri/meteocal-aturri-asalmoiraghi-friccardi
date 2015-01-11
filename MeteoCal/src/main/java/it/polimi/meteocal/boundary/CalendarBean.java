@@ -94,6 +94,8 @@ public class CalendarBean implements Serializable {
      
     public void onEventSelect(SelectEvent selectEvent) {
         scheduleEvent = (ScheduleEvent) selectEvent.getObject();
+        System.out.println("ppppp");
+        System.out.println(Boolean.toString(scheduleEvent.isEditable()));
         event = (Event) scheduleEvent.getData();
     }
      
@@ -189,6 +191,10 @@ public class CalendarBean implements Serializable {
                 title = e.getTitle();
             DefaultScheduleEvent loadedEvent = new DefaultScheduleEvent(title, e.getBeginDate(), e.getEndDate(), e);
             loadedEvent.setStyleClass(getEventClassStyle(e));
+            if(!e.getCreator().equals(um.getLoggedUser()))
+                loadedEvent.setEditable(false);
+            else
+                loadedEvent.setEditable(true);
             eventModel.addEvent(loadedEvent);
             }
     }
@@ -234,6 +240,12 @@ public class CalendarBean implements Serializable {
     
     public Boolean showDetailsLink(){
         return this.scheduleEvent != null && !"".equals(this.scheduleEvent.getTitle());
+    }
+    
+    public Boolean canSeeEventDetails(){
+        if(this.event != null)
+            return this.event.getPublicEvent() || this.event.getUsers().contains(um.getLoggedUser());
+        return false;
     }
 
 }

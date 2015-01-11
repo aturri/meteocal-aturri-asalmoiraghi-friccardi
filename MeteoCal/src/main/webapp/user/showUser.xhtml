@@ -5,15 +5,15 @@
     xmlns:p="http://primefaces.org/ui"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     template="/template/main.xhtml">
-    
+
     <ui:define name="title">Show User</ui:define>
-    
+
     <ui:define name="left">
         Welcome back #{userBean.loggedUser.name} #{userBean.loggedUser.surname}
         <br/>
         <p:link outcome="/user/favoriteUsers" value="Favorite Users"/>                
     </ui:define>
-    
+
     <ui:define name="main">
         Calendar of user: #{calendarBean.user.name} #{calendarBean.user.surname}
         <h:form rendered="#{calendarBean.publicCalendar}">
@@ -27,26 +27,28 @@
                 </p:schedule>
             </h:panelGrid>
 
-            <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip">
+            <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip" resizable="false">
                 <h:panelGrid id="eventDetails" columns="3">
                     <div><i>Title:</i> #{calendarBean.scheduleEvent.title}</div>                  
                     <div><i>From:</i> #{calendarBean.scheduleEvent.startDate}</div> 
                     <div><i>To:</i> #{calendarBean.scheduleEvent.endDate}</div> 
-                    
-                    <p:link rendered="#{calendarBean.event.publicEvent}" value="See details..." outcome="#{navigationBean.toEventDetailsPage(calendarBean.event.id)}" />
+
+                    <h:link rendered="#{calendarBean.canSeeEventDetails()}" outcome="#{navigationBean.toEventDetailsPage(calendarBean.event.id)}" title="See details...">
+                        <h:graphicImage id="detailsLink" library="images" name="details.png" class="detailsLink"/>
+                    </h:link>
                 </h:panelGrid>
             </p:dialog>    
         </h:form>
-        
+
         <p:panel rendered="#{!calendarBean.publicCalendar}">
             <div class='divCalendarPrivate'>
                 You can't view the calendar of this user cause the owner set his calendar PRIVATE
             </div>
         </p:panel>
     </ui:define>
-    
+
     <ui:define name="right">
-        
+
     </ui:define>
-    
+
 </ui:composition>

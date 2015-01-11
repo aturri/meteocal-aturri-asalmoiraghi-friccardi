@@ -150,7 +150,7 @@ a:hover {
 
 /*SEARCH PANEL STYLE*/
 .searchPanel{
-    /*width: 30%;*/
+    min-width: 300px;
     max-height: 400px;
     overflow:scroll;
 }
@@ -312,4 +312,11 @@ a.searchLink:hover{
 }
 #notification a {
     text-decoration: none;
+}
+
+
+.detailsLink{
+    height: 50px;
+    width: 50px;
+    cursor: pointer;
 }
