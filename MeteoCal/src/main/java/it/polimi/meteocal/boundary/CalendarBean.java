@@ -182,12 +182,39 @@ public class CalendarBean implements Serializable {
         
         for(Event e: events){
             String title;
+            String style;
             if(!e.getUsers().contains(um.getLoggedUser()) && !e.getPublicEvent())
                 title = "Occupied";
             else
                 title = e.getTitle();
-            eventModel.addEvent(new DefaultScheduleEvent(title, e.getBeginDate(), e.getEndDate(), e));
+            DefaultScheduleEvent loadedEvent = new DefaultScheduleEvent(title, e.getBeginDate(), e.getEndDate(), e);
+            loadedEvent.setStyleClass(getEventClassStyle(e));
+            eventModel.addEvent(loadedEvent);
+            }
+    }
+    
+    private String getEventClassStyle(Event event){
+        User loggedUser = um.getLoggedUser();
+        String style;
+        if(event.getBeginDate().before(eb.getToday())){
+            if(event.getEndDate().before(eb.getToday()))
+                style = "pastEvent";
+            else
+                style = "currentEvent";
         }
+        else
+            style = "futureEvent";
+        
+        if(event.getCreator().equals(loggedUser))
+            return style + " ownEvent";
+        if(event.getUsers().contains(loggedUser))
+            return style + " participatingEvent";
+        if(event.getInvitedUsers().contains(loggedUser))
+            return style + " invitedEvent";
+        if(event.getPublicEvent())
+            return style + " publicOtherEvent";
+        return style + " privateOtherEvent";
+        
     }
     
     private void updateEvent(){

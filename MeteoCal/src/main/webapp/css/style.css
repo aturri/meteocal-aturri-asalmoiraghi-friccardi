@@ -1,215 +1,237 @@
-	html, body {
-		margin: 0;
-		padding: 0;
-		font-family: 'Helvetica','Arial';
-	}
-        hr {
-            width: 94%;
-            height: 1px;
-            background-color: #8e8e8e;
-            border: none;
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
-        a, a:visited {
-            color: #ff0000;
-        }
-        a:hover {
-            color: #000000;
-        }
-	#topbar {
-		background: rgb(73,155,234); /* Old browsers */
-		background: -moz-linear-gradient(top, rgba(73,155,234,1) 0%, rgba(32,124,229,1) 100%); /* FF3.6+ */
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(73,155,234,1)), color-stop(100%,rgba(32,124,229,1))); /* Chrome,Safari4+ */
-		background: -webkit-linear-gradient(top, rgba(73,155,234,1) 0%,rgba(32,124,229,1) 100%); /* Chrome10+,Safari5.1+ */
-		background: -o-linear-gradient(top, rgba(73,155,234,1) 0%,rgba(32,124,229,1) 100%); /* Opera 11.10+ */
-		background: -ms-linear-gradient(top, rgba(73,155,234,1) 0%,rgba(32,124,229,1) 100%); /* IE10+ */
-		background: linear-gradient(to bottom, rgba(73,155,234,1) 0%,rgba(32,124,229,1) 100%); /* W3C */
-		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#499bea', endColorstr='#207ce5',GradientType=0 ); /* IE6-9 */
-		
-		width: 100%;
-		height: 50px;
-		display: block;
-		
-		box-shadow: 0px 0px 3px 1px #000000;
-		color: #ffffff;
-                
-                position: fixed;
-                top: 0px; left: 0px;
-                z-index: 999;
-	}
-	#homebody {
-		background-image: url('../images/bg.jpg');
-		background-size: cover;
-		background-repeat: no-repeat;
-	}
-	#logo, #logo a, #logo a:visited {
-		font-family: Impact;
-		width: 150px;
-		height: 50px;
-		float: left;
-		font-size: 30px;
-		line-height: 50px;
-		text-align: center;
-		letter-spacing: 0.6px;
-		text-shadow: 0px 0px 3px #000000;
-                color: #ffffff;
-                text-decoration: none;
-	}
-	#buttons {
-		width: 360px;
-		height: 50px;
-		line-height: 50px;
-		float: right;
-		text-align: center;
-	}
-	#buttons a {
-		color: #ffffff;
-		text-decoration: none;
-		padding-left: 18px;
-		padding-right: 18px;
-	}
-        #buttons form {
-                width: 100px;
-                float: right;
-        }
-	#search {
-		width: 400px;
-		float: left;
-		height: 50px;
-		display: block;
-		margin: 10px;
-	}
-	#search input[type=search] {
-		width: 400px;
-		height: 30px;
-		-webkit-appearance: none;
-		border: 1px #8e8e8e solid;
-		border-radius: 6px;
-	}
-        #central {
-            padding: 10px;
-        }
-        #content {
-            width: 100%;
-            margin-top: 50px;
-            display: table;
-        }
-        #leftSide {
-            width: 240px;
-            display: table-cell;
-            vertical-align: top;
-        }
-        #rightSide {
-            width: 200px;
-            display: table-cell;
-            vertical-align: top;
-        }
-        #mainContent {
-            display: table-cell;
-            vertical-align: top;
-            padding-left: 10px;
-            padding-right: 10px;
-        }
-        
-        .centredContent {
-            padding-left: 40px !important;
-            padding-right: 40px !important;
-        }
-        .meteoCalForm {
-            width: 700px;
-            margin: 10px auto;
-        }
-        .mail {
-            font-size: 11px;
-        }
-        .ui-growl {
-            top: 60px !important;
-        }
-        .ui-growl-item {
-            background: #eeeeee;
-            background: -moz-linear-gradient(top, #eeeeee 0%, #eeeeee 100%);
-            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#eeeeee), color-stop(100%,#eeeeee));
-            background: -webkit-linear-gradient(top, #eeeeee 0%,#eeeeee 100%);
-            background: -o-linear-gradient(top, #eeeeee 0%,#eeeeee 100%);
-            background: -ms-linear-gradient(top, #eeeeee 0%,#eeeeee 100%);
-            background: linear-gradient(to bottom, #eeeeee 0%,#eeeeee 100%);
-            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#eeeeee',GradientType=0 );
-            color: #464646;
-            font-family: 'Helvetica','Arial';
-            font-weight: lighter;
-            font-size: 15px;
-            text-shadow: none;
-            border-radius: 8px;
-        }
-        .ui-growl-item-container {
-            border-radius: 8px;
-            box-shadow: 0px 0px 14px 0px #363636;
-        }
-        
-        /*SEARCH PANEL STYLE*/
-        .searchPanel{
-            /*width: 30%;*/
-            text-align: center;
-        }
-        .searchPanel .ui-overlaypanel-content, 
-        .searchTabView .ui-tabs, .searchTabView .ui-tabs-panel, 
-        .searchData .ui-datascroller, .searchData .ui-datascroller-content,
-        .searchData .ui-datascroller-loader{
-            padding: 0px !important;
-        }
-        .ui-datascroller-item{
-            padding: 8px 5px 0px 5px !important;
-        }
-        .searchTabView, .searchTab, .searchData{
-            padding: 0px !important;
-        }
-        .searchSeparator{
-            width: 97%;
-            margin: 7px;
-        }
-        
-        a.searchLink{
-            text-decoration: none;
-            font-weight: bold;
-            
-        }
-        a.searchLink:link{
-            color: blue;
-        }
-        a.searchLink:visited{
-            color: #8e8e8e;
-        }
-        a.searchLink:hover{
-            color: navy;
-        }
-        
-        .divCalendarPrivate{
-            text-align: center;
-            margin: 20px;
-            font-weight: bold;
-        }
-        
-        .settingsPanel{
-            width: 70%;
-            margin: auto;
-        }
-        
-        #homepageCentral {
-            width: 100%;
-            margin: 50px auto;
-        }
-        #homepageCentral h1 {
-            font-family: 'HelveticaNeue-UltraLight','Helvetica',Verdana;
-            font-weight: 200;
-            text-align: center;
-            font-size: 36px;
-        }
-        #homepageCentral img {
-            width: 100%;
-            height: auto;
-        }
-        .centerMain {
-            position: relative;
-            left: -20px;
-        }
+html, body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Helvetica','Arial';
+}
+hr {
+    width: 94%;
+    height: 1px;
+    background-color: #8e8e8e;
+    border: none;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+a, a:visited {
+    color: #ff0000;
+}
+a:hover {
+    color: #000000;
+}
+#topbar {
+        background: rgb(73,155,234); /* Old browsers */
+        background: -moz-linear-gradient(top, rgba(73,155,234,1) 0%, rgba(32,124,229,1) 100%); /* FF3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(73,155,234,1)), color-stop(100%,rgba(32,124,229,1))); /* Chrome,Safari4+ */
+        background: -webkit-linear-gradient(top, rgba(73,155,234,1) 0%,rgba(32,124,229,1) 100%); /* Chrome10+,Safari5.1+ */
+        background: -o-linear-gradient(top, rgba(73,155,234,1) 0%,rgba(32,124,229,1) 100%); /* Opera 11.10+ */
+        background: -ms-linear-gradient(top, rgba(73,155,234,1) 0%,rgba(32,124,229,1) 100%); /* IE10+ */
+        background: linear-gradient(to bottom, rgba(73,155,234,1) 0%,rgba(32,124,229,1) 100%); /* W3C */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#499bea', endColorstr='#207ce5',GradientType=0 ); /* IE6-9 */
+
+        width: 100%;
+        height: 50px;
+        display: block;
+
+        box-shadow: 0px 0px 3px 1px #000000;
+        color: #ffffff;
+
+        position: fixed;
+        top: 0px; left: 0px;
+        z-index: 999;
+}
+#homebody {
+        background-image: url('../images/bg.jpg');
+        background-size: cover;
+        background-repeat: no-repeat;
+}
+#logo, #logo a, #logo a:visited {
+        font-family: Impact;
+        width: 150px;
+        height: 50px;
+        float: left;
+        font-size: 30px;
+        line-height: 50px;
+        text-align: center;
+        letter-spacing: 0.6px;
+        text-shadow: 0px 0px 3px #000000;
+        color: #ffffff;
+        text-decoration: none;
+}
+#buttons {
+        width: 360px;
+        height: 50px;
+        line-height: 50px;
+        float: right;
+        text-align: center;
+}
+#buttons a {
+        color: #ffffff;
+        text-decoration: none;
+        padding-left: 18px;
+        padding-right: 18px;
+}
+#buttons form {
+        width: 100px;
+        float: right;
+}
+#search {
+        width: 400px;
+        float: left;
+        height: 50px;
+        display: block;
+        margin: 10px;
+}
+#search input[type=search] {
+        width: 400px;
+        height: 30px;
+        -webkit-appearance: none;
+        border: 1px #8e8e8e solid;
+        border-radius: 6px;
+}
+#central {
+    padding: 10px;
+}
+#content {
+    width: 100%;
+    margin-top: 50px;
+    display: table;
+}
+#leftSide {
+    width: 240px;
+    display: table-cell;
+    vertical-align: top;
+}
+#rightSide {
+    width: 200px;
+    display: table-cell;
+    vertical-align: top;
+}
+#mainContent {
+    display: table-cell;
+    vertical-align: top;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.centredContent {
+    padding-left: 40px !important;
+    padding-right: 40px !important;
+}
+.meteoCalForm {
+    width: 700px;
+    margin: 10px auto;
+}
+.mail {
+    font-size: 11px;
+}
+.ui-growl {
+    top: 60px !important;
+}
+.ui-growl-item {
+    background: #eeeeee;
+    background: -moz-linear-gradient(top, #eeeeee 0%, #eeeeee 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#eeeeee), color-stop(100%,#eeeeee));
+    background: -webkit-linear-gradient(top, #eeeeee 0%,#eeeeee 100%);
+    background: -o-linear-gradient(top, #eeeeee 0%,#eeeeee 100%);
+    background: -ms-linear-gradient(top, #eeeeee 0%,#eeeeee 100%);
+    background: linear-gradient(to bottom, #eeeeee 0%,#eeeeee 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#eeeeee',GradientType=0 );
+    color: #464646;
+    font-family: 'Helvetica','Arial';
+    font-weight: lighter;
+    font-size: 15px;
+    text-shadow: none;
+    border-radius: 8px;
+}
+.ui-growl-item-container {
+    border-radius: 8px;
+    box-shadow: 0px 0px 14px 0px #363636;
+}
+
+/*SEARCH PANEL STYLE*/
+.searchPanel{
+    /*width: 30%;*/
+    text-align: center;
+}
+.searchPanel .ui-overlaypanel-content, 
+.searchTabView .ui-tabs, .searchTabView .ui-tabs-panel, 
+.searchData .ui-datascroller, .searchData .ui-datascroller-content,
+.searchData .ui-datascroller-loader{
+    padding: 0px !important;
+}
+.ui-datascroller-item{
+    padding: 8px 5px 0px 5px !important;
+}
+.searchTabView, .searchTab, .searchData{
+    padding: 0px !important;
+}
+.searchSeparator{
+    width: 97%;
+    margin: 7px;
+}
+
+a.searchLink{
+    text-decoration: none;
+    font-weight: bold;
+
+}
+a.searchLink:link{
+    color: blue;
+}
+a.searchLink:visited{
+    color: #8e8e8e;
+}
+a.searchLink:hover{
+    color: navy;
+}
+
+.divCalendarPrivate{
+    text-align: center;
+    margin: 20px;
+    font-weight: bold;
+}
+
+.settingsPanel{
+    width: 70%;
+    margin: auto;
+}
+
+#homepageCentral {
+    width: 100%;
+    margin: 50px auto;
+}
+#homepageCentral h1 {
+    font-family: 'HelveticaNeue-UltraLight','Helvetica',Verdana;
+    font-weight: 200;
+    text-align: center;
+    font-size: 36px;
+}
+#homepageCentral img {
+    width: 100%;
+    height: auto;
+}
+.centerMain {
+    position: relative;
+    left: -20px;
+}
+
+/* CALENDAR EVENT STYLE */
+.pastEvent{
+    opacity: 0.5;
+}
+.currentEvent{
+    border-color: red;
+}
+.futureEvent{}
+.ownEvent{}
+.participatingEvent{
+    background-color:aqua;
+}
+.invitedEvent{
+    background-color:greenyellow;
+}
+.publicOtherEvent{
+    background-color:blue;
+}
+.privateOtherEvent{
+    background-color: grey;
+}
