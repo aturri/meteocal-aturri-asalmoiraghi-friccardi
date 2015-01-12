@@ -4,29 +4,34 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:p="http://primefaces.org/ui"
     xmlns:f="http://xmlns.jcp.org/jsf/core">
-    
-    
-    <panel id="notificationPanel">
-        <div class="notificationButtonDiv">
-            <h:graphicImage id="notificationButton" library="images" name="notification.png" class="notificationButton">
-                <p:ajax listener="#{userBean.hasReadNotification()}" event="click" />
-            </h:graphicImage>
-            <p:outputPanel autoUpdate="true">
-                <div class="notificationBubble">#{userBean.numOfNotReadNotifications}</div>
-            </p:outputPanel>
-        </div>
-    </panel>
-    
-    <p:overlayPanel for="notificationButton" class="searchPanel">
-        <p:dataScroller value="#{userBean.notifications}" var="notification" chunkSize="10" class="searchData">
-            <h:link outcome="#{navigationBean.toEventDetailsPage(notification.event.id)}" >
-                <div class="notificationItem #{userBean.getNotificationClass(notification)}">
+
+    <h:form>
+        <panel id="notificationPanel">
+            <div class="notificationButtonDiv">
+                <h:graphicImage id="notificationButton" library="images" name="notification.png" class="notificationButton">
+                    <p:ajax listener="#{userBean.hasReadNotification()}" event="click" />
+                </h:graphicImage>
+                <p:outputPanel autoUpdate="true">
+                    <div class="notificationBubble">#{userBean.numOfNotReadNotifications}</div>
+                </p:outputPanel>
+            </div>
+        </panel>
+
+        <p:overlayPanel for="notificationButton" class="searchPanel"
+                        onShow="PF('pollNotification').stop();"
+                        onHide="PF('pollNotification').start();">
+            <p:dataScroller value="#{userBean.notifications}" var="notification" chunkSize="10" class="searchData">
+                <h:link outcome="#{navigationBean.toEventDetailsPage(notification.event.id)}" >
+                    <div class="notificationItem #{userBean.getNotificationClass(notification)}">
                         <h:graphicImage library="images" name="#{userBean.getNotificationIcon(notification)}" 
                                         class="notificationIcon"/>
-                    <span>#{notification.text}</span>
-                </div>
-            </h:link>
-            <p:separator class="searchSeparator"/>
-        </p:dataScroller>
-    </p:overlayPanel>
+                        <span>#{notification.text}</span>
+                    </div>
+                </h:link>
+                <p:separator class="searchSeparator"/>
+            </p:dataScroller>
+        </p:overlayPanel>
+
+        <p:poll widgetVar="pollNotification" autoStart="true" interval="3" update="@parent" />
+    </h:form>
 </ui:composition>
