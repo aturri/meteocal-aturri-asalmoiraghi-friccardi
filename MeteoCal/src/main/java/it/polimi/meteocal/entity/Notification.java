@@ -6,6 +6,7 @@
 package it.polimi.meteocal.entity;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -85,5 +86,18 @@ public class Notification implements Serializable {
         this.readByUser = readByUser;
     }
     
-
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Notification other = (Notification) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        return true;
+    }
 }

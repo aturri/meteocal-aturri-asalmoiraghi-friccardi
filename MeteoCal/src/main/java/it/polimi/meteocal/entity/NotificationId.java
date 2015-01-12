@@ -7,6 +7,7 @@ package it.polimi.meteocal.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 import javax.persistence.Embeddable;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -48,5 +49,24 @@ public class NotificationId implements Serializable {
         this.eventId = eventId;
     }
 
-    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final NotificationId other = (NotificationId) obj;
+        if (!Objects.equals(this.created, other.created)) {
+            return false;
+        }
+        if (!Objects.equals(this.eventId, other.eventId)) {
+            return false;
+        }
+        if (!Objects.equals(this.userId, other.userId)) {
+            return false;
+        }
+        return true;
+    }
 }

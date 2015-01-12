@@ -80,4 +80,10 @@ public class NotificationManager {
         Query query = em.createQuery("SELECT COUNT(n) FROM Notification n WHERE n.user.email = :param_email AND n.readByUser = false").setParameter("param_email", email);
         return ((Number)query.getSingleResult()).intValue();
     }
+
+    public List<Notification> findNewNotificationsByUser(String email) {
+        TypedQuery<Notification> query = em.createQuery("SELECT n FROM Notification n WHERE n.user.email = :param_email AND n.readByUser = false ORDER BY n.id.created DESC", Notification.class).
+                setParameter("param_email", email).setMaxResults(MAX_NOTIF);
+        return query.getResultList();
+    }
 }

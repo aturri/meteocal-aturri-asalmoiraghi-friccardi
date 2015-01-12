@@ -13,6 +13,7 @@ import it.polimi.meteocal.entityManager.NotificationManager;
 import it.polimi.meteocal.entityManager.UserManager;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
@@ -28,15 +29,6 @@ public class UserBean {
 
     @EJB
     UserManager um;
-    
-    @EJB
-    NotificationManager notificationManager;
-    
-    @Inject
-    NotificationController notificationController;
-    
-    public UserBean() {
-    }
     
     public User getLoggedUser(){
         return um.getLoggedUser();
@@ -57,32 +49,11 @@ public class UserBean {
         return um.getLoggedUser().getEmail();
     }
     
-    public int getNumOfNotReadNotifications() {
-        return notificationManager.countNotReadNotifications(um.getLoggedUser().getEmail());
-    }
-    
-    public List<Notification> getNotifications() {
-        return notificationManager.findAllNotificationsByUser(um.getLoggedUser().getEmail());
-    }
-    
     public List<Event> getEventsInCalendar() {
         return new ArrayList<>(um.getLoggedUser().getEvents());
     }
 
     public List<Event> getEventsInvitedTo() {
         return new ArrayList<>(um.getLoggedUser().getInvitations());
-    }
-    
-    public void hasReadNotification(){
-        notificationController.setAsRead(getLoggedUser());
-    }
-    
-    public String getNotificationClass(Notification notification){
-        return notificationController.getNotificationClass(notification);
-    }
-    
-    public String getNotificationIcon(Notification notification){
-                return notificationController.getNotificationIcon(notification);
-
     }
 }
