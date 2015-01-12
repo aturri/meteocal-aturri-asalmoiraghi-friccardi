@@ -21,7 +21,7 @@
                 <div id="mainContent" style="float: left">
                     Calendar of user: #{calendarBean.user.name} #{calendarBean.user.surname}
                     <h:form>
-                        <p:growl id="messages" sticky="true"/>
+                        <p:growl id="messages"/>
 
                         <h:panelGrid style="width:100%">
                             <p:schedule id="schedule" value="#{calendarBean.eventModel}"
