@@ -9,10 +9,10 @@
         <p:inputText id="txtSearch" value="#{searchBean.keyword}" required="true" label="Keyword" placeholder="Search">
             <f:validateLength minimum="3" />
             <p:ajax listener="#{searchBean.searchKeyword()}"
-                    update=":searchMessages" event="keyup" />
+                    update=":searchMessages" event="keyup" onstart="PF('searchResults').show()"/>
         </p:inputText>
 
-        <p:overlayPanel for="txtSearch" class="searchPanel" showEvent="keypress">
+        <p:overlayPanel for="txtSearch" class="searchPanel" widgetVar="searchResults">
             <p:tabView id="resultsSearch" class="searchTabView">
                 <p:tab id="usersResultsSearch" class="searchTab">
                     <f:facet name="title">
@@ -22,20 +22,20 @@
                         </p:outputPanel>
                     </f:facet>
                     <p:outputPanel autoUpdate="true">
-                        <p:dataScroller value="#{searchBean.users}" var="usersResult" chunkSize="20" class="searchData">
+                        <p:dataList value="#{searchBean.users}" var="usersResult" type="none" class="searchData">
                             <h:link outcome="#{navigationBean.toShowUser(usersResult.email)}" >
                                 <div class="notificationItem">
                                     <div style="vertical-align:middle; float:left;">
                                         <h:graphicImage library="images" name="user2.png" 
                                                         class="notificationIcon"/>
                                     </div>
-                                    <div style="vertical-align:middle; float:left; margin-left:4px;">
+                                    <div style="vertical-align:middle; float:left; padding-top:5px;">
                                         #{usersResult.name} #{usersResult.surname}
                                     </div>
                                 </div>
                             </h:link>
                             <p:separator class="searchSeparator"/>
-                        </p:dataScroller>
+                        </p:dataList>
                     </p:outputPanel>
                 </p:tab>
 
@@ -47,20 +47,20 @@
                         </p:outputPanel>
                     </f:facet>
                     <p:outputPanel autoUpdate="true">
-                        <p:dataScroller value="#{searchBean.events}" var="eventsResult" chunkSize="20" class="searchData">
+                        <p:dataList value="#{searchBean.events}" var="eventsResult" type="none" class="searchData">
                             <h:link outcome="#{navigationBean.toEventDetailsPage(eventsResult.id)}" >
                                 <div class="notificationItem">
                                     <div style="vertical-align:middle; float:left;">
                                         <h:graphicImage library="images" name="inviteNotification.png" 
                                                         class="notificationIcon"/>
                                     </div>
-                                    <div style="vertical-align:middle; float:left; margin-left:4px;">
+                                    <div style="vertical-align:middle; float:left; padding-top:5px;">
                                         #{eventsResult.title} (#{eventsResult.city}) - #{eventsResult.beginDate}
                                     </div>
                                 </div>
                             </h:link>
                             <p:separator class="searchSeparator"/>
-                        </p:dataScroller>
+                        </p:dataList>
                     </p:outputPanel>
                 </p:tab>
             </p:tabView>
