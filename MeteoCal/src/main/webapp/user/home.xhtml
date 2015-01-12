@@ -31,13 +31,16 @@
 
                                 <p:ajax event="dateSelect" listener="#{calendarBean.onDateSelect}" update="eventDetailsEditable eventDetails" oncomplete="PF('eventDialog').show();" />
                                 <p:ajax event="eventSelect" listener="#{calendarBean.onEventSelect}" update="eventDetailsEditable eventDetails" oncomplete="PF('eventDialog').show();" />
-                                <!--<p:ajax event="eventMove" listener="#{calendarBean.onEventMove}" update="messages" />
-                                <p:ajax event="eventResize" listener="#{calendarBean.onEventResize}" update="messages" />-->
+                                <p:ajax event="eventMove" listener="#{calendarBean.onEventMove}" update="messages" />
+                                <!--<p:ajax event="eventResize" listener="#{calendarBean.onEventResize}" update="messages" />-->
 
                             </p:schedule>
                         </h:panelGrid>
 
-                        <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip" resizable="false">
+                        <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip"
+                                resizable="false"
+                                onShow="PF('pollNotification').stop();"
+                                onHide="PF('pollNotification').start();">
                             <p:outputPanel autoUpdate="true">
                                 <h:panelGrid id="eventDetailsEditable" columns="3" rendered="#{calendarBean.scheduleEvent.editable}">
                                     <p:outputLabel for="title" value="Title:" />

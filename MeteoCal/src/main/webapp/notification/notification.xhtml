@@ -5,7 +5,9 @@
     xmlns:p="http://primefaces.org/ui"
     xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-    <h:form>
+    <p:growl for="notifyMessage" autoUpdate="true" sticky="true"/>
+
+    <h:form id="notificationForm">
         <panel id="notificationPanel">
             <div class="notificationButtonDiv">
                 <h:graphicImage id="notificationButton" library="images" name="notification.png" class="notificationButton">
@@ -32,7 +34,9 @@
             </p:dataScroller>
         </p:overlayPanel>
 
-        <p:growl for="notifyMessage"/>
-        <p:poll listener="#{notificationService.checkNewNotifications()}" interval="2" widgetVar="pollNotification" autoStart="true" update="@parent" />
+        <p:poll listener="#{notificationService.checkNewNotifications()}"
+                interval="2" widgetVar="pollNotification"
+                autoStart="true" update="@parent"
+                process="@this"/>
     </h:form>
 </ui:composition>
