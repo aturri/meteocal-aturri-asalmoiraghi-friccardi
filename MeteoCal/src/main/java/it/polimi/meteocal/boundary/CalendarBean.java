@@ -94,8 +94,6 @@ public class CalendarBean implements Serializable {
      
     public void onEventSelect(SelectEvent selectEvent) {
         scheduleEvent = (ScheduleEvent) selectEvent.getObject();
-        System.out.println("ppppp");
-        System.out.println(Boolean.toString(scheduleEvent.isEditable()));
         event = (Event) scheduleEvent.getData();
     }
      

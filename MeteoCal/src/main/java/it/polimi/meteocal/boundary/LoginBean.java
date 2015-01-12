@@ -8,11 +8,17 @@ package it.polimi.meteocal.boundary;
 import it.polimi.meteocal.control.NavigationBean;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.UserManager;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.Date;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,14 +27,25 @@ import javax.servlet.http.HttpServletRequest;
  * @author Andrea
  */
 @Named
-@RequestScoped
-public class LoginBean {
+@ViewScoped
+public class LoginBean implements Serializable{
 
     @EJB
     UserManager um;
     
     private String username;
     private String password;
+    
+    private String forwardUrl;
+    
+    @PostConstruct
+    void init(){
+        String requestedURI = (String) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get(RequestDispatcher.FORWARD_REQUEST_URI);
+        String requestedQuery = (String) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get(RequestDispatcher.FORWARD_QUERY_STRING);
+        forwardUrl = requestedURI;
+        if(requestedQuery!=null)
+           forwardUrl += "?" + requestedQuery;
+    }
 
     public String getUsername() {
         return this.username;
@@ -46,7 +63,7 @@ public class LoginBean {
         this.password = password;
     }
     
-    public String login() {
+    public String login() throws IOException {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         try {
@@ -59,7 +76,10 @@ public class LoginBean {
             return NavigationBean.toLogin();
         }
         System.out.println("Is User = "+request.isUserInRole("USER"));
-        return NavigationBean.redirectToHome();
+        
+        ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+        ec.redirect(forwardUrl);
+        return null;
     }
 
 
