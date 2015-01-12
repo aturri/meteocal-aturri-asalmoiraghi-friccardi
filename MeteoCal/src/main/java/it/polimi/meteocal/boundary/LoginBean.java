@@ -39,9 +39,15 @@ public class LoginBean implements Serializable{
     
     @PostConstruct
     void init(){
-        String requestedURI = (String) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get(RequestDispatcher.FORWARD_REQUEST_URI);
+        String requestedURI = (String) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get(RequestDispatcher.FORWARD_SERVLET_PATH);
+        String applicationPath = (String) FacesContext.getCurrentInstance().getExternalContext().getApplicationContextPath();
         String requestedQuery = (String) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get(RequestDispatcher.FORWARD_QUERY_STRING);
-        forwardUrl = requestedURI;
+        System.out.println(applicationPath);
+        System.out.println(requestedURI);
+        if(requestedURI==null)
+            requestedURI = NavigationBean.toHome()+".xhtml";
+        System.out.println(requestedURI);
+        forwardUrl = applicationPath + requestedURI;
         if(requestedQuery!=null)
            forwardUrl += "?" + requestedQuery;
     }
