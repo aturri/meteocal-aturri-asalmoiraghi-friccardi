@@ -156,6 +156,10 @@ public class Event implements Serializable {
     public Date getEndDate() {
         return endDate;
     }
+    
+    public Date getMinEndDate(){
+        return new Date(this.beginDate.getTime() + TimeUnit.MINUTES.toMillis(15));
+    }
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;

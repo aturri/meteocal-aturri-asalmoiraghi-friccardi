@@ -35,7 +35,7 @@
         </p:overlayPanel>
 
         <p:poll listener="#{notificationService.checkNewNotifications()}"
-                interval="2" widgetVar="pollNotification"
+                interval="10" widgetVar="pollNotification"
                 autoStart="true" update="@parent"
                 process="@this"/>
     </h:form>

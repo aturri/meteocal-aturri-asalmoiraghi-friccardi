@@ -45,7 +45,7 @@
 
                                 <h:outputLabel for="end" value="End time *" />
                                 <p:calendar id="end" pattern="MM/dd/yyyy HH:mm" value="#{eventBean.event.endDate}"
-                                            stepMinute="15" navigator="true" mindate="#{eventBean.event.beginDate}" required="true">
+                                            stepMinute="15" navigator="true" mindate="#{eventBean.event.minEndDate}" required="true">
                                      <p:ajax event="blur" process="start end city"/>   
                                 </p:calendar>
                                 <p:message id="endmsg" for="end" />

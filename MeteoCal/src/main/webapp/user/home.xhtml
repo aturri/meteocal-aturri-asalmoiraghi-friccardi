@@ -25,10 +25,10 @@
                                 allDaySlot="false">
 
                         <p:ajax event="dateSelect" listener="#{calendarBean.onDateSelect}" 
-                                update="eventDetailsEditable eventDetails" 
+                                update="eventDetailsPanel" 
                                 oncomplete="showDialog(xhr, status, args);" />
                         <p:ajax event="eventSelect" listener="#{calendarBean.onEventSelect}" 
-                                update="eventDetailsEditable eventDetails" 
+                                update="eventDetailsPanel" 
                                 oncomplete="showDialog(xhr, status, args);" />
                         <p:ajax event="eventMove" listener="#{calendarBean.onEventMove}" update="messages" />
                         <!--<p:ajax event="eventResize" listener="#{calendarBean.onEventResize}" update="messages" />-->
@@ -46,10 +46,8 @@
                 </h:outputScript>
 
                 <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip"
-                          resizable="false"
-                          onShow="PF('pollNotification').stop();"
-                          onHide="PF('pollNotification').start();">
-                    <p:outputPanel autoUpdate="true">
+                          resizable="false">
+                    <p:outputPanel id="eventDetailsPanel">
                         <h:panelGrid id="eventDetailsEditable" columns="3" rendered="#{calendarBean.scheduleEvent.editable}">
                             <p:outputLabel for="title" value="Title:" />
                             <p:inputText id="title"  required="true" value="#{calendarBean.event.title}">
@@ -67,7 +65,7 @@
 
                             <h:outputLabel for="end" value="To: *" />
                             <p:calendar id="end" pattern="MM/dd/yyyy HH:mm" value="#{calendarBean.event.endDate}"
-                                        stepMinute="15" navigator="true" mindate="#{calendarBean.event.beginDate}" required="true">
+                                        stepMinute="15" navigator="true" mindate="#{calendarBean.event.minEndDate}" required="true">
                                 <p:ajax update="endmsg"/>                                               
                             </p:calendar>
                             <p:message id="endmsg" for="end" />
