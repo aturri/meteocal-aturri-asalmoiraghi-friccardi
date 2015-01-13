@@ -5,11 +5,15 @@
  */
 package it.polimi.meteocal.boundary;
 
+import it.polimi.meteocal.control.EventController;
 import it.polimi.meteocal.control.Utility;
 import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.EventManager;
 import it.polimi.meteocal.entityManager.UserManager;
+import it.polimi.meteocal.exception.EventOverlapException;
+import it.polimi.meteocal.exception.IllegalEventDateException;
+import it.polimi.meteocal.exception.IllegalInvitedUserException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -51,7 +55,7 @@ public class SettingsBean {
     UserManager userManager;
     
     @Inject
-    EventManager eventManager;
+    EventController eventController;
     
     private User user;
     
@@ -116,7 +120,11 @@ public class SettingsBean {
                         }
                         event.setPublicEvent(Boolean.FALSE);
                         event.setIndoor(Utility.stringToBoolean(element.getElementsByTagName("indoor").item(0).getTextContent()));
-                        eventManager.save(event);
+                        try {
+                            eventController.createEvent(event, null);
+                        } catch (EventOverlapException | IllegalInvitedUserException | IllegalEventDateException ex) {
+                            Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
                 }
             } catch (ParserConfigurationException | SAXException ex) {
