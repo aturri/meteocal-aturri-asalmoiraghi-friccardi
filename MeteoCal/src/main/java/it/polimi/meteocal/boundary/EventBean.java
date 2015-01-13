@@ -16,13 +16,14 @@ import it.polimi.meteocal.control.WeatherController;
 import it.polimi.meteocal.exception.EventOverlapException;
 import it.polimi.meteocal.exception.IllegalEventDateException;
 import it.polimi.meteocal.exception.IllegalInvitedUserException;
+import it.polimi.meteocal.utils.DateUtils;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
@@ -67,7 +68,7 @@ public class EventBean implements Serializable{
             this.setEventByParam();
         }else if(this.event==null){
             this.event=new Event();
-            this.event.setBeginDate(this.getToday());
+            this.event.setBeginDate(DateUtils.getToday());
         }
         
         invitedUsersList = new ArrayList<>();
@@ -227,22 +228,6 @@ public class EventBean implements Serializable{
         }else{
             throw new RuntimeException();
         }
-    }
-    
-    /**
-     * This method returns the current date, rounded to the next :00/:15/:30/:45 minute
-     * @return current date rounded
-     */
-    public Date getToday() {
-        Date today = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(today);
-        int unroundedMinutes = calendar.get(Calendar.MINUTE);
-        int mod = unroundedMinutes % 15;
-        calendar.add(Calendar.MINUTE, 15-mod);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        return calendar.getTime();
     }
    
     /**
@@ -674,5 +659,9 @@ public class EventBean implements Serializable{
             }
         }
         return "na";
+    }
+    
+    public Date getToday(){
+        return DateUtils.getToday();
     }
 }

@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -147,10 +148,17 @@ public class Event implements Serializable {
 
     public void setBeginDate(Date beginDate) {
         this.beginDate = beginDate;
+        //For new event or event with beginDate after endDate, set endDate after 30 minutes when beginDate change
+        if(this.endDate == null || (this.endDate != null && !this.endDate.after(beginDate)))
+            this.endDate = new Date(beginDate.getTime() + TimeUnit.MINUTES.toMillis(30));
     }
 
     public Date getEndDate() {
         return endDate;
+    }
+    
+    public Date getMinEndDate(){
+        return new Date(this.beginDate.getTime() + TimeUnit.MINUTES.toMillis(15));
     }
 
     public void setEndDate(Date endDate) {
