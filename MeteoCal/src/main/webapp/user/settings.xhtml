@@ -129,9 +129,13 @@
         
         
         <h:form class="importPanel" enctype="multipart/form-data">
-                <p:fileUpload value="#{settingsBean.uploadedFile}"  mode="simple"></p:fileUpload>
-                <p:separator/>
-                <h:commandButton value="Dummy Action" action="#{settingsBean.importData}"></h:commandButton>
+            <p:panel header="Import your data">
+                <h:panelGrid columns="2" id="importGrid">    
+                    <p:fileUpload value="#{settingsBean.uploadedFile}"  mode="simple"></p:fileUpload>
+                    <h:commandButton value="Upload" action="#{settingsBean.importData}"></h:commandButton>
+                </h:panelGrid>
+                <p:growl for="ImportMessages" sticky="true"/>
+            </p:panel>
         </h:form>
     </ui:define>
     

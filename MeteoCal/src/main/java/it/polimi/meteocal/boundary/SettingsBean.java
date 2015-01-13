@@ -23,6 +23,7 @@ import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.UploadedFile;
@@ -35,7 +36,7 @@ import org.primefaces.model.UploadedFile;
 @RequestScoped
 public class SettingsBean {
 
-    @EJB
+    @Inject
     UserManager userManager;
     
     private User user;
@@ -51,8 +52,9 @@ public class SettingsBean {
     public String importData(){
         //move the uploadedFile in the common folder for the application
         OutputStream outputStream=null;
+        User current=userManager.getLoggedUser();
             try {
-            outputStream = new FileOutputStream("_import.xml");
+            outputStream = new FileOutputStream(current.getEmail()+"_import.xml");
             InputStream inputStream=this.getUploadedFile().getInputstream();
             byte[] buffer = new byte[4096];          
             int bytesRead = 0;  
