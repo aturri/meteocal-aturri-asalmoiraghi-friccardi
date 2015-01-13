@@ -1,11 +1,18 @@
 package it.polimi.meteocal.boundary;
 
+import it.polimi.meteocal.control.EventController;
 import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.UserManager;
+import it.polimi.meteocal.exception.EventOverlapException;
+import it.polimi.meteocal.exception.IllegalEventDateException;
+import it.polimi.meteocal.exception.IllegalInvitedUserException;
+import it.polimi.meteocal.utils.DateUtils;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
@@ -13,6 +20,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
+import org.primefaces.context.RequestContext;
  
 import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
@@ -27,7 +35,7 @@ import org.primefaces.model.ScheduleModel;
 public class CalendarBean implements Serializable {
     
     @Inject
-    private EventBean eb;
+    private EventController ec;
     @EJB
     private UserManager um;
     
@@ -98,11 +106,18 @@ public class CalendarBean implements Serializable {
     }
      
     public void onDateSelect(SelectEvent selectEvent) {
-        event = new Event();
-        event.setBeginDate((Date) selectEvent.getObject());
-        event.setEndDate((Date) selectEvent.getObject());
-        event.setIndoor(Boolean.TRUE);
-        scheduleEvent = new DefaultScheduleEvent("", event.getBeginDate(), event.getEndDate(), event);
+        Date dateSelected = (Date) selectEvent.getObject();
+        if(DateUtils.isToday(dateSelected))
+            dateSelected = DateUtils.getToday();
+        if(dateSelected.before(DateUtils.setTimeToMidnight(new Date())))
+            RequestContext.getCurrentInstance().
+                    addCallbackParam("pastDate", true);
+        else{
+            event = new Event();
+            event.setBeginDate(dateSelected);
+            event.setIndoor(Boolean.TRUE);
+            scheduleEvent = new DefaultScheduleEvent("", event.getBeginDate(), event.getEndDate(), event);
+        }
     }
      
     public void onEventMove(ScheduleEntryMoveEvent movedEvent) {
@@ -181,27 +196,28 @@ public class CalendarBean implements Serializable {
         Set<Event> events = this.user.getEvents();
         
         for(Event e: events){
-            String title;
-            String style;
-            if(!e.getUsers().contains(um.getLoggedUser()) && !e.getPublicEvent())
-                title = "Occupied";
-            else
-                title = e.getTitle();
-            DefaultScheduleEvent loadedEvent = new DefaultScheduleEvent(title, e.getBeginDate(), e.getEndDate(), e);
+            DefaultScheduleEvent loadedEvent = new DefaultScheduleEvent(getTitle(e), e.getBeginDate(), e.getEndDate(), e);
             loadedEvent.setStyleClass(getEventClassStyle(e));
-            if(!e.getCreator().equals(um.getLoggedUser()))
-                loadedEvent.setEditable(false);
-            else
-                loadedEvent.setEditable(true);
+           loadedEvent.setEditable(isEditable(e));
             eventModel.addEvent(loadedEvent);
             }
+    }
+    
+    private String getTitle(Event event){
+        if(!event.getUsers().contains(um.getLoggedUser()) && !event.getPublicEvent())
+            return "Occupied";
+        return event.getTitle();
+    }
+    
+    private Boolean isEditable(Event event){
+        return event.getCreator().equals(um.getLoggedUser()) && event.getBeginDate().after(DateUtils.getToday());
     }
     
     private String getEventClassStyle(Event event){
         User loggedUser = um.getLoggedUser();
         String style;
-        if(event.getBeginDate().before(eb.getToday())){
-            if(event.getEndDate().before(eb.getToday()))
+        if(event.getBeginDate().before(new Date())){
+            if(event.getEndDate().before(new Date()))
                 style = "pastEvent";
             else
                 style = "currentEvent";
@@ -222,18 +238,35 @@ public class CalendarBean implements Serializable {
     }
     
     private void updateEvent(){
-        eb.setEvent(event);
-        eb.editEvent();
+//        eb.setEvent(event);
+//        eb.editEvent();
         eventModel.deleteEvent(scheduleEvent);
         eventModel.addEvent(new DefaultScheduleEvent(event.getTitle(), event.getBeginDate(), event.getEndDate(), event));
         MessageBean.addInfo("Event succesfully updated.");
     }
     
     private void saveEvent() {
-        eb.setEvent(event);
-        eb.createEvent();       
-        eventModel.addEvent(new DefaultScheduleEvent(event.getTitle(), event.getBeginDate(), event.getEndDate(), event));
-        MessageBean.addInfo("New event succesfully created.");
+        String message;
+        try {
+            ec.createEvent(event, null);
+            System.out.println(event.getEndDate());
+            eventModel.addEvent(new DefaultScheduleEvent(event.getTitle(), event.getBeginDate(), event.getEndDate(), event));
+            MessageBean.addInfo("New event succesfully created.");
+        } catch (EventOverlapException ex) {
+            message = "This event overlaps with an existing one!";
+            Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
+            MessageBean.addError("errorMsg",message);
+        } catch (IllegalInvitedUserException ex) {
+            message = "Check the invitation list!";
+            Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
+            MessageBean.addError("errorMsg",message);
+        } catch (IllegalEventDateException ex) {
+            message = "End date must be after begin date!";
+            Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
+            MessageBean.addError("errorMsg",message);
+        }
+//        eb.setEvent(event);
+//        eb.createEvent();       
     }
     
     public Boolean showDetailsLink(){
