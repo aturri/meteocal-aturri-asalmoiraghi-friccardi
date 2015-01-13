@@ -8,7 +8,9 @@ package it.polimi.meteocal.boundary;
 import it.polimi.meteocal.control.Utility;
 import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
+import it.polimi.meteocal.entityManager.EventManager;
 import it.polimi.meteocal.entityManager.UserManager;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -16,17 +18,25 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
-import javax.servlet.ServletContext;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.UploadedFile;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -38,6 +48,9 @@ public class SettingsBean {
 
     @Inject
     UserManager userManager;
+    
+    @Inject
+    EventManager eventManager;
     
     private User user;
     
@@ -55,7 +68,7 @@ public class SettingsBean {
         User current=userManager.getLoggedUser();
             try {
             outputStream = new FileOutputStream(current.getEmail()+"_import.xml");
-            InputStream inputStream=this.getUploadedFile().getInputstream();
+            InputStream inputStream=this.uploadedFile.getInputstream();
             byte[] buffer = new byte[4096];          
             int bytesRead = 0;  
             while(true) {                          
@@ -67,18 +80,48 @@ public class SettingsBean {
                 }                         
             }  
             outputStream.flush();
-            /*try {
-                File fXmlFile = new File("/Users/mkyong/staff.xml");
+            try {
+                File xmlFile = new File(current.getEmail()+"_import.xml");
                 DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
                 DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-                Document doc = dBuilder.parse(fXmlFile);
+                Document doc = dBuilder.parse(xmlFile);
                 
-            } catch (ParserConfigurationException ex) {
-                Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SAXException ex) {
+                //here start the core of import
+                //the initial data(regarding the user will be skipped.
+                //The events will be fully read
+                NodeList eventList = doc.getElementsByTagName("event");
+                Event event;
+                for (int i = 0; i < eventList.getLength(); i++) {
+                    event=new Event();
+                    
+                    Node eventNode=eventList.item(i);
+                    System.out.println(eventNode.getLocalName());
+                    if (eventNode.getNodeType() == Node.ELEMENT_NODE) {
+                        Element element=(Element) eventNode;
+                        System.out.println("Event title : " + element.getElementsByTagName("title").item(0).getTextContent());
+                        event.setTitle(element.getElementsByTagName("title").item(0).getTextContent());
+                        event.setDescription(element.getElementsByTagName("description").item(0).getTextContent());
+                        event.setLocationInfo(element.getElementsByTagName("locationinfo").item(0).getTextContent());
+                        event.setCity(element.getElementsByTagName("city").item(0).getTextContent());
+                        event.setAddress(element.getElementsByTagName("address").item(0).getTextContent());
+                        event.setCreator(current);
+                        SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+                        try {
+                            event.setCreatedEvent(formatter.parse(element.getElementsByTagName("createdevent").item(0).getTextContent()));
+                            event.setBeginDate(formatter.parse(element.getElementsByTagName("begindate").item(0).getTextContent()));
+                            event.setEndDate(formatter.parse(element.getElementsByTagName("enddate").item(0).getTextContent()));
+                        } catch (ParseException ex) {
+                            Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        event.setPublicEvent(Boolean.FALSE);
+                        event.setIndoor(Utility.stringToBoolean(element.getElementsByTagName("indoor").item(0).getTextContent()));
+                        eventManager.save(event);
+                    }
+                }
+            } catch (ParserConfigurationException | SAXException ex) {
                 Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
             }
-            */
+            
         } catch (FileNotFoundException ex) {
             Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -92,6 +135,8 @@ public class SettingsBean {
         }
         return "";
     }
+    
+    
     
     /**
      * This function create the exportedFile that have to exported
@@ -126,7 +171,7 @@ public class SettingsBean {
                     out.write("\t\t\t<locationinfo>"+event.getLocationInfo()+"</locationinfo>\n");
                     out.write("\t\t\t<city>"+event.getCity()+"</city>\n");
                     out.write("\t\t\t<address>"+event.getAddress()+"</address>\n");
-                    out.write("\t\t\t<creator>"+event.getCreatedEvent()+"</creator>\n");
+                    out.write("\t\t\t<creator>"+event.getCreator()+"</creator>\n");
                     out.write("\t\t\t<createdevent>"+event.getCreatedEvent()+"</createdevent>\n");
                     out.write("\t\t\t<begindate>"+event.getBeginDate()+"</begindate>\n");
                     out.write("\t\t\t<enddate>"+event.getEndDate()+"</enddate>\n");

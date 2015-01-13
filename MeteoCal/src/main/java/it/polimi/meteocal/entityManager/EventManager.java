@@ -65,7 +65,7 @@ public class EventManager {
     }
     
     /**
-     * Thsi method returns the event with the specified id
+     * This method returns the event with the specified id
      * @param id of the event
      * @return the event object associated to the id
      */
@@ -75,7 +75,7 @@ public class EventManager {
     
     /**
      * This method finds all event objects with future begin date
-     * @return list of event ojbects with begin date >= current date
+     * @return list of event objects with begin date >= current date
      */
     public List<Event> findAllFuture() {
         TypedQuery<Event> query = em.createQuery("SELECT e FROM Event e WHERE e.beginDate >= CURRENT_TIMESTAMP", Event.class);
@@ -85,7 +85,7 @@ public class EventManager {
     /**
      * This method finds all event objects that start on a specified date
      * @param date where to search events
-     * @return list of event ojbects with begin date = specified date
+     * @return list of event objects with begin date = specified date
      */
     public List<Event> findTomorrowEvents(Date date) {
         List<Event> events = new ArrayList<>();

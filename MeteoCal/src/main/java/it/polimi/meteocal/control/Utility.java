@@ -43,4 +43,14 @@ public class Utility {
 
         return sb.toString();
     }
+    
+    /**
+     * Return the boolean value into a string. If the conversion fails, it return false.
+     * The accepted value for true are "true", "True","T","1" and "t"
+     * @param string
+     * @return the boolean value
+     */
+    public static Boolean stringToBoolean(String string){
+        return "t".equals(string)||"true".equals(string)||"TRUE".equals(string)||"T".equals(string)||"1".equals(string);
+    }
 }
