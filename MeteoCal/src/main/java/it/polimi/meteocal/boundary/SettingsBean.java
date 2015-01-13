@@ -10,6 +10,7 @@ import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.UserManager;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -22,8 +23,10 @@ import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.UploadedFile;
 
 /**
  *
@@ -33,7 +36,7 @@ import org.primefaces.model.DefaultStreamedContent;
 @RequestScoped
 public class SettingsBean {
 
-    @EJB
+    @Inject
     UserManager userManager;
     
     private User user;
@@ -41,8 +44,53 @@ public class SettingsBean {
     private String oldPassword;
     private String newPassword;
     private DefaultStreamedContent exportedFile;
+    private UploadedFile uploadedFile;
     
     public SettingsBean() {
+    }
+    
+    public String importData(){
+        //move the uploadedFile in the common folder for the application
+        OutputStream outputStream=null;
+        User current=userManager.getLoggedUser();
+            try {
+            outputStream = new FileOutputStream(current.getEmail()+"_import.xml");
+            InputStream inputStream=this.getUploadedFile().getInputstream();
+            byte[] buffer = new byte[4096];          
+            int bytesRead = 0;  
+            while(true) {                          
+                bytesRead = inputStream.read(buffer);  
+                if(bytesRead > 0) {  
+                    outputStream.write(buffer, 0, bytesRead);  
+                }else {  
+                    break;  
+                }                         
+            }  
+            outputStream.flush();
+            /*try {
+                File fXmlFile = new File("/Users/mkyong/staff.xml");
+                DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+                Document doc = dBuilder.parse(fXmlFile);
+                
+            } catch (ParserConfigurationException ex) {
+                Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SAXException ex) {
+                Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            */
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                outputStream.close();
+            } catch (IOException ex) {
+                Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return "";
     }
     
     /**
@@ -194,6 +242,20 @@ public class SettingsBean {
      */
     public void setFile(DefaultStreamedContent file) {
         this.exportedFile = file;
+    }
+
+    /**
+     * @return the uploadedFile
+     */
+    public UploadedFile getUploadedFile() {
+        return uploadedFile;
+    }
+
+    /**
+     * @param uploadedFile the uploadedFile to set
+     */
+    public void setUploadedFile(UploadedFile uploadedFile) {
+        this.uploadedFile = uploadedFile;
     }
 
 }
