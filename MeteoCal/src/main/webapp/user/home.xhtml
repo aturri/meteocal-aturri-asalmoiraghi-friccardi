@@ -1,116 +1,121 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <h:head>
-    </h:head>
-    <h:body>
-        <ui:composition template="/template/main.xhtml">
-            <ui:define name="title">Home</ui:define>
+<ui:composition template="/template/main.xhtml"                 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:define name="title">Home</ui:define>
 
-            <ui:define name="left">
-                Welcome back #{userBean.loggedUser.name} #{userBean.loggedUser.surname}
-                <br/>
-                <p:link outcome="/user/favoriteUsers" value="Contacts"/>                
-            </ui:define>
+    <ui:define name="left">
+        Welcome back #{userBean.loggedUser.name} #{userBean.loggedUser.surname}
+        <br/>
+        <p:link outcome="/user/favoriteUsers" value="Contacts"/>                
+    </ui:define>
 
-            <ui:define name="main">
-                <div id="mainContent" style="float: left">
-                    Calendar of user: #{calendarBean.user.name} #{calendarBean.user.surname}
-                    <h:form>
-                        <p:growl id="messages"/>
+    <ui:define name="main">
+        <div id="mainContent" style="float: left">
+            Calendar of user: #{calendarBean.user.name} #{calendarBean.user.surname}
+            <h:form>
+                <p:growl id="messages"/>
 
-                        <h:panelGrid style="width:100%">
-                            <p:schedule id="schedule" value="#{calendarBean.eventModel}"
-                                        slotMinutes="15" widgetVar="myschedule" timeZone="GMT+1"
-                                        draggable="false" resizable="false"
-                                        allDaySlot="false">
+                <h:panelGrid style="width:100%">
+                    <p:schedule id="schedule" value="#{calendarBean.eventModel}"
+                                slotMinutes="15" widgetVar="myschedule" timeZone="GMT+1"
+                                draggable="false" resizable="false"
+                                allDaySlot="false">
 
-                                <p:ajax event="dateSelect" listener="#{calendarBean.onDateSelect}" update="eventDetailsEditable eventDetails" oncomplete="PF('eventDialog').show();" />
-                                <p:ajax event="eventSelect" listener="#{calendarBean.onEventSelect}" update="eventDetailsEditable eventDetails" oncomplete="PF('eventDialog').show();" />
-                                <p:ajax event="eventMove" listener="#{calendarBean.onEventMove}" update="messages" />
-                                <!--<p:ajax event="eventResize" listener="#{calendarBean.onEventResize}" update="messages" />-->
+                        <p:ajax event="dateSelect" listener="#{calendarBean.onDateSelect}" 
+                                update="eventDetailsEditable eventDetails" 
+                                oncomplete="showDialog(xhr, status, args);" />
+                        <p:ajax event="eventSelect" listener="#{calendarBean.onEventSelect}" 
+                                update="eventDetailsEditable eventDetails" 
+                                oncomplete="showDialog(xhr, status, args);" />
+                        <p:ajax event="eventMove" listener="#{calendarBean.onEventMove}" update="messages" />
+                        <!--<p:ajax event="eventResize" listener="#{calendarBean.onEventResize}" update="messages" />-->
 
-                            </p:schedule>
+                    </p:schedule>
+                </h:panelGrid>
+
+                <h:outputScript target="head">
+                    function showDialog(xhr, status, args) {  
+                    if(args.pastDate){
+                    return;
+                    }
+                    PF('eventDialog').show();
+                    }  
+                </h:outputScript>
+
+                <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip"
+                          resizable="false"
+                          onShow="PF('pollNotification').stop();"
+                          onHide="PF('pollNotification').start();">
+                    <p:outputPanel autoUpdate="true">
+                        <h:panelGrid id="eventDetailsEditable" columns="3" rendered="#{calendarBean.scheduleEvent.editable}">
+                            <p:outputLabel for="title" value="Title:" />
+                            <p:inputText id="title"  required="true" value="#{calendarBean.event.title}">
+                                <p:ajax update="titlemsg"/>
+                            </p:inputText>
+                            <p:message id="titlemsg" for="title" />
+
+                            <h:outputLabel for="start" value="From: *" />
+
+                            <p:calendar id="start" pattern="MM/dd/yyyy HH:mm" value="#{calendarBean.event.beginDate}" 
+                                        stepMinute="15" navigator="true" mindate="#{eventBean.today}" required="true">
+                                <p:ajax event="blur" update="startMsg end"/>                       
+                            </p:calendar>
+                            <p:message id="startMsg" for="start" />
+
+                            <h:outputLabel for="end" value="To: *" />
+                            <p:calendar id="end" pattern="MM/dd/yyyy HH:mm" value="#{calendarBean.event.endDate}"
+                                        stepMinute="15" navigator="true" mindate="#{calendarBean.event.beginDate}" required="true">
+                                <p:ajax update="endmsg"/>                                               
+                            </p:calendar>
+                            <p:message id="endmsg" for="end" />
+
+                            <p:outputLabel for="visibility" value="Visibility:" />
+                            <p:selectOneMenu id="visibility" value="#{calendarBean.event.publicEvent}" style="width: 210px" required="true">
+                                <f:selectItem itemLabel="Private" itemValue="false" />
+                                <f:selectItem itemLabel="Public" itemValue="true" />
+                                <p:ajax update="visibilitymsg"/>
+                            </p:selectOneMenu>                    
+                            <p:message id="visibilitymsg" for="visibility" /> 
+
+                            <p:outputLabel for="indoorRadio" value="Type:"/>
+                            <p:selectOneRadio id="indoorRadio" value="#{calendarBean.event.indoor}" layout="lineDirection" required="true">
+                                <f:selectItem itemLabel="Indoor" itemValue="true" />
+                                <f:selectItem itemLabel="Outdoor" itemValue="false" />
+                            </p:selectOneRadio>
+                            <p:message id="indoorMsg" for="indoorRadio" />  
+
+                            <p:commandButton id="addButton" update="messages" value="Save" actionListener="#{calendarBean.addEvent}" oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
+                            <p:commandButton id="detailsButton" rendered="#{calendarBean.showDetailsLink()}" value="Details" action="#{navigationBean.redirectToEventDetailsPage(calendarBean.event.id)}" update="messages" />
                         </h:panelGrid>
 
-                        <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip"
-                                resizable="false"
-                                onShow="PF('pollNotification').stop();"
-                                onHide="PF('pollNotification').start();">
-                            <p:outputPanel autoUpdate="true">
-                                <h:panelGrid id="eventDetailsEditable" columns="3" rendered="#{calendarBean.scheduleEvent.editable}">
-                                    <p:outputLabel for="title" value="Title:" />
-                                    <p:inputText id="title"  required="true" value="#{calendarBean.event.title}">
-                                        <p:ajax update="titlemsg"/>
-                                    </p:inputText>
-                                    <p:message id="titlemsg" for="title" />
+                        <h:panelGrid id="eventDetails" columns="3" rendered="#{!calendarBean.scheduleEvent.editable}">
+                            <div><i>Title:</i> #{calendarBean.event.title}</div>                  
+                            <div><i>From:</i> #{calendarBean.event.beginDate}</div> 
+                            <div><i>To:</i> #{calendarBean.event.endDate}</div> 
 
-                                    <h:outputLabel for="start" value="From: *" />
-
-                                    <p:calendar id="start" pattern="MM/dd/yyyy HH:mm" value="#{calendarBean.event.beginDate}" 
-                                                stepMinute="15" navigator="true" mindate="#{eventBean.today}" required="true">
-                                        <p:ajax event="blur" update="startMsg end"/>                       
-                                    </p:calendar>
-                                    <p:message id="startMsg" for="start" />
-
-                                    <h:outputLabel for="end" value="To: *" />
-                                    <p:calendar id="end" pattern="MM/dd/yyyy HH:mm" value="#{calendarBean.event.endDate}"
-                                                stepMinute="15" navigator="true" mindate="#{calendarBean.event.beginDate}" required="true">
-                                        <p:ajax update="endmsg"/>                                               
-                                    </p:calendar>
-                                    <p:message id="endmsg" for="end" />
-
-                                    <p:outputLabel for="visibility" value="Visibility:" />
-                                    <p:selectOneMenu id="visibility" value="#{calendarBean.event.publicEvent}" style="width: 210px" required="true">
-                                        <f:selectItem itemLabel="Private" itemValue="false" />
-                                        <f:selectItem itemLabel="Public" itemValue="true" />
-                                        <p:ajax update="visibilitymsg"/>
-                                    </p:selectOneMenu>                    
-                                    <p:message id="visibilitymsg" for="visibility" /> 
-
-                                    <p:outputLabel for="indoorRadio" value="Type:"/>
-                                    <p:selectOneRadio id="indoorRadio" value="#{calendarBean.event.indoor}" layout="lineDirection" required="true">
-                                        <f:selectItem itemLabel="Indoor" itemValue="true" />
-                                        <f:selectItem itemLabel="Outdoor" itemValue="false" />
-                                    </p:selectOneRadio>
-                                    <p:message id="indoorMsg" for="indoorRadio" />  
-
-                                    <p:commandButton id="addButton" update="messages" value="Save" actionListener="#{calendarBean.addEvent}" oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
-                                    <p:commandButton id="detailsButton" rendered="#{calendarBean.showDetailsLink()}" value="Details" action="#{navigationBean.redirectToEventDetailsPage(calendarBean.event.id)}" update="messages" />
-                                </h:panelGrid>
-
-                                <h:panelGrid id="eventDetails" columns="3" rendered="#{!calendarBean.scheduleEvent.editable}">
-                                    <div><i>Title:</i> #{calendarBean.event.title}</div>                  
-                                    <div><i>From:</i> #{calendarBean.event.beginDate}</div> 
-                                    <div><i>To:</i> #{calendarBean.event.endDate}</div> 
-
-                                    <h:link outcome="#{navigationBean.toEventDetailsPage(calendarBean.event.id)}" title="See details...">
-                                        <h:graphicImage id="detailsLink" library="images" name="details.png" class="detailsLink"/>
-                                    </h:link>
-                                </h:panelGrid>
-                            </p:outputPanel>
-                        </p:dialog>    
-                    </h:form>
-                </div>
-            </ui:define>
-
-            <ui:define name="right">
-                <p>Pending invitations:</p>
-                <ul>
-                    <ui:repeat value="#{userBean.eventsInvitedTo}" var="event">
-                        <li>
-                            <h:link value="#{event.title}" outcome="/event/detail">
-                                <f:param name="id" value="#{event.id}" />
+                            <h:link outcome="#{navigationBean.toEventDetailsPage(calendarBean.event.id)}" title="See details...">
+                                <h:graphicImage id="detailsLink" library="images" name="details.png" class="detailsLink"/>
                             </h:link>
-                        </li>
-                    </ui:repeat>
-                </ul>                
-            </ui:define>
-        </ui:composition>
-    </h:body>
-</html>
+                        </h:panelGrid>
+                    </p:outputPanel>
+                </p:dialog>    
+            </h:form>
+        </div>
+    </ui:define>
 
+    <ui:define name="right">
+        <p>Pending invitations:</p>
+        <ul>
+            <ui:repeat value="#{userBean.eventsInvitedTo}" var="event">
+                <li>
+                    <h:link value="#{event.title}" outcome="/event/detail">
+                        <f:param name="id" value="#{event.id}" />
+                    </h:link>
+                </li>
+            </ui:repeat>
+        </ul>                
+    </ui:define>
+</ui:composition>
