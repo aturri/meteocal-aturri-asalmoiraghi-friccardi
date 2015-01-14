@@ -32,14 +32,14 @@
                                 <p:message id="descriptionmsg" for="description" />
 
                                 <h:outputLabel for="start" value="Starting time *" />
-                                <p:calendar id="start" pattern="MM/dd/yyyy HH:mm" value="#{eventBean.event.beginDate}" 
+                                <p:calendar readonlyInput="true"  id="start" pattern="MM/dd/yyyy HH:mm" value="#{eventBean.event.beginDate}" 
                                             stepMinute="15" navigator="true" mindate="#{eventBean.today}" required="true">
                                     <p:ajax event="dateSelect" update="startMsg end weather growl" process="start city"/>                       
                                 </p:calendar>
                                 <p:message id="startMsg" for="start" />
 
                                 <h:outputLabel for="end" value="End time *" />
-                                <p:calendar id="end" pattern="MM/dd/yyyy HH:mm" value="#{eventBean.event.endDate}"
+                                <p:calendar readonlyInput="true"  id="end" pattern="MM/dd/yyyy HH:mm" value="#{eventBean.event.endDate}"
                                             stepMinute="15" navigator="true" mindate="#{eventBean.event.minEndDate}" required="true">
                                      <p:ajax event="dateSelect" process="start end city"/>   
                                 </p:calendar>
