@@ -5,6 +5,7 @@
  */
 package it.polimi.meteocal.entity;
 
+import it.polimi.meteocal.utils.DateUtils;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
@@ -163,6 +164,22 @@ public class Event implements Serializable {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+    
+    /**
+     * This method formats the date for the last update date of the event begin
+     * @return event begin date formatted
+     */      
+    public String eventBeginString() {
+        return DateUtils.formatExtDate(this.beginDate);
+    }
+ 
+    /**
+     * This method formats the date for the last update date of the event end
+     * @return event end date formatted
+     */    
+    public String eventEndString() {
+        return DateUtils.formatExtDate(this.endDate);
     }
 
     public Date getCreatedEvent() {

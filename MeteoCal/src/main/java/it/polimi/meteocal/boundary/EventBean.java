@@ -18,12 +18,9 @@ import it.polimi.meteocal.exception.IllegalEventDateException;
 import it.polimi.meteocal.exception.IllegalInvitedUserException;
 import it.polimi.meteocal.utils.DateUtils;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
@@ -41,8 +38,6 @@ import org.primefaces.event.SelectEvent;
 @Named
 @ViewScoped
 public class EventBean implements Serializable{
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy", Locale.ENGLISH);
-    private static final SimpleDateFormat EXT_DATE_FORMAT = new SimpleDateFormat("EEE, d MMM yyyy HH:mm", Locale.ENGLISH);
     
     @Inject
     private WeatherController weatherControl;
@@ -257,7 +252,7 @@ public class EventBean implements Serializable{
      * @return event begin date formatted
      */      
     public String eventBegin() {
-        return EXT_DATE_FORMAT.format(event.getBeginDate());
+        return event.eventBeginString();
     }
  
     /**
@@ -265,7 +260,7 @@ public class EventBean implements Serializable{
      * @return event end date formatted
      */    
     public String eventEnd() {
-        return EXT_DATE_FORMAT.format(event.getEndDate());
+        return event.eventEndString();
     }
     
     /**
@@ -273,7 +268,7 @@ public class EventBean implements Serializable{
      * @return weather date formatted
      */
     public String forecastDate() {
-        return DATE_FORMAT.format(event.getWeather().getForecastDate());
+        return DateUtils.formatDate(event.getWeather().getForecastDate());
     }
     
     /**
@@ -281,7 +276,7 @@ public class EventBean implements Serializable{
      * @return last update weather date formatted
      */
     public String forecastUpdatedAt() {
-        return EXT_DATE_FORMAT.format(event.getWeather().getLastUpdate());
+        return DateUtils.formatExtDate(event.getWeather().getLastUpdate());
     }
     
     /**
@@ -367,7 +362,7 @@ public class EventBean implements Serializable{
             if(weather!=null) {
                 //this.event.setWeather(weather);
                 String formattedForecast = "Forecast for "+weather.getCity()+
-                        " on "+DATE_FORMAT.format(weather.getForecastDate())+
+                        " on "+DateUtils.formatDate(weather.getForecastDate())+
                         ": "+weather.getWeather()+
                         ", with high of "+Float.toString(weather.getMaxTemp())+
                         "°C and low of "+Float.toString(weather.getMinTemp())+"°C";
@@ -376,7 +371,7 @@ public class EventBean implements Serializable{
                     if(firstGood!=null) {
                         MessageBean.addInfo("growlMsg","There is bad weather for the time and location you chose!\n"
                                 + "But MeteoCal found good weather on "+
-                                DATE_FORMAT.format(firstGood.getForecastDate())+": "+
+                                DateUtils.formatDate(firstGood.getForecastDate())+": "+
                                 firstGood.getWeather()+
                                 ", with high of "+Float.toString(firstGood.getMaxTemp())+
                                 "°C and low of "+Float.toString(firstGood.getMinTemp())+"°C");

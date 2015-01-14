@@ -10,6 +10,7 @@ import it.polimi.meteocal.entity.Notification;
 import it.polimi.meteocal.entityManager.NotificationManager;
 import it.polimi.meteocal.entityManager.UserManager;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -35,14 +36,24 @@ public class NotificationService implements Serializable {
     NotificationController notificationController;
 
     private List<Notification> notifications;
+    private int notReadNotifications;
 
     @PostConstruct
     public void init() {
-        notifications = notificationManager.findAllNotificationsByUser(um.getLoggedUser().getEmail());
+        notifications = loadNotifications();
+        notReadNotifications = loadNumOfNotReadNotifications();
     }
 
     public int getNumOfNotReadNotifications() {
+        return notReadNotifications;
+    }
+    
+    private int loadNumOfNotReadNotifications(){
         return notificationManager.countNotReadNotifications(um.getLoggedUser().getEmail());
+    }
+    
+    private List<Notification> loadNotifications(){
+        return notificationManager.findAllNotificationsByUser(um.getLoggedUser().getEmail());
     }
 
     public List<Notification> getNotifications() {
@@ -51,6 +62,7 @@ public class NotificationService implements Serializable {
 
     public void hasReadNotification() {
         notificationController.setAsRead(um.getLoggedUser());
+        notReadNotifications = loadNumOfNotReadNotifications();
     }
 
     public String getNotificationClass(Notification notification) {
@@ -62,14 +74,21 @@ public class NotificationService implements Serializable {
     }
 
     public void checkNewNotifications() {
-        //Load notifications not read yet
-        List<Notification> newNotifications = notificationManager.findNewNotificationsByUser(um.getLoggedUser().getEmail());
-        //Remove notification that were already shown
-        newNotifications.removeAll(notifications);
-        //The remaining notification are shown with message
-        for (Notification n : newNotifications) {
-            MessageBean.addInfo("notifyMessage", n.getText());
+        //check if there are new not read notifications
+        int newNotReadNotifications = loadNumOfNotReadNotifications();
+        if(newNotReadNotifications>notReadNotifications){
+            //Shown message for only the new notifications not loaded before
+            List<Notification> newNotifications = loadNotifications();
+            List<Notification> tmpNotifications = new ArrayList<>(newNotifications);
+            //Remove notification that were already loaded
+            newNotifications.removeAll(notifications);
+            //The remaining notification are shown with message
+            for (Notification n : newNotifications) {
+                MessageBean.addInfo("notifyMessage", notifications.get(1).getText());
+            }
+            //Add the new notifications to the list
+            notifications = tmpNotifications;
+            notReadNotifications = newNotReadNotifications;
         }
-        notifications.addAll(newNotifications);
     }
 }

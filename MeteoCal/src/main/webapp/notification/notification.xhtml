@@ -11,10 +11,12 @@
         <panel id="notificationPanel">
             <div class="notificationButtonDiv">
                 <h:graphicImage id="notificationButton" library="images" name="notification.png" class="notificationButton">
-                    <p:ajax listener="#{notificationService.hasReadNotification()}" event="click" />
+                    <p:ajax listener="#{notificationService.hasReadNotification()}" event="click" update="notificationBubblePanel"/>
                 </h:graphicImage>
-                <p:outputPanel autoUpdate="true" rendered="#{notificationService.numOfNotReadNotifications>0}">
+                <p:outputPanel id="notificationBubblePanel">
+                    <h:outputFormat rendered="#{notificationService.numOfNotReadNotifications>0}">
                     <div class="notificationBubble">#{notificationService.numOfNotReadNotifications}</div>
+                    </h:outputFormat>
                 </p:outputPanel>
             </div>
         </panel>
@@ -35,7 +37,7 @@
         </p:overlayPanel>
 
         <p:poll listener="#{notificationService.checkNewNotifications()}"
-                interval="10" widgetVar="pollNotification"
+                interval="6" widgetVar="pollNotification"
                 autoStart="true" update="@parent"
                 process="@this"/>
     </h:form>
