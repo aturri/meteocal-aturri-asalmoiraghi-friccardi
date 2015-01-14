@@ -320,3 +320,8 @@ a.searchLink:hover{
     width: 50px;
     cursor: pointer;
 }
+
+.invitedAutocomplete  .ui-autocomplete-multiple-container{
+    max-width: 200px;
+    overflow: scroll;
+}

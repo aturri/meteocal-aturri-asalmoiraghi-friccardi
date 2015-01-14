@@ -85,8 +85,11 @@
                                 <p:message id="indoorMsg" for="indoorRadio" />  
 
                                 <p:outputLabel for="invitations" value="Invite users" style="width: 200px; display: block" />
-                                <p:autoComplete id="invitations" multiple="true" value="#{eventBean.invitedUsersList}" completeMethod="#{eventBean.completeUsersCanInvite}" 
-                                                forceSelection="true">
+                                <p:autoComplete id="invitations" multiple="true" 
+                                                value="#{eventBean.invitedUsersList}" 
+                                                completeMethod="#{eventBean.completeUsersCanInvite}" 
+                                                forceSelection="true"
+                                                class="invitedAutocomplete">
                                     <p:ajax event="itemSelect" listener="#{eventBean.handleUserSelected}"/>
                                     <p:ajax event="itemUnselect" listener="#{eventBean.handleUserUnselected}"/>
                                 </p:autoComplete>
