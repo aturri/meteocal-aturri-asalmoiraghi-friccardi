@@ -18,7 +18,6 @@ import it.polimi.meteocal.exception.IllegalEventDateException;
 import it.polimi.meteocal.exception.IllegalInvitedUserException;
 import it.polimi.meteocal.utils.DateUtils;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,7 +25,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.inject.Named;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
@@ -52,8 +50,6 @@ public class EventBean implements Serializable{
     
     @EJB
     UserManager userManager;
-    
-    private String invitedUsers;
     
     private List<String> invitedUsersList;
     
@@ -93,7 +89,6 @@ public class EventBean implements Serializable{
      */
     public String createEvent(){  
         String message;
-        invitedUsers = "";
         try {
             eventControl.createEvent(event, invitedUsersList);
         } catch (EventOverlapException ex) {
@@ -315,44 +310,44 @@ public class EventBean implements Serializable{
                 event.getCity().replaceAll(" ","+").replaceAll(" ","");
     }
     
-    /**
-     * This method handles requests to check list of invited users for create page
-     */ 
-    public void handleInvitedUsersForCreate() {
-        if(this.invitedUsers!=null && !"".equals(this.invitedUsers)) {
-            String foo = this.invitedUsers;
-            String[] split = foo.split(",");
-            List<String> tmpUsersList = new ArrayList<>();
-            for (String splitted : split) {
-                if(splitted.equals(userManager.getLoggedUser().getEmail())) {
-                    MessageBean.addWarning("errorMsg","You can't invite yourself");
-                } else if(!userManager.existsUser(splitted)) {
-                    MessageBean.addWarning("errorMsg",splitted+" is not registered to MeteoCal");
-                } else if(tmpUsersList.contains(splitted)) {
-                    MessageBean.addWarning("errorMsg",splitted+" has been invited more than once");
-                } else {
-                    tmpUsersList.add(splitted);
-                }
-            }
-        }
-    }
-    
-    /**
-     * This method handles requests to check list of invited users for edit page
-     */
-    public void handleInvitedUsersForEdit() {
-        if(this.invitedUsers!=null && !"".equals(this.invitedUsers)) {
-            this.handleInvitedUsersForCreate();
-            String foo = this.invitedUsers;
-            String[] split = foo.split(",");
-            for (String splitted : split) {
-                if(event.getInvitedUsers().contains(userManager.findByEmail(splitted)) || 
-                            event.getUsers().contains(userManager.findByEmail(splitted))) {
-                    MessageBean.addWarning("errorMsg",splitted+" has already been invited");
-                }
-            }
-        }
-    }
+//    /**
+//     * This method handles requests to check list of invited users for create page
+//     */ 
+//    public void handleInvitedUsersForCreate() {
+//        if(this.invitedUsers!=null && !"".equals(this.invitedUsers)) {
+//            String foo = this.invitedUsers;
+//            String[] split = foo.split(",");
+//            List<String> tmpUsersList = new ArrayList<>();
+//            for (String splitted : split) {
+//                if(splitted.equals(userManager.getLoggedUser().getEmail())) {
+//                    MessageBean.addWarning("errorMsg","You can't invite yourself");
+//                } else if(!userManager.existsUser(splitted)) {
+//                    MessageBean.addWarning("errorMsg",splitted+" is not registered to MeteoCal");
+//                } else if(tmpUsersList.contains(splitted)) {
+//                    MessageBean.addWarning("errorMsg",splitted+" has been invited more than once");
+//                } else {
+//                    tmpUsersList.add(splitted);
+//                }
+//            }
+//        }
+//    }
+//    
+//    /**
+//     * This method handles requests to check list of invited users for edit page
+//     */
+//    public void handleInvitedUsersForEdit() {
+//        if(this.invitedUsers!=null && !"".equals(this.invitedUsers)) {
+//            this.handleInvitedUsersForCreate();
+//            String foo = this.invitedUsers;
+//            String[] split = foo.split(",");
+//            for (String splitted : split) {
+//                if(event.getInvitedUsers().contains(userManager.findByEmail(splitted)) || 
+//                            event.getUsers().contains(userManager.findByEmail(splitted))) {
+//                    MessageBean.addWarning("errorMsg",splitted+" has already been invited");
+//                }
+//            }
+//        }
+//    }
     
     /**
      * This method handles requests to search actual weather forecasts for the event's begin date/time and city
@@ -404,21 +399,21 @@ public class EventBean implements Serializable{
         return null;
     }
 
-    /**
-     * This method returns the invitedUsers string
-     * @return invitedUsers
-     */
-    public String getInvitedUsers() {
-        return invitedUsers;
-    }
-
-    /**
-     * This method sets the invitedUsers string
-     * @param invitedUsers 
-     */
-    public void setInvitedUsers(String invitedUsers) {
-        this.invitedUsers = invitedUsers;
-    }
+//    /**
+//     * This method returns the invitedUsers string
+//     * @return invitedUsers
+//     */
+//    public String getInvitedUsers() {
+//        return invitedUsers;
+//    }
+//
+//    /**
+//     * This method sets the invitedUsers string
+//     * @param invitedUsers 
+//     */
+//    public void setInvitedUsers(String invitedUsers) {
+//        this.invitedUsers = invitedUsers;
+//    }
     
     /**
      * This method returns the invitedUsers list

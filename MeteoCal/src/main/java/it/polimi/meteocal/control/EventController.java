@@ -64,7 +64,8 @@ public class EventController {
         for(Event e: userEvents) {
             Date c = e.getBeginDate();
             Date d = e.getEndDate();
-            if((c.after(a) && d.before(b)) || (c.after(a) && b.after(c)) || (c.before(a) && d.after(a))) {
+//            if((c.after(a) && d.before(b)) || (c.after(a) && b.after(c)) || (c.before(a) && d.after(a))) {
+            if((b.after(d) && a.before(d)) || (a.before(c) && b.after(c)) || (!a.before(c) && !b.after(d))) {
                 return true;
             }
         }
