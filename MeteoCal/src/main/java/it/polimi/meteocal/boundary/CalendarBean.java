@@ -110,8 +110,7 @@ public class CalendarBean implements Serializable {
         if(DateUtils.isToday(dateSelected))
             dateSelected = DateUtils.getToday();
         if(dateSelected.before(DateUtils.setTimeToMidnight(new Date())))
-            RequestContext.getCurrentInstance().
-                    addCallbackParam("pastDate", true);
+            RequestContext.getCurrentInstance().addCallbackParam("pastDate", true);
         else{
             event = new Event();
             event.setBeginDate(dateSelected);
@@ -120,56 +119,9 @@ public class CalendarBean implements Serializable {
         }
     }
      
-    public void onEventMove(ScheduleEntryMoveEvent movedEvent) {
-        /*FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Event moved", "Day delta:" + movedEvent.getDayDelta() + ", Minute delta:" + movedEvent.getMinuteDelta());
-        addMessage(message);
-        
-        scheduleEvent = movedEvent.getScheduleEvent();
-        MessageBean.addWarning("Schedule data: "+scheduleEvent.getStartDate().toString());
-        event = (Event) scheduleEvent.getData();
-        MessageBean.addWarning("Event data: " + event.getBeginDate().toString());
-        
-        Date myDate = new Date(event.getBeginDate().getTime());
-        MessageBean.addWarning("MyData: " + myDate.toString());
-        event.setBeginDate(myDate);        
-        event.setTitle(myDate.toString());
-        em.delete(event);
-        em.save(event);
-        //add to creator's calendar
-        User myUser = um.getLoggedUser();
-        myUser.getEvents().add(event);
-        um.update(myUser);
-        
-//        updateEvent();
-        
-//        myEvent.setTitle("Papeete2");
-//        Date start = scheduleEvent.getStartDate();
-//        MessageBean.addInfo(start.toString());
-//        myEvent.setBeginDate(new Date(start.getTime()));
-//        myEvent.setEndDate(scheduleEvent.getEndDate());
-//        
-//        MessageBean.addWarning(Integer.toString(myEvent.getId()));
-//        
-//        MessageBean.addWarning(myEvent.getBeginDate().toString());
-//        em.update(myEvent);*/
-    }
+    public void onEventMove(ScheduleEntryMoveEvent movedEvent) {}
      
-    public void onEventResize(ScheduleEntryResizeEvent resizedEvent) {
-        /*FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Event resized", "Day delta:" + resizedEvent.getDayDelta() + ", Minute delta:" + resizedEvent.getMinuteDelta());
-         
-        addMessage(message);
-        
-        scheduleEvent = resizedEvent.getScheduleEvent();
-        MessageBean.addWarning("Schedule data: "+scheduleEvent.getEndDate().toString());
-        event = (Event) scheduleEvent.getData();
-        MessageBean.addWarning("Event data: " + event.getEndDate().toString());
-        
-        updateEvent();*/
-    }
-     
-    /*private void addMessage(FacesMessage message) {
-        FacesContext.getCurrentInstance().addMessage(null, message);
-    }*/
+    public void onEventResize(ScheduleEntryResizeEvent resizedEvent) {}
     
     /**
      * Check if the parameter exists
@@ -238,35 +190,56 @@ public class CalendarBean implements Serializable {
     }
     
     private void updateEvent(){
-//        eb.setEvent(event);
-//        eb.editEvent();
-        eventModel.deleteEvent(scheduleEvent);
-        eventModel.addEvent(new DefaultScheduleEvent(event.getTitle(), event.getBeginDate(), event.getEndDate(), event));
-        MessageBean.addInfo("Event succesfully updated.");
-    }
-    
-    private void saveEvent() {
+        Boolean addSuccess = false;            
         String message;
         try {
-            ec.createEvent(event, null);
-            System.out.println(event.getEndDate());
+            ec.editEvent(event, null);
+            addSuccess = true;
+            eventModel.deleteEvent(scheduleEvent);
             eventModel.addEvent(new DefaultScheduleEvent(event.getTitle(), event.getBeginDate(), event.getEndDate(), event));
-            MessageBean.addInfo("New event succesfully created.");
+            MessageBean.addInfo("calendarMessage","Event succesfully updated.");
         } catch (EventOverlapException ex) {
             message = "This event overlaps with an existing one!";
             Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
-            MessageBean.addError("errorMsg",message);
+            MessageBean.addError("calendarMessage",message);
         } catch (IllegalInvitedUserException ex) {
             message = "Check the invitation list!";
             Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
-            MessageBean.addError("errorMsg",message);
+            MessageBean.addError("calendarMessage",message);
         } catch (IllegalEventDateException ex) {
             message = "End date must be after begin date!";
             Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
-            MessageBean.addError("errorMsg",message);
+            MessageBean.addError("calendarMessage",message);
         }
-//        eb.setEvent(event);
-//        eb.createEvent();       
+        RequestContext.getCurrentInstance().addCallbackParam("addSuccess", addSuccess);
+    }
+    
+    private void saveEvent() {
+        Boolean addSuccess = false;            
+        String message;
+        try {
+            ec.createEvent(event, null);
+            addSuccess = true;
+            eventModel.addEvent(new DefaultScheduleEvent(event.getTitle(), event.getBeginDate(), event.getEndDate(), event));
+            MessageBean.addInfo("calendarMessage", "New event succesfully created.");
+        } catch (EventOverlapException ex) {
+            message = "This event overlaps with an existing one!";
+            Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
+            MessageBean.addError("calendarMessage",message);
+        } catch (IllegalInvitedUserException ex) {
+            message = "Check the invitation list!";
+            Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
+            MessageBean.addError("calendarMessage",message);
+        } catch (IllegalEventDateException ex) {
+            message = "End date must be after begin date!";
+            Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
+            MessageBean.addError("calendarMessage",message);
+        } catch (IllegalArgumentException ex) {
+            message = "Unexpected error during creation! Operation cancelled!";
+            Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
+            MessageBean.addError("calendarMessage",message);
+        }    
+        RequestContext.getCurrentInstance().addCallbackParam("addSuccess", addSuccess);
     }
     
     public Boolean showDetailsLink(){

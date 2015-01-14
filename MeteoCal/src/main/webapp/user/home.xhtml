@@ -16,7 +16,7 @@
         <div id="mainContent" style="float: left">
             Calendar of user: #{calendarBean.user.name} #{calendarBean.user.surname}
             <h:form>
-                <p:growl id="messages"/>
+                <p:growl for="calendarMessage" id="messages"/>
 
                 <h:panelGrid style="width:100%">
                     <p:schedule id="schedule" value="#{calendarBean.eventModel}"
@@ -30,7 +30,7 @@
                         <p:ajax event="eventSelect" listener="#{calendarBean.onEventSelect}" 
                                 update="eventDetailsPanel" 
                                 oncomplete="showDialog(xhr, status, args);" />
-                        <p:ajax event="eventMove" listener="#{calendarBean.onEventMove}" update="messages" />
+                        <!--<p:ajax event="eventMove" listener="#{calendarBean.onEventMove}" update="messages" />-->
                         <!--<p:ajax event="eventResize" listener="#{calendarBean.onEventResize}" update="messages" />-->
 
                     </p:schedule>
@@ -42,7 +42,13 @@
                     return;
                     }
                     PF('eventDialog').show();
-                    }  
+                    }
+                    function closeDialog(xhr, status, args) {
+                    if(!args.addSuccess){
+                    return;
+                    }
+                    PF('eventDialog').hide();
+                    }
                 </h:outputScript>
 
                 <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip"
@@ -85,8 +91,13 @@
                             </p:selectOneRadio>
                             <p:message id="indoorMsg" for="indoorRadio" />  
 
-                            <p:commandButton id="addButton" update="messages" value="Save" actionListener="#{calendarBean.addEvent}" oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
-                            <p:commandButton id="detailsButton" rendered="#{calendarBean.showDetailsLink()}" value="Details" action="#{navigationBean.redirectToEventDetailsPage(calendarBean.event.id)}" update="messages" />
+                            <p:commandButton id="addButton" update="messages" value="Save"
+                                             actionListener="#{calendarBean.addEvent}"
+                                             oncomplete="PF('myschedule').update();closeDialog(xhr,status,args);" />
+                            <p:commandButton id="detailsButton" rendered="#{calendarBean.showDetailsLink()}"
+                                             value="Details"
+                                             action="#{navigationBean.redirectToEventDetailsPage(calendarBean.event.id)}"
+                                             update="messages" />
                         </h:panelGrid>
 
                         <h:panelGrid id="eventDetails" columns="3" rendered="#{!calendarBean.scheduleEvent.editable}">

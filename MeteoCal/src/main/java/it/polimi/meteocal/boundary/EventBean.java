@@ -106,6 +106,11 @@ public class EventBean implements Serializable{
             Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
             MessageBean.addError("errorMsg",message);
             return "";
+        } catch (IllegalArgumentException ex) {
+            message = "Unexpected error during creation! Operation cancelled!";
+            Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
+            MessageBean.addError("calendarMessage",message);
+            return "";
         }
         return NavigationBean.redirectToEventDetailsPage(event.getId().toString());
     }
