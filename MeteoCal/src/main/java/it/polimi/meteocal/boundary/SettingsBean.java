@@ -72,19 +72,31 @@ public class SettingsBean {
         OutputStream outputStream=null;
         User current=userManager.getLoggedUser();
             try {
-            outputStream = new FileOutputStream(current.getEmail()+"_import.xml");
-            InputStream inputStream=this.uploadedFile.getInputstream();
-            byte[] buffer = new byte[4096];          
-            int bytesRead = 0;  
-            while(true) {                          
-                bytesRead = inputStream.read(buffer);  
-                if(bytesRead > 0) {  
-                    outputStream.write(buffer, 0, bytesRead);  
-                }else {  
-                    break;  
-                }                         
-            }  
-            outputStream.flush();
+                outputStream = new FileOutputStream(current.getEmail()+"_import.xml");
+                InputStream inputStream=this.uploadedFile.getInputstream();
+                byte[] buffer = new byte[4096];          
+                int bytesRead;  
+                while(true) {                          
+                    bytesRead = inputStream.read(buffer);  
+                    if(bytesRead > 0) {  
+                        outputStream.write(buffer, 0, bytesRead);  
+                    }else {  
+                        break;  
+                    }                         
+                }
+                outputStream.flush();
+                inputStream.close();
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    outputStream.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
             try {
                 File xmlFile = new File(current.getEmail()+"_import.xml");
                 DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -100,10 +112,9 @@ public class SettingsBean {
                     event=new Event();
                     
                     Node eventNode=eventList.item(i);
-                    System.out.println(eventNode.getLocalName());
                     if (eventNode.getNodeType() == Node.ELEMENT_NODE) {
                         Element element=(Element) eventNode;
-                        System.out.println("Event title : " + element.getElementsByTagName("title").item(0).getTextContent());
+                        System.out.println("Processing event with title : " + element.getElementsByTagName("title").item(0).getTextContent());
                         event.setTitle(element.getElementsByTagName("title").item(0).getTextContent());
                         event.setDescription(element.getElementsByTagName("description").item(0).getTextContent());
                         event.setLocationInfo(element.getElementsByTagName("locationinfo").item(0).getTextContent());
@@ -127,21 +138,18 @@ public class SettingsBean {
                         }
                     }
                 }
-            } catch (ParserConfigurationException | SAXException ex) {
+                if(xmlFile.canWrite()&&xmlFile.isFile()){
+                    System.out.println("Permission are ok to delete the file");
+                }
+                if(xmlFile.delete()){
+                    System.out.println("File deletion complete");
+                }else{
+                    System.out.println("The events are uploaded, but the uploaded file can't be removed...");
+                }
+            } catch (ParserConfigurationException | SAXException | IOException ex) {
                 Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
             }
             
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                outputStream.close();
-            } catch (IOException ex) {
-                Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
         return "";
     }
     
