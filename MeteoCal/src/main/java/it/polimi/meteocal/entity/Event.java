@@ -5,6 +5,7 @@
  */
 package it.polimi.meteocal.entity;
 
+import it.polimi.meteocal.boundary.MessageBean;
 import it.polimi.meteocal.utils.DateUtils;
 import java.io.Serializable;
 import java.util.Date;
@@ -149,6 +150,8 @@ public class Event implements Serializable {
 
     public void setBeginDate(Date beginDate) {
         this.beginDate = beginDate;
+        if(this.beginDate.before(DateUtils.getToday()))
+            this.beginDate = DateUtils.getToday();
         //For new event or event with beginDate after endDate, set endDate after 30 minutes when beginDate change
         if(this.endDate == null || (this.endDate != null && !this.endDate.after(beginDate)))
             this.endDate = new Date(beginDate.getTime() + TimeUnit.MINUTES.toMillis(30));

@@ -59,14 +59,14 @@
 
                             <p:calendar id="start" pattern="MM/dd/yyyy HH:mm" value="#{calendarBean.event.beginDate}" 
                                         stepMinute="15" navigator="true" mindate="#{eventBean.today}" required="true">
-                                <p:ajax event="blur" update="startMsg end"/>                       
+                                <p:ajax event="dateSelect" update="startMsg end"/>                       
                             </p:calendar>
                             <p:message id="startMsg" for="start" />
 
                             <h:outputLabel for="end" value="To: *" />
                             <p:calendar id="end" pattern="MM/dd/yyyy HH:mm" value="#{calendarBean.event.endDate}"
                                         stepMinute="15" navigator="true" mindate="#{calendarBean.event.minEndDate}" required="true">
-                                <p:ajax update="endmsg"/>                                               
+                                <p:ajax event="dateSelect" update="endmsg"/>                                               
                             </p:calendar>
                             <p:message id="endmsg" for="end" />
 
