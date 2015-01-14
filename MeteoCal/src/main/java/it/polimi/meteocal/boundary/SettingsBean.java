@@ -6,7 +6,7 @@
 package it.polimi.meteocal.boundary;
 
 import it.polimi.meteocal.control.EventController;
-import it.polimi.meteocal.control.Utility;
+import it.polimi.meteocal.utils.Utility;
 import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.EventManager;
@@ -24,7 +24,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -72,6 +74,7 @@ public class SettingsBean {
     public String importData(){
         //move the uploadedFile in the common folder for the application
         OutputStream outputStream=null;
+        List<Event> importedEvents=new ArrayList<Event>();
         User current=userManager.getLoggedUser();
             try {
                 outputStream = new FileOutputStream(current.getEmail()+"_import.xml");
@@ -132,28 +135,46 @@ public class SettingsBean {
                         }
                         event.setPublicEvent(Boolean.FALSE);
                         event.setIndoor(Utility.stringToBoolean(element.getElementsByTagName("indoor").item(0).getTextContent()));
-                        try {
-                            eventController.createEvent(event, null);
-                        } catch (EventOverlapException | IllegalInvitedUserException | IllegalEventDateException ex) {
-                            Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+                        if(!eventController.isLegalEvent(event, null)){
+                            this.controlAndDeleteFile(xmlFile);
+                            System.out.println("One or more events can't be imported");
+                            //Message on website that say:"One or more events can't be imported"
+                            return "";
                         }
+                        importedEvents.add(event);
                     }
                 }
-                if(xmlFile.canWrite()&&xmlFile.isFile()){
-                    System.out.println("Permission are ok to delete the file");
-                }
-                if(xmlFile.delete()){
-                    System.out.println("File deletion complete");
-                }else{
-                    System.out.println("The events are uploaded, but the uploaded file can't be removed...");
-                }
+                this.controlAndDeleteFile(xmlFile);
             } catch (ParserConfigurationException | SAXException | IOException ex) {
                 Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
             }
             
+            //Now we can put them into the DB
+            for(Event event:importedEvents){
+               try {
+                    eventController.createEvent(event, null);
+                } catch (EventOverlapException | IllegalInvitedUserException | IllegalEventDateException ex) {
+                    Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            //Message that says "All the event are been correctly imported"
         return "";
     }
     
+    /**
+     * Delete the file and controls that it is a file with write permission
+     * @param file file to be deleted
+     */
+    private void controlAndDeleteFile(File file){
+        if(file.canWrite()&&file.isFile()){
+            System.out.println("Permission are ok to delete the file");
+        }
+        if(file.delete()){
+            System.out.println("File deletion complete");
+        }else{
+            System.out.println("The events are uploaded, but the uploaded file can't be removed...");
+        }
+    }
     
     
     /**
@@ -169,7 +190,6 @@ public class SettingsBean {
             try (FileWriter out = new FileWriter(currentUser.getEmail()+"_export.xml")) {
                 //Read the user data
                 out.write("<user>\n");
-
                 out.write("\t<email>"+currentUser.getEmail()+"</email>\n");
                 out.write("\t<name>"+currentUser.getName()+"</name>\n");
                 out.write("\t<surname>"+currentUser.getSurname()+"</surname>\n");

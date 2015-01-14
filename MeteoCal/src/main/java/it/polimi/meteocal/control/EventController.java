@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -138,6 +137,27 @@ public class EventController {
         this.attachWeather();
         this.eventManager.update(this.event);
         this.weatherControl.destroyWeather(widx);
+    }
+    
+    /**
+     * Say if the event can be created
+     * @param event event to create
+     * @param invitedUsers user to invite
+     * @return true if the event can be created
+     */
+    public boolean isLegalEvent(Event event, List<String> invitedUsers){
+        this.event = event;
+        this.invitedUsers = invitedUsers;
+        if(this.areThereOverlaps()) {
+            return false;
+        }
+        if(!this.areInvitedUserLegalForCreate()) {
+            return false;
+        }
+        if(!this.isEndDateLegal()) {
+            return false;
+        }
+        return true;
     }
     
     /**

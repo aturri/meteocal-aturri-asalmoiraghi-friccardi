@@ -5,7 +5,7 @@
  */
 package it.polimi.meteocal.entity;
 
-import it.polimi.meteocal.control.Utility;
+import it.polimi.meteocal.utils.Utility;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;

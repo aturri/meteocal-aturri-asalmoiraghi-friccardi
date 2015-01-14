@@ -5,7 +5,7 @@
  */
 package it.polimi.meteocal.entityManager;
 
-import it.polimi.meteocal.control.Utility;
+import it.polimi.meteocal.utils.Utility;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entity.Group;
 import java.security.Principal;
