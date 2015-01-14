@@ -151,7 +151,6 @@ public class EventController {
         this.event = event;
         this.invitedUsers = invitedUsers;
         if(this.event.getTitle()==null||this.event.getEndDate()==null||this.event.getBeginDate()==null||
-                this.event.getCreatedEvent()==null||this.event.getCreator()==null||
                 this.event.getPublicEvent()==null&&this.event.getIndoor()==null){
             return false;
         }
@@ -180,7 +179,6 @@ public class EventController {
         this.invitedUsers = invitedUsers;
         //controls
         if(this.event.getTitle()==null||this.event.getEndDate()==null||this.event.getBeginDate()==null||
-                this.event.getCreatedEvent()==null||this.event.getCreator()==null||
                 this.event.getPublicEvent()==null&&this.event.getIndoor()==null){
             throw new InvalidArgumentException();
         }
