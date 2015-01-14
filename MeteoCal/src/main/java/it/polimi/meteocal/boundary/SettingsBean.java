@@ -71,10 +71,18 @@ public class SettingsBean {
     public SettingsBean() {
     }
     
+    /**
+     * This function read the uploadedfile and try to insert the events into the calendar's user
+     *  NB: i conflitti temporali tra gli eventi memorizzati nel file xml non vengono contorllati, 
+     *      semplicemente se ci sono conflitti di questo tipo viene preso il primo evento e 
+     *      gli altri che creano conflitti non vengono importati, ma questo non viene segnalato in alcun modo; 
+     *      invece vengono segnalati conflitti tra eventi in xml e nel calendario dell'utente
+     * @return 
+     */
     public String importData(){
         //move the uploadedFile in the common folder for the application
         OutputStream outputStream=null;
-        List<Event> importedEvents=new ArrayList<Event>();
+        List<Event> importedEvents=new ArrayList<>();
         User current=userManager.getLoggedUser();
             try {
                 outputStream = new FileOutputStream(current.getEmail()+"_import.xml");
@@ -121,10 +129,18 @@ public class SettingsBean {
                         Element element=(Element) eventNode;
                         System.out.println("Processing event with title : " + element.getElementsByTagName("title").item(0).getTextContent());
                         event.setTitle(element.getElementsByTagName("title").item(0).getTextContent());
-                        event.setDescription(element.getElementsByTagName("description").item(0).getTextContent());
-                        event.setLocationInfo(element.getElementsByTagName("locationinfo").item(0).getTextContent());
-                        event.setCity(element.getElementsByTagName("city").item(0).getTextContent());
-                        event.setAddress(element.getElementsByTagName("address").item(0).getTextContent());
+                        if(element.getElementsByTagName("description").item(0)!=null){
+                            event.setDescription(element.getElementsByTagName("description").item(0).getTextContent());
+                        }
+                        if(element.getElementsByTagName("locationinfo").item(0)!=null){
+                            event.setLocationInfo(element.getElementsByTagName("locationinfo").item(0).getTextContent());
+                        }
+                        if(element.getElementsByTagName("city").item(0)!=null){
+                            event.setCity(element.getElementsByTagName("city").item(0).getTextContent());
+                        }
+                        if(element.getElementsByTagName("address").item(0)!=null){
+                            event.setAddress(element.getElementsByTagName("address").item(0).getTextContent());
+                        }
                         event.setCreator(current);
                         try {
                             event.setCreatedEvent(new Date());
@@ -135,6 +151,7 @@ public class SettingsBean {
                         }
                         event.setPublicEvent(Boolean.FALSE);
                         event.setIndoor(Utility.stringToBoolean(element.getElementsByTagName("indoor").item(0).getTextContent()));
+                        
                         if(!eventController.isLegalEvent(event, null)){
                             this.controlAndDeleteFile(xmlFile);
                             System.out.println("One or more events can't be imported");
@@ -179,8 +196,8 @@ public class SettingsBean {
     
     /**
      * This function create the exportedFile that have to exported
- NB:il percorso in cui posso scrivere parte da netbeans/glassfish-4.1/
-      fuori dal quella cartella non ho i permessi
+     *  NB:il percorso in cui posso scrivere parte da netbeans/glassfish-4.1/
+     *      fuori dal quella cartella non ho i permessi
      * @return an empty string
      */
     public String export(){
@@ -193,9 +210,15 @@ public class SettingsBean {
                 out.write("\t<email>"+currentUser.getEmail()+"</email>\n");
                 out.write("\t<name>"+currentUser.getName()+"</name>\n");
                 out.write("\t<surname>"+currentUser.getSurname()+"</surname>\n");
-                out.write("\t<birthday>"+currentUser.getBirthDate()+"</birthday>\n");
-                out.write("\t<city>"+currentUser.getCity()+"</city>\n");
-                out.write("\t<address>"+currentUser.getAddress()+"</address>\n");
+                if(null!=currentUser.getBirthDate()){
+                    out.write("\t<birthday>"+currentUser.getBirthDate()+"</birthday>\n");
+                }
+                if(null!=currentUser.getCity()){
+                    out.write("\t<city>"+currentUser.getCity()+"</city>\n");
+                }
+                if(null!=currentUser.getAddress()){
+                    out.write("\t<address>"+currentUser.getAddress()+"</address>\n");
+                }
                 out.write("\t<gender>"+currentUser.getGender()+"</gender>\n");
                 out.write("\t<privatecalendar>"+currentUser.getPrivateCalendar()+"</privatecalendar>\n");
 
@@ -205,11 +228,19 @@ public class SettingsBean {
                 for(Event event:listOfEventInCalendar){
                     out.write("\t\t<event>\n");
                     out.write("\t\t\t<title>"+event.getTitle()+"</title>\n");
-                    out.write("\t\t\t<description>"+event.getDescription()+"</description>\n");
-                    out.write("\t\t\t<locationinfo>"+event.getLocationInfo()+"</locationinfo>\n");
-                    out.write("\t\t\t<city>"+event.getCity()+"</city>\n");
-                    out.write("\t\t\t<address>"+event.getAddress()+"</address>\n");
-                    out.write("\t\t\t<creator>"+event.getCreator()+"</creator>\n");
+                    if(null!=event.getDescription()){
+                        out.write("\t\t\t<description>"+event.getDescription()+"</description>\n");
+                    }
+                    if(null!=event.getLocationInfo()){
+                        out.write("\t\t\t<locationinfo>"+event.getLocationInfo()+"</locationinfo>\n");
+                    }
+                    if(null!=event.getCity()){
+                        out.write("\t\t\t<city>"+event.getCity()+"</city>\n");
+                    }
+                    if(null!=event.getAddress()){
+                        out.write("\t\t\t<address>"+event.getAddress()+"</address>\n");
+                    }
+                    out.write("\t\t\t<creator>"+event.getCreator().getEmail()+"</creator>\n");
                     out.write("\t\t\t<createdevent>"+FORMATTER.format(event.getCreatedEvent())+"</createdevent>\n");
                     out.write("\t\t\t<begindate>"+FORMATTER.format(event.getBeginDate())+"</begindate>\n");
                     out.write("\t\t\t<enddate>"+FORMATTER.format(event.getEndDate())+"</enddate>\n");
