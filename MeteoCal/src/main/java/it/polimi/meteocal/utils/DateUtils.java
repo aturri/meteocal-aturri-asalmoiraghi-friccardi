@@ -5,14 +5,19 @@
  */
 package it.polimi.meteocal.utils;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  *
  * @author andrea
  */
 public class DateUtils {
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy", Locale.ENGLISH);
+    private static final SimpleDateFormat EXT_DATE_FORMAT = new SimpleDateFormat("EEE, d MMM yyyy HH:mm", Locale.ENGLISH);
+    
     /**
      * This method returns the current date, rounded to the next :00/:15/:30/:45 minute
      * @return current date rounded
@@ -52,4 +57,23 @@ public class DateUtils {
     public static Boolean isToday(Date date) {
         return date.equals(setTimeToMidnight(new Date()));
     }
+    
+    /**
+     * This method return a formatted date
+     * @param date to format
+     * @return date formatted
+     */      
+    public static String formatDate(Date date) {
+        return DATE_FORMAT.format(date);
+    }
+    
+    /**
+     * This method return an extended formatted date
+     * @param date to format
+     * @return date formatted
+     */      
+    public static String formatExtDate(Date date) {
+        return EXT_DATE_FORMAT.format(date);
+    }
+    
 }

@@ -91,8 +91,8 @@
 
                         <h:panelGrid id="eventDetails" columns="3" rendered="#{!calendarBean.scheduleEvent.editable}">
                             <div><i>Title:</i> #{calendarBean.event.title}</div>                  
-                            <div><i>From:</i> #{calendarBean.event.beginDate}</div> 
-                            <div><i>To:</i> #{calendarBean.event.endDate}</div> 
+                            <div><i>From:</i> #{calendarBean.event.eventBeginString()}</div> 
+                            <div><i>To:</i> #{calendarBean.event.eventEndString()}</div> 
 
                             <h:link outcome="#{navigationBean.toEventDetailsPage(calendarBean.event.id)}" title="See details...">
                                 <h:graphicImage id="detailsLink" library="images" name="details.png" class="detailsLink"/>

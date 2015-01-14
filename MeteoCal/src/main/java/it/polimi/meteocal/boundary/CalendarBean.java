@@ -278,5 +278,4 @@ public class CalendarBean implements Serializable {
             return this.event.getPublicEvent() || this.event.getUsers().contains(um.getLoggedUser());
         return false;
     }
-
 }
