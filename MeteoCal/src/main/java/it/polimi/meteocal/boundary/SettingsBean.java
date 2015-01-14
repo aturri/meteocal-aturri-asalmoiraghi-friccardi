@@ -50,6 +50,8 @@ import org.xml.sax.SAXException;
 @Named
 @RequestScoped
 public class SettingsBean {
+    
+    private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy-M-d HH:mm zzz");
 
     @Inject
     UserManager userManager;
@@ -121,11 +123,10 @@ public class SettingsBean {
                         event.setCity(element.getElementsByTagName("city").item(0).getTextContent());
                         event.setAddress(element.getElementsByTagName("address").item(0).getTextContent());
                         event.setCreator(current);
-                        SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
                         try {
-                            event.setCreatedEvent(formatter.parse(element.getElementsByTagName("createdevent").item(0).getTextContent()));
-                            event.setBeginDate(formatter.parse(element.getElementsByTagName("begindate").item(0).getTextContent()));
-                            event.setEndDate(formatter.parse(element.getElementsByTagName("enddate").item(0).getTextContent()));
+                            event.setCreatedEvent(new Date());
+                            event.setBeginDate(FORMATTER.parse(element.getElementsByTagName("begindate").item(0).getTextContent()));
+                            event.setEndDate(FORMATTER.parse(element.getElementsByTagName("enddate").item(0).getTextContent()));
                         } catch (ParseException ex) {
                             Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -189,9 +190,9 @@ public class SettingsBean {
                     out.write("\t\t\t<city>"+event.getCity()+"</city>\n");
                     out.write("\t\t\t<address>"+event.getAddress()+"</address>\n");
                     out.write("\t\t\t<creator>"+event.getCreator()+"</creator>\n");
-                    out.write("\t\t\t<createdevent>"+event.getCreatedEvent()+"</createdevent>\n");
-                    out.write("\t\t\t<begindate>"+event.getBeginDate()+"</begindate>\n");
-                    out.write("\t\t\t<enddate>"+event.getEndDate()+"</enddate>\n");
+                    out.write("\t\t\t<createdevent>"+FORMATTER.format(event.getCreatedEvent())+"</createdevent>\n");
+                    out.write("\t\t\t<begindate>"+FORMATTER.format(event.getBeginDate())+"</begindate>\n");
+                    out.write("\t\t\t<enddate>"+FORMATTER.format(event.getEndDate())+"</enddate>\n");
                     out.write("\t\t\t<publicevent>"+event.getPublicEvent()+"</publicevent>\n");
                     out.write("\t\t\t<indoor>"+event.getIndoor()+"</indoor>\n");
                     out.write("\t\t</event>\n");
