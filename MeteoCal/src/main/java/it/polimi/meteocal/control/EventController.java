@@ -13,6 +13,7 @@ import it.polimi.meteocal.entityManager.UserManager;
 import it.polimi.meteocal.exception.EventOverlapException;
 import it.polimi.meteocal.exception.IllegalEventDateException;
 import it.polimi.meteocal.exception.IllegalInvitedUserException;
+import it.polimi.meteocal.exception.InvalidArgumentException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -140,7 +141,8 @@ public class EventController {
     }
     
     /**
-     * Say if the event can be created
+     * Say if the event can be created. It should be used before calling createEvent, 
+     * so you can control the event without throwing exception
      * @param event event to create
      * @param invitedUsers user to invite
      * @return true if the event can be created
@@ -148,6 +150,11 @@ public class EventController {
     public boolean isLegalEvent(Event event, List<String> invitedUsers){
         this.event = event;
         this.invitedUsers = invitedUsers;
+        if(this.event.getTitle()==null||this.event.getEndDate()==null||this.event.getBeginDate()==null||
+                this.event.getCreatedEvent()==null||this.event.getCreator()==null||
+                this.event.getPublicEvent()==null&&this.event.getIndoor()==null){
+            return false;
+        }
         if(this.areThereOverlaps()) {
             return false;
         }
@@ -172,6 +179,11 @@ public class EventController {
         this.event = event;
         this.invitedUsers = invitedUsers;
         //controls
+        if(this.event.getTitle()==null||this.event.getEndDate()==null||this.event.getBeginDate()==null||
+                this.event.getCreatedEvent()==null||this.event.getCreator()==null||
+                this.event.getPublicEvent()==null&&this.event.getIndoor()==null){
+            throw new InvalidArgumentException();
+        }
         if(this.areThereOverlaps()) {
             throw new EventOverlapException();
         }
