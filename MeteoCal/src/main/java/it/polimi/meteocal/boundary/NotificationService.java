@@ -84,7 +84,7 @@ public class NotificationService implements Serializable {
             newNotifications.removeAll(notifications);
             //The remaining notification are shown with message
             for (Notification n : newNotifications) {
-                MessageBean.addInfo("notifyMessage", notifications.get(1).getText());
+                MessageBean.addInfo("notifyMessage", n.getText());
             }
             //Add the new notifications to the list
             notifications = tmpNotifications;
