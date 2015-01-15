@@ -324,3 +324,14 @@ a.searchLink:hover{
     max-width: 200px;
     overflow: scroll;
 }
+
+.errorPagePanel{
+    font-size: large;
+    overflow: hidden;
+}
+.errorPagePanel button{
+    margin-top: 20px;
+}
+.errorImg{
+    height: 120px;
+}

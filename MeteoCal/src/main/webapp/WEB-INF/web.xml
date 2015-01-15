@@ -86,4 +86,52 @@
     <security-role>
         <role-name>USER</role-name>
     </security-role>
+    <error-page>
+        <error-code>400</error-code>
+	<location>/error/error.xhtml?id=400</location>
+    </error-page>
+    <error-page>
+        <error-code>401</error-code>
+	<location>/error/error.xhtml?id=401</location>
+    </error-page>
+    <error-page>
+        <error-code>403</error-code>
+	<location>/error/error.xhtml?id=403</location>
+    </error-page>
+    <error-page>
+        <error-code>404</error-code>
+	<location>/error/error.xhtml?id=404</location>
+    </error-page>
+    <error-page>
+        <error-code>405</error-code>
+	<location>/error/error.xhtml?id=405</location>
+    </error-page>
+    <error-page>
+        <error-code>407</error-code>
+	<location>/error/error.xhtml?id=407</location>
+    </error-page>
+    <error-page>
+        <error-code>408</error-code>
+	<location>/error/error.xhtml?id=408</location>
+    </error-page>
+    <error-page>
+        <error-code>414</error-code>
+	<location>/error/error.xhtml?id=414</location>
+    </error-page>
+    <error-page>
+        <error-code>415</error-code>
+	<location>/error/error.xhtml?id=415</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+	<location>/error/error.xhtml?id=500</location>
+    </error-page>
+    <error-page>
+        <error-code>501</error-code>
+	<location>/error/error.xhtml?id=501</location>
+    </error-page>
+    <error-page>
+        <error-code>503</error-code>
+	<location>/error/error.xhtml?id=503</location>
+    </error-page>
 </web-app>

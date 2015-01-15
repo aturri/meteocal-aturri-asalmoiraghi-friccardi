@@ -1,0 +1,32 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    template="/template/main.xhtml">
+
+    <ui:define name="title">Error</ui:define>
+
+    <ui:define name="left">
+    </ui:define>
+
+    <ui:define name="main">
+        <p:panel styleClass="errorPagePanel" header="Error #{param['id']}">
+            <div style="float: left;">
+                <div><h:outputText value="Unexpected error! Something goes wrong." /></div>
+                <div style="margin-top: 10px;"><h:outputText value="Please, return to home." /></div>
+                <p:button outcome="#{navigationBean.toHome()}" value="Go to home"/>
+            </div>
+            <div style="float: right;">
+                <h:graphicImage library="images/icon" name="error.png" styleClass="errorImg"/>
+            </div>
+            <div style="clear: both"><!-- --></div>
+        </p:panel>
+    </ui:define>
+
+    <ui:define name="right">
+
+    </ui:define>
+
+</ui:composition>
