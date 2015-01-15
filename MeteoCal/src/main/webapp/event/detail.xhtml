@@ -22,10 +22,10 @@
                 <h:form id="actionEventForm" rendered="#{eventBean.isCurrentUserParticipatingTo(eventBean.event.id)}">
                     <input type="hidden" name="id" value="#{eventBean.event.id}" />
                     <p:panel header="Actions for #{eventBean.event.title}">
-<!--                        <p:button value="Edit event" outcome="/event/edit"
-                                  rendered="#{eventBean.isCurrentUserCreator() and eventBean.isEventAfterNow(eventBean.event.id)}">
-                            <f:param name="id" value="#{eventBean.event.id}" />                 
-                        </p:button>-->
+                        <!--                        <p:button value="Edit event" outcome="/event/edit"
+                                                          rendered="#{eventBean.isCurrentUserCreator() and eventBean.isEventAfterNow(eventBean.event.id)}">
+                                                    <f:param name="id" value="#{eventBean.event.id}" />                 
+                                                </p:button>-->
                         <p:splitButton id="btnEditEvent" value="Edit event"
                                        action="/event/edit" icon="ui-icon-edit"
                                        rendered="#{eventBean.isCurrentUserCreator() and 
@@ -89,7 +89,13 @@
                             </div>
                         </h:panelGroup>
                         <p>#{eventBean.event.locationInfo}</p>
-                    </h:panelGroup>                     
+                    </h:panelGroup>  
+
+                    <p:panel styleClass="centredContent" rendered="#{!eventBean.isVisibleForCurrentUser(eventBean.event.id)}">
+                        <div class='divCalendarPrivate'>
+                            You can't view the details of this event because you don't participate and the event is not public.
+                        </div>
+                    </p:panel>
                 </div>
             </ui:define>
 

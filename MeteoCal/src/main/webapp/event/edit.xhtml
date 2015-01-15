@@ -19,7 +19,8 @@
 
             <ui:define name="main">
                 <div id="mainContent">
-                    <h:form id="editEventForm" class="meteoCalForm" rendered="#{eventBean.isCurrentUserCreatorOf(eventBean.event.id)}">
+                    <h:form id="editEventForm" class="meteoCalForm"
+                            rendered="#{eventBean.isCurrentUserCreatorOf(eventBean.event.id)}">
                         <input type="hidden" name="id" value="#{eventBean.event.id}" />
                         <p:panel header="Edit event" rendered="#{eventBean.event.creator.email == userBean.email}">
                             <h:panelGrid columns="3" id="editEventGrid">
@@ -107,7 +108,13 @@
                             * Mandatory fields
                         </p:panel>
                         <p:growl for="growlMsg" id="growl" sticky="true" />
-                    </h:form>               
+                    </h:form>   
+                    
+                    <p:panel styleClass="centredContent" rendered="#{!eventBean.isCurrentUserCreatorOf(eventBean.event.id)}">
+                        <div class='divCalendarPrivate'>
+                            You can't edit this event because you are not the owner of the event.
+                        </div>
+                    </p:panel>
                 </div>
             </ui:define>
             
