@@ -11,21 +11,21 @@
     <h:body>
         <ui:insert name="header">
             <div id="topbar">
-                    <div id="logo"><h:link outcome="/user/home" value="MeteoCal"/></div>
-                    <div id="search">
-                        <ui:include src="/search/search.xhtml" />
-                    </div>
-                    <div id="buttons">
-                            <p:link outcome="/event/create" value="Create Event"/>
-                            <p:link outcome="/user/settings" value="Settings"/>
-                            <h:form>
-                                <ui:insert name="paramLogout"></ui:insert>
-                                <p:commandLink action="#{loginBean.logout()}" value="Logout"/>
-                            </h:form>                            
-                    </div>
-                    <div id="notification">
-                        <ui:include src="/notification/notification.xhtml" />
-                    </div>
+                <div id="logo"><h:link outcome="/user/home" value="MeteoCal"/></div>
+                <div id="search">
+                    <ui:include src="/search/search.xhtml" />
+                </div>
+                <div id="buttons">
+                    <p:link outcome="/event/create" value="Create Event"/>
+                    <p:link outcome="/user/settings" value="Settings"/>
+                    <h:form>
+                        <ui:insert name="paramLogout"></ui:insert>
+                        <p:commandLink action="#{loginBean.logout()}" value="Logout"/>
+                    </h:form>                            
+                </div>
+                <div id="notification">
+                    <ui:include src="/notification/notification.xhtml" />
+                </div>
             </div>
         </ui:insert>
         <div id="central">
@@ -37,12 +37,24 @@
                 <ui:insert name="main">
                     <div id="mainContent">Content in this div (#mainContent)!</div>
                 </ui:insert>
-                    
+
                 <div id="rightSide">
-                     <ui:insert name="right"></ui:insert>               
+                    <ui:insert name="right"></ui:insert>               
                 </div>
             </div>
         </div>
+
+        <h:form>
+            <p:idleMonitor timeout="1800000">
+                <p:ajax event="idle" global="false" listener="#{loginBean.logout()}" oncomplete="PF('timeoutDialog').show()"/>
+            </p:idleMonitor>
+            <p:dialog  widgetVar="timeoutDialog" header="Session timeout" showEffect="clip" hideEffect="clip"
+                       resizable="false" draggable="false" closable="false" modal="true">
+                Warning! Your session is expired.<br/>
+                Login again to use MeteoCal.<br/><br/>
+                <p:button outcome="#{navigationBean.toHome()}" value="Login"/>
+            </p:dialog>
+        </h:form>
     </h:body>
 </html>
 

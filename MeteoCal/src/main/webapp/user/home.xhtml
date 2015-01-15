@@ -52,7 +52,7 @@
                 </h:outputScript>
 
                 <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip"
-                          resizable="false">
+                          resizable="false" closeOnEscape="true">
                     <p:outputPanel id="eventDetailsPanel">
                         <h:panelGrid id="eventDetailsEditable" columns="3" rendered="#{calendarBean.scheduleEvent.editable}">
                             <p:outputLabel for="title" value="Title:" />
