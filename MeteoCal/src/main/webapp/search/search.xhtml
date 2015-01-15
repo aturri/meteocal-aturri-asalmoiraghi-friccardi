@@ -16,7 +16,7 @@
             <p:tabView id="resultsSearch" class="searchTabView">
                 <p:tab id="usersResultsSearch" class="searchTab">
                     <f:facet name="title">
-                        <h:graphicImage library="images" name="users.png" class="iconSearchTab"/>
+                        <h:graphicImage library="images/icon" name="users.png" class="iconSearchTab"/>
                         <p:outputPanel autoUpdate="true">
                             <div class="searchBubble">#{searchBean.users.size()}</div>
                         </p:outputPanel>
@@ -26,7 +26,7 @@
                             <h:link outcome="#{navigationBean.toShowUser(usersResult.email)}" >
                                 <div class="notificationItem">
                                     <div style="vertical-align:middle; float:left;">
-                                        <h:graphicImage library="images" name="user2.png" 
+                                        <h:graphicImage library="images/icon" name="user2.png" 
                                                         class="notificationIcon"/>
                                     </div>
                                     <div style="vertical-align:middle; float:left; padding-top:5px;">
@@ -41,7 +41,7 @@
 
                 <p:tab id="eventsResultsSearch" class="searchTab">
                     <f:facet name="title">
-                        <h:graphicImage library="images" name="calendar.png" class="iconSearchTab"/>
+                        <h:graphicImage library="images/icon" name="calendar.png" class="iconSearchTab"/>
                         <p:outputPanel autoUpdate="true">
                             <div class="searchBubble">#{searchBean.events.size()}</div>
                         </p:outputPanel>
@@ -51,7 +51,7 @@
                             <h:link outcome="#{navigationBean.toEventDetailsPage(eventsResult.id)}" >
                                 <div class="notificationItem">
                                     <div style="vertical-align:middle; float:left;">
-                                        <h:graphicImage library="images" name="inviteNotification.png" 
+                                        <h:graphicImage library="images/icon" name="inviteNotification.png" 
                                                         class="notificationIcon"/>
                                     </div>
                                     <div style="vertical-align:middle; float:left; padding-top:5px;">

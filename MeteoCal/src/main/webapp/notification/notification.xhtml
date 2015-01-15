@@ -10,7 +10,7 @@
     <h:form id="notificationForm">
         <panel id="notificationPanel">
             <div class="notificationButtonDiv">
-                <h:graphicImage id="notificationButton" library="images" name="notification.png" class="notificationButton">
+                <h:graphicImage id="notificationButton" library="images/icon" name="notification.png" class="notificationButton">
                     <p:ajax listener="#{notificationService.hasReadNotification()}" event="click" update="notificationBubblePanel"/>
                 </h:graphicImage>
                 <p:outputPanel id="notificationBubblePanel">
@@ -27,7 +27,7 @@
             <p:dataScroller value="#{notificationService.notifications}" var="notification" chunkSize="10" class="searchData">
                 <h:link outcome="#{navigationBean.toEventDetailsPage(notification.event.id)}" >
                     <div class="notificationItem #{notificationService.getNotificationClass(notification)}">
-                        <h:graphicImage library="images" name="#{notificationService.getNotificationIcon(notification)}" 
+                        <h:graphicImage library="images/icon" name="#{notificationService.getNotificationIcon(notification)}" 
                                         class="notificationIcon"/>
                         <span>#{notification.text}</span>
                     </div>
