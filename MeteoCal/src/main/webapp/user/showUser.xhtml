@@ -15,7 +15,14 @@
     </ui:define>
 
     <ui:define name="main">
-        Calendar of user: #{calendarBean.user.name} #{calendarBean.user.surname}
+        Calendar of user: #{calendarBean.user.name} #{calendarBean.user.surname}        
+        <h:form>
+            <p:growl id="growl" life="2000" />
+            <p:commandLink id="ajax" update="growl" actionListener="#{calendarBean.addToFavorite}">
+                <h:outputText value="Add to favorite" />
+            </p:commandLink>
+        </h:form>
+        
         <h:form rendered="#{calendarBean.publicCalendar}">
             <p:growl id="messages" showDetail="true" sticky="true"/>
 

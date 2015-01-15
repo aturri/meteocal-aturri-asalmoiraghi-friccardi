@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.view.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -59,6 +60,13 @@ public class CalendarBean implements Serializable {
             user = um.getLoggedUser();
         }
         loadUserEvents();
+    }
+    
+    public void addToFavorite(ActionEvent actionEvent){
+        MessageBean.addInfo("User added");
+        User loggedUser=um.getLoggedUser();
+        loggedUser.getContacts().add(user);
+        um.update(loggedUser);
     }
      
     public ScheduleModel getEventModel() {
