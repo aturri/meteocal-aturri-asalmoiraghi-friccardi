@@ -13,30 +13,37 @@
         </f:metadata>
         <ui:composition template="/template/main.xhtml">
             <ui:define name="title">Event Details</ui:define>
-            
+
             <ui:define name="paramLogout">
                 <input type="hidden" name="id" value="#{eventBean.event.id}" />
             </ui:define>
-            
+
             <ui:define name="left">
-                <h:form id="actionEventForm">
+                <h:form id="actionEventForm" rendered="#{eventBean.isCurrentUserParticipatingTo(eventBean.event.id)}">
                     <input type="hidden" name="id" value="#{eventBean.event.id}" />
-                    <p:panel header="Actions for #{eventBean.event.title}" rendered="#{eventBean.isCurrentUserParticipatingTo(eventBean.event.id)}">
-                        <p:button value="Edit event" outcome="/event/edit"
-                                         rendered="#{eventBean.isCurrentUserCreator() and eventBean.isEventAfterNow(eventBean.event.id)}">
+                    <p:panel header="Actions for #{eventBean.event.title}">
+<!--                        <p:button value="Edit event" outcome="/event/edit"
+                                  rendered="#{eventBean.isCurrentUserCreator() and eventBean.isEventAfterNow(eventBean.event.id)}">
                             <f:param name="id" value="#{eventBean.event.id}" />                 
-                        </p:button>
+                        </p:button>-->
+                        <p:splitButton id="btnEditEvent" value="Edit event"
+                                       action="/event/edit" icon="ui-icon-edit"
+                                       rendered="#{eventBean.isCurrentUserCreator() and 
+                                                   eventBean.isEventAfterNow(eventBean.event.id)}">
+                            <f:param name="id" value="#{eventBean.event.id}" />                 
+                            <p:menuitem value="Delete" action="#{eventBean.deleteEvent()}" icon="ui-icon-close" />
+                        </p:splitButton>
                         <p:commandButton value="Remove event" action="#{eventBean.removeFromMyCalendar()}"
                                          rendered="#{eventBean.isCurrentUserParticipatingTo(eventBean.event.id) and !eventBean.isCurrentUserCreator()}" />
                         <p:commandButton value="Delete event" action="#{eventBean.deleteEvent()}"
                                          rendered="#{eventBean.isCurrentUserCreator() and !eventBean.isEventAfterNow(eventBean.event.id)}" />
- 
+
                     </p:panel>
                 </h:form> 
-                <h:form id="editEventForm">
+                <h:form id="editEventForm" rendered="#{eventBean.isCurrentUserInvitedTo(eventBean.event.id)}">
                     <input type="hidden" name="id" value="#{eventBean.event.id}" />
-                    <p:panel header="You received an invitation by #{eventBean.event.creator.name} #{eventBean.event.creator.surname}"
-                                    rendered="#{eventBean.isCurrentUserInvitedTo(eventBean.event.id)}">
+                    <p:panel header="You received an invitation by 
+                             #{eventBean.event.creator.name} #{eventBean.event.creator.surname}">
                         <p:messages id="errorMsgId" for="errorMsg" />
                         <p:commandButton value="Accept" action="#{eventBean.acceptInvitation()}"
                                          update="errorMsgId" rendered="#{eventBean.isEventAfterNow(eventBean.event.id)}" />
@@ -44,11 +51,11 @@
                         <p:commandButton value="Refuse" action="#{eventBean.refuseInvitation()}" />
                     </p:panel>
                 </h:form>
-                
+
                 <hr/>
-                
+
                 <h:panelGroup rendered="#{eventBean.hasWeather(eventBean.event.id)
-                                    and eventBean.isVisibleForCurrentUser(eventBean.event.id)}">
+                                          and eventBean.isVisibleForCurrentUser(eventBean.event.id)}">
                     Forecast for #{eventBean.event.weather.city} on #{eventBean.forecastDate()}:
                     <br/>
                     <p style="text-align: center">#{eventBean.event.weather.weather}

@@ -89,11 +89,14 @@
                                 <f:selectItem itemLabel="Indoor" itemValue="true" />
                                 <f:selectItem itemLabel="Outdoor" itemValue="false" />
                             </p:selectOneRadio>
-                            <p:message id="indoorMsg" for="indoorRadio" />  
-
-                            <p:commandButton id="addButton" update="messages" value="Save"
-                                             actionListener="#{calendarBean.addEvent}"
-                                             oncomplete="PF('myschedule').update();closeDialog(xhr,status,args);" />
+                            <p:message id="indoorMsg" for="indoorRadio" /> 
+                            
+                            <p:splitButton id="addButton" value="Save" actionListener="#{calendarBean.addEvent}"
+                                           oncomplete="PF('myschedule').update();closeDialog(xhr,status,args);"
+                                           icon="ui-icon-disk">
+                                <p:menuitem value="Save and Open" action="#{calendarBean.addEventAndGo()}"
+                                            icon="ui-icon-disk" />
+                            </p:splitButton>
                             <p:commandButton id="detailsButton" rendered="#{calendarBean.showDetailsLink()}"
                                              value="Details"
                                              action="#{navigationBean.redirectToEventDetailsPage(calendarBean.event.id)}"

@@ -1,6 +1,7 @@
 package it.polimi.meteocal.boundary;
 
 import it.polimi.meteocal.control.EventController;
+import it.polimi.meteocal.control.NavigationBean;
 import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.UserManager;
@@ -88,16 +89,23 @@ public class CalendarBean implements Serializable {
         return !user.getPrivateCalendar();
     }
      
-    public void addEvent(ActionEvent actionEvent) {
+    public String addEvent(ActionEvent actionEvent) {
         if(scheduleEvent.getId() == null){
             saveEvent();
         }
         else{
             updateEvent();
         }
-         
+        
+        String id = Integer.toString(event.getId());
+
         scheduleEvent = new DefaultScheduleEvent();
         event = new Event();
+        
+        return NavigationBean.redirectToEventDetailsPage(id);
+    }
+    public String addEventAndGo() {
+        return addEvent(null);
     }
      
     public void onEventSelect(SelectEvent selectEvent) {
