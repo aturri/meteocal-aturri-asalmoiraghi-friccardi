@@ -45,6 +45,7 @@ public class NotificationController {
         messages.put(KindOfNotification.INVITEDTOEVENT, "You are invited to partecipate to %s.");
         messages.put(KindOfNotification.EVENTCANCELLED, null);
         messages.put(KindOfNotification.EVENTUPDATED, "%s has been updated.");         
+        messages.put(KindOfNotification.EVENTUPDATED1, "%s: you have to accept invitation again, changed dates!");         
         messages.put(KindOfNotification.ALERTWEATHER1, "%s: bad weather!");         
         messages.put(KindOfNotification.ALERTWEATHER3, "%s: change date with a sunny day!");         
         messages.put(KindOfNotification.WEATHERCHANGED, "%s: changed weather conditions!");         
@@ -86,6 +87,12 @@ public class NotificationController {
                 message = String.format(this.messages.get(KindOfNotification.EVENTUPDATED), event.getTitle());
                 type = 'B';
                 mailControl.sendMail(destination, KindOfEmail.EVENTUPDATED,event);
+                createNotification(user, event, message, type);
+                break;
+            case EVENTUPDATED1:
+                message = String.format(this.messages.get(KindOfNotification.EVENTUPDATED1), event.getTitle());
+                type = 'B';
+                mailControl.sendMail(destination, KindOfEmail.EVENTUPDATED1,event);
                 createNotification(user, event, message, type);
                 break;
             case ALERTWEATHER1:
