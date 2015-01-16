@@ -85,118 +85,27 @@ public class SettingsBean {
      */
     public String importData(){
         //move the uploadedFile in the common folder for the application
-        OutputStream outputStream=null;
-        List<Event> importedEvents=new ArrayList<>();
-        User current=userManager.getLoggedUser();
-            try {
-                outputStream = new FileOutputStream(current.getEmail()+"_import.xml");
-                InputStream inputStream=this.uploadedFile.getInputstream();
-                byte[] buffer = new byte[4096];          
-                int bytesRead;  
-                while(true) {                          
-                    bytesRead = inputStream.read(buffer);  
-                    if(bytesRead > 0) {  
-                        outputStream.write(buffer, 0, bytesRead);  
-                    }else {  
-                        break;  
-                    }                         
-                }
-                outputStream.flush();
-                inputStream.close();
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
-            } finally {
-                try {
-                    outputStream.close();
-                } catch (IOException ex) {
-                    Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            try {
-                File xmlFile = new File(current.getEmail()+"_import.xml");
-                DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-                Document doc = dBuilder.parse(xmlFile);
-                
-                //here start the core of import
-                //the initial data(regarding the user will be skipped.
-                //The events will be fully read
-                NodeList eventList = doc.getElementsByTagName("event");
-                Event event;
-                for (int i = 0; i < eventList.getLength(); i++) {
-                    event=new Event();
-                    
-                    Node eventNode=eventList.item(i);
-                    if (eventNode.getNodeType() == Node.ELEMENT_NODE) {
-                        Element element=(Element) eventNode;
-                        System.out.println("Processing event with title : " + element.getElementsByTagName("title").item(0).getTextContent());
-                        event.setTitle(element.getElementsByTagName("title").item(0).getTextContent());
-                        if(element.getElementsByTagName("description").item(0)!=null){
-                            event.setDescription(element.getElementsByTagName("description").item(0).getTextContent());
-                        }
-                        if(element.getElementsByTagName("locationinfo").item(0)!=null){
-                            event.setLocationInfo(element.getElementsByTagName("locationinfo").item(0).getTextContent());
-                        }
-                        if(element.getElementsByTagName("city").item(0)!=null){
-                            event.setCity(element.getElementsByTagName("city").item(0).getTextContent());
-                        }
-                        if(element.getElementsByTagName("address").item(0)!=null){
-                            event.setAddress(element.getElementsByTagName("address").item(0).getTextContent());
-                        }
-                        event.setCreator(current);
-                        try {
-                            event.setCreatedEvent(new Date());
-                            event.setBeginDate(FORMATTER.parse(element.getElementsByTagName("begindate").item(0).getTextContent()));
-                            event.setEndDate(FORMATTER.parse(element.getElementsByTagName("enddate").item(0).getTextContent()));
-                        } catch (ParseException ex) {
-                            Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                        event.setPublicEvent(Boolean.FALSE);
-                        event.setIndoor(Utility.stringToBoolean(element.getElementsByTagName("indoor").item(0).getTextContent()));
-                        
-                        if(!eventController.isLegalEvent(event, null)){
-                            this.controlAndDeleteFile(xmlFile);
-                            System.out.println("One or more events can't be imported");
-                            //Message on website that say:"One or more events can't be imported"
-                            return "";
-                        }
-                        importedEvents.add(event);
-                    }
-                }
-                this.controlAndDeleteFile(xmlFile);
-            } catch (ParserConfigurationException | SAXException | IOException ex) {
+        try {
+            importExportController.saveUploadedFileIntoTheCorrectFolder(userManager.getLoggedUser().getEmail()+"_import.xml",this.uploadedFile.getInputstream());
+        } catch (IOException ex) {
+            Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        List<Event> importedEvents=this.importExportController.readXmlFile(userManager.getLoggedUser().getEmail()+"_import.xml");
+        if(importedEvents==null){
+            //Message on website that say:"One or more events can't be imported"
+            return "";
+        }
+        //Now we can put them into the DB
+        for(Event event:importedEvents){
+           try {
+                eventController.createEvent(event, null);
+            } catch (EventOverlapException | IllegalInvitedUserException | IllegalEventDateException ex) {
                 Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
-            //Now we can put them into the DB
-            for(Event event:importedEvents){
-               try {
-                    eventController.createEvent(event, null);
-                } catch (EventOverlapException | IllegalInvitedUserException | IllegalEventDateException ex) {
-                    Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            //Message that says "All the event are been correctly imported"
+        }
+        //Message that says "All the event are been correctly imported"
         return "";
     }
-    
-    /**
-     * Delete the file and controls that it is a file with write permission
-     * @param file file to be deleted
-     */
-    private void controlAndDeleteFile(File file){
-        if(file.canWrite()&&file.isFile()){
-            System.out.println("Permission are ok to delete the file");
-        }
-        if(file.delete()){
-            System.out.println("File deletion complete");
-        }else{
-            System.out.println("The events are uploaded, but the uploaded file can't be removed...");
-        }
-    }
-    
     
     /**
      * This function create the exportedFile that have to exported
