@@ -16,10 +16,13 @@
 
     <ui:define name="main">
         Calendar of user: #{calendarBean.user.name} #{calendarBean.user.surname}        
-        <h:form>
+        
+        <h:form id="favForm" >
             <p:growl id="growl" life="2000" />
-            <p:commandLink id="ajax" update="growl" actionListener="#{calendarBean.addToFavorite}">
-                <h:outputText value="Add to favorite" />
+            <p:commandLink id="ajax" update="growl" actionListener="#{calendarBean.addToFavorite}" rendered="#{!userBean.hasInFavorite()}">
+                <p:outputPanel autoUpdate="true">
+                    <h:outputText value="Add to favorite" />
+                </p:outputPanel>
             </p:commandLink>
         </h:form>
         

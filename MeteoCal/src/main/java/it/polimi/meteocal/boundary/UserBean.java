@@ -5,19 +5,17 @@
  */
 package it.polimi.meteocal.boundary;
 
-import it.polimi.meteocal.control.NotificationController;
-import it.polimi.meteocal.entity.Notification;
 import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
-import it.polimi.meteocal.entityManager.NotificationManager;
 import it.polimi.meteocal.entityManager.UserManager;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.PostConstruct;
+import java.util.Map;
+import java.util.Set;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
+import javax.faces.context.FacesContext;
 
 /**
  *
@@ -55,5 +53,27 @@ public class UserBean {
 
     public List<Event> getEventsInvitedTo() {
         return new ArrayList<>(um.getLoggedUser().getInvitations());
+    }
+    
+    public boolean hasInFavorite(){
+        Map<String, String> params =FacesContext.getCurrentInstance().
+                   getExternalContext().getRequestParameterMap();
+        String email=params.get("email");
+        return isThisUserInList(um.getLoggedUser().getContacts(),email);
+    }
+    
+    /**
+     * Return true if the user identified by email is in the list
+     * @param list
+     * @param email
+     * @return 
+     */
+    public boolean isThisUserInList(Set<User> list,String email){
+        for(User user:list){
+            if(email!=null&&user.getEmail().equals(email)){
+                return true;
+            }
+        }
+        return false;
     }
 }

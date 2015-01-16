@@ -6,10 +6,10 @@
 package it.polimi.meteocal.boundary;
 
 import it.polimi.meteocal.control.EventController;
+import it.polimi.meteocal.control.ImportExportController;
 import it.polimi.meteocal.utils.Utility;
 import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
-import it.polimi.meteocal.entityManager.EventManager;
 import it.polimi.meteocal.entityManager.UserManager;
 import it.polimi.meteocal.exception.EventOverlapException;
 import it.polimi.meteocal.exception.IllegalEventDateException;
@@ -60,6 +60,10 @@ public class SettingsBean {
     
     @Inject
     EventController eventController;
+    
+    @Inject
+    ImportExportController importExportController;
+    
     
     private User user;
     
@@ -203,58 +207,10 @@ public class SettingsBean {
     public String export(){
         User currentUser=userManager.getLoggedUser();
         try {
-            //Read the user data
-            try (FileWriter out = new FileWriter(currentUser.getEmail()+"_export.xml")) {
-                //Read the user data
-                out.write("<user>\n");
-                out.write("\t<email>"+currentUser.getEmail()+"</email>\n");
-                out.write("\t<name>"+currentUser.getName()+"</name>\n");
-                out.write("\t<surname>"+currentUser.getSurname()+"</surname>\n");
-                if(null!=currentUser.getBirthDate()){
-                    out.write("\t<birthday>"+currentUser.getBirthDate()+"</birthday>\n");
-                }
-                if(null!=currentUser.getCity()){
-                    out.write("\t<city>"+currentUser.getCity()+"</city>\n");
-                }
-                if(null!=currentUser.getAddress()){
-                    out.write("\t<address>"+currentUser.getAddress()+"</address>\n");
-                }
-                out.write("\t<gender>"+currentUser.getGender()+"</gender>\n");
-                out.write("\t<privatecalendar>"+currentUser.getPrivateCalendar()+"</privatecalendar>\n");
-
-                //for to insert events data into xml exportedFile
-                Set<Event> listOfEventInCalendar=currentUser.getEvents();
-                out.write("\t<events>\n");
-                for(Event event:listOfEventInCalendar){
-                    out.write("\t\t<event>\n");
-                    out.write("\t\t\t<title>"+event.getTitle()+"</title>\n");
-                    if(null!=event.getDescription()){
-                        out.write("\t\t\t<description>"+event.getDescription()+"</description>\n");
-                    }
-                    if(null!=event.getLocationInfo()){
-                        out.write("\t\t\t<locationinfo>"+event.getLocationInfo()+"</locationinfo>\n");
-                    }
-                    if(null!=event.getCity()){
-                        out.write("\t\t\t<city>"+event.getCity()+"</city>\n");
-                    }
-                    if(null!=event.getAddress()){
-                        out.write("\t\t\t<address>"+event.getAddress()+"</address>\n");
-                    }
-                    out.write("\t\t\t<creator>"+event.getCreator().getEmail()+"</creator>\n");
-                    out.write("\t\t\t<createdevent>"+FORMATTER.format(event.getCreatedEvent())+"</createdevent>\n");
-                    out.write("\t\t\t<begindate>"+FORMATTER.format(event.getBeginDate())+"</begindate>\n");
-                    out.write("\t\t\t<enddate>"+FORMATTER.format(event.getEndDate())+"</enddate>\n");
-                    out.write("\t\t\t<publicevent>"+event.getPublicEvent()+"</publicevent>\n");
-                    out.write("\t\t\t<indoor>"+event.getIndoor()+"</indoor>\n");
-                    out.write("\t\t</event>\n");
-                }
-                out.write("\t</events>\n");
-                out.write("</user>");
-                out.flush();
-                out.close();
-                InputStream stream = new FileInputStream(currentUser.getEmail()+"_export.xml");
-                this.exportedFile=new DefaultStreamedContent(stream,"text/xml", currentUser.getEmail()+"_export.xml");
-            }
+            importExportController.createFileToExport(currentUser.getEmail()+"_export.xml");
+            InputStream stream = new FileInputStream(currentUser.getEmail()+"_export.xml");
+            this.exportedFile=new DefaultStreamedContent(stream,"text/xml", currentUser.getEmail()+"_export.xml");
+            //i can't close the stream at this point because it is downloading
         } catch (IOException ex) {
             Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
         }
