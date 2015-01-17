@@ -10,10 +10,14 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import static javax.persistence.FetchType.LAZY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -82,6 +86,13 @@ public class User implements Serializable {
     
     @NotNull
     private String theme = "delta";
+    
+    @Basic(fetch=LAZY)
+    @Lob 
+    @Column(name="PICTURE")
+    private byte[] picture;
+    
+    private String pictureType;
     
     public String getTheme(){
         return theme;
@@ -230,6 +241,34 @@ public class User implements Serializable {
             return false;
         }
         return true;
+    }
+
+    /**
+     * @return the picture
+     */
+    public byte[] getPicture() {
+        return picture;
+    }
+
+    /**
+     * @param picture the picture to set
+     */
+    public void setPicture(byte[] picture) {
+        this.picture = picture;
+    }
+
+    /**
+     * @return the pictureType
+     */
+    public String getPictureType() {
+        return pictureType;
+    }
+
+    /**
+     * @param pictureType the pictureType to set
+     */
+    public void setPictureType(String pictureType) {
+        this.pictureType = pictureType;
     }
     
 }

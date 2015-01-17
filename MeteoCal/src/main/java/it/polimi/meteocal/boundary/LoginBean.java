@@ -78,7 +78,7 @@ public class LoginBean implements Serializable{
             MessageBean.addError("Login failed");
             return NavigationBean.toLogin();
         }
-        System.out.println("Is User = "+request.isUserInRole("USER"));
+        //System.out.println("Is User = "+request.isUserInRole("USER"));
         
         ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
         ec.redirect(forwardUrl);

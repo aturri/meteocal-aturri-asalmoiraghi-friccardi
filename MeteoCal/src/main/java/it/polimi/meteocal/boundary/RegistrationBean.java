@@ -1,6 +1,6 @@
 /*
  * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
+ * To change this template uploadedPicture, choose Tools | Templates
  * and open the template in the editor.
  */
 package it.polimi.meteocal.boundary;
@@ -10,7 +10,6 @@ import it.polimi.meteocal.control.MailController;
 import it.polimi.meteocal.control.NavigationBean;
 import it.polimi.meteocal.entityManager.UserManager;
 import it.polimi.meteocal.entity.User;
-import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,7 +18,7 @@ import javax.ejb.EJBException;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.mail.MessagingException;
+import org.primefaces.model.UploadedFile;
 
 /**
  *
@@ -35,6 +34,7 @@ public class RegistrationBean {
     @EJB
     private UserManager um;
 
+    private UploadedFile uploadedPicture;
     private User user=new User();
 
     public RegistrationBean() {
@@ -56,6 +56,7 @@ public class RegistrationBean {
 
     public String register() {
         try {
+            user.setPictureType("Tipo di prova");
             um.save(user);
             mailControl.sendMail(user.getEmail(),KindOfEmail.REGISTRATION,null);
             return NavigationBean.redirectToLogin();
@@ -68,5 +69,19 @@ public class RegistrationBean {
     
     public Date getToday() {
         return new Date();
+    }
+
+    /**
+     * @return the uploadedPicture
+     */
+    public UploadedFile getUploadedPicture() {
+        return uploadedPicture;
+    }
+
+    /**
+     * @param file the uploadedPicture to set
+     */
+    public void setUploadedPicture(UploadedFile file) {
+        this.uploadedPicture = file;
     }
 }

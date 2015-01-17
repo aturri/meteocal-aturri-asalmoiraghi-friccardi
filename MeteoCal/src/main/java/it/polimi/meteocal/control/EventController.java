@@ -223,6 +223,8 @@ public class EventController {
      */
     public void editEvent(Event event, List<String> invitedUsers) throws EventOverlapException, IllegalInvitedUserException, IllegalEventDateException {
         this.event = event;
+        Date oldStart = this.eventManager.findById(this.event.getId()).getBeginDate();
+        Date oldEnd = this.eventManager.findById(this.event.getId()).getEndDate();
         this.invitedUsers = invitedUsers;
         if(this.areThereOverlaps()) {
             throw new EventOverlapException();
@@ -236,10 +238,25 @@ public class EventController {
         //weather & update
         this.updateWeather();
         //notify users
+        notificationControl.sendNotificationToGroup(getListInvitedUsers(), KindOfNotification.EVENTUPDATED, this.event);
         List<User> participants = getParticipatingUsers();
         participants.remove(this.event.getCreator());
-        notificationControl.sendNotificationToGroup(participants, KindOfNotification.EVENTUPDATED, this.event);
-        notificationControl.sendNotificationToGroup(getListInvitedUsers(), KindOfNotification.EVENTUPDATED, this.event);
+        if(oldStart.equals(this.event.getBeginDate()) && oldEnd.equals(this.event.getEndDate())) {
+            notificationControl.sendNotificationToGroup(participants, KindOfNotification.EVENTUPDATED, this.event);                      
+        } else {
+            for(User u: participants) {
+                //remove old participants
+                this.event.getUsers().remove(u);
+                this.eventManager.update(this.event);
+                u.getEvents().remove(this.event);
+                this.userManager.update(u);
+                //and insert them into invited users
+                u.getInvitations().add(this.event);
+                this.event.getInvitedUsers().add(u);
+                this.userManager.update(u);
+            }
+            notificationControl.sendNotificationToGroup(participants, KindOfNotification.EVENTUPDATED1, this.event);
+        }
         //setup invitations
         if(this.invitedUsers!=null && !this.invitedUsers.isEmpty()) {
             for (String email : this.invitedUsers) {
@@ -248,12 +265,10 @@ public class EventController {
                 invitedUser.getInvitations().add(this.event);
                 userManager.update(invitedUser);
                 notificationControl.sendNotification(email, KindOfNotification.INVITEDTOEVENT, this.event);
-            }
-            this.eventManager.update(this.event);   
+            }  
         }
-//        User user = userManager.getLoggedUser(); 
-//        user.getEvents().add(this.event);
-//        userManager.update(user);
+        //update event
+        this.eventManager.update(this.event);
     }
     
     /**

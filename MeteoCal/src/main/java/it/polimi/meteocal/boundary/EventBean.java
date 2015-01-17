@@ -637,7 +637,7 @@ public class EventBean implements Serializable{
                 return "sun_snow";
             } else if(weatherTxt.toLowerCase().contains("sun") && weatherTxt.toLowerCase().contains("thunder")) {
                 return "sun_thunder";
-            } else if(weatherTxt.toLowerCase().contains("sunny")) {
+            } else if(weatherTxt.toLowerCase().contains("sunny") || weatherTxt.toLowerCase().contains("clear")) {
                 return "sunny";
             } else if(weatherTxt.toLowerCase().contains("hot")) {
                 return "hot";

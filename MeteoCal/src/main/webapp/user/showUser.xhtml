@@ -9,13 +9,37 @@
     <ui:define name="title">Show User</ui:define>
 
     <ui:define name="left">
-        Welcome back #{userBean.loggedUser.name} #{userBean.loggedUser.surname}
+        <p:graphicImage value="#{genericUserBean.picture}" height="150" width="150" />
+        <br/>
+        <h:form id="favForm" >
+            <p:growl id="growl" life="2000" />
+            <p:commandLink id="ajax" update="growl" actionListener="#{calendarBean.addToFavorite}" rendered="#{!userBean.hasInFavorite()}">
+                <p:outputPanel autoUpdate="true">
+                    <h:outputText value="Add to favorite" />
+                </p:outputPanel>
+            </p:commandLink>
+        </h:form>
+        <br/>
+        <br/>
+        #{genericUserBean.user.name} #{calendarBean.user.surname}
+        <br/>
+        Gender: #{genericUserBean.user.gender}
+        <br/>
+        Birthday: #{genericUserBean.user.birthDate}
+        <br/>
+        Address: #{genericUserBean.user.address}
+        <br/>
+        City: #{genericUserBean.user.city}
+        <br/>
+        <br/>
         <br/>
         <p:link outcome="/user/favoriteUsers" value="Favorite Users"/>                
     </ui:define>
 
     <ui:define name="main">
+        
         Calendar of user: #{calendarBean.user.name} #{calendarBean.user.surname}
+        
         <h:form rendered="#{calendarBean.publicCalendar}">
             <p:growl id="messages" showDetail="true" sticky="true"/>
 

@@ -94,6 +94,17 @@ public class MailController {
                 + "<br />"
                 + "All the partecipating users and invited users are be notified. Sorry for the drawback.<br />"
                 + this.meteocalsSignature);
+        subjects.put(KindOfEmail.EVENTUPDATED1, "An event that you l'll partecipate is updated with new dates");
+        messages.put(KindOfEmail.EVENTUPDATED1, ""
+                + this.meteocalsHello
+                + "The following event is updated from the organizer %s %s (%s) with new dates:<br />"
+                + "<br />"
+                + "<a href=\""+meteocalURL+"event/detail.xhtml?id=%d\">%s</a><br />"
+                + "<br />"
+                + "YOU HAVE TO ACCEPT INVITATION AGAIN!<br /><br />Click on the link to see more details.<br />"
+                + "<br />"
+                + "All the partecipating users and invited users are be notified. Sorry for the drawback.<br />"
+                + this.meteocalsSignature);
         subjects.put(KindOfEmail.ALERTWEATHER1, "Bad weather alert");
         messages.put(KindOfEmail.ALERTWEATHER1, ""
                 + this.meteocalsHello
@@ -130,7 +141,7 @@ public class MailController {
     
     /**
      * This function send a default email
-     * @param destination the address of the recipiet
+     * @param destination the address of the recipient
      * @param kindOfEmail kind of email (it defines the layout of message and subject in the email)
      * @param event the event which the email refer. If the email doesn't use event, it may set to null
      */
@@ -159,6 +170,10 @@ public class MailController {
             case EVENTUPDATED:
                 subject=this.subjects.get(KindOfEmail.EVENTUPDATED);
                 message=String.format(this.messages.get(KindOfEmail.EVENTUPDATED), user.getName(),user.getSurname(),event.getCreator().getName(),event.getCreator().getSurname(),event.getCreator().getEmail(),event.getId(),event.getTitle());
+                break;
+            case EVENTUPDATED1:
+                subject=this.subjects.get(KindOfEmail.EVENTUPDATED1);
+                message=String.format(this.messages.get(KindOfEmail.EVENTUPDATED1), user.getName(),user.getSurname(),event.getCreator().getName(),event.getCreator().getSurname(),event.getCreator().getEmail(),event.getId(),event.getTitle());
                 break;
             case ALERTWEATHER1:
                 subject=this.subjects.get(KindOfEmail.ALERTWEATHER1);
@@ -190,7 +205,6 @@ public class MailController {
             sec.setMessage(msg);
             Thread t1=new Thread(sec);
             t1.start();
-            System.out.println("The thread is started!");
         } catch (MessagingException | UnsupportedEncodingException ex) {
             Logger.getLogger(MailController.class.getName()).log(Level.SEVERE, null, ex);
         }

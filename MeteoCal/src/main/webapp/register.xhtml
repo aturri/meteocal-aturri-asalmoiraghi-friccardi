@@ -21,7 +21,7 @@
             </ui:define>
             <ui:define name="main">
                 <div id="mainContent" class="centerMain">
-                    <h:form style="width: 600px; margin: 20px auto; ">
+                    <h:form style="width: 600px; margin: 20px auto; " enctype="multipart/form-data">
                         <p:panel id="registrationPanel" header="Registration Form">
                             <p:focus context="registrationPanel" />
                             <h:panelGrid columns="3" id="regGrid">
@@ -36,7 +36,7 @@
                                     <p:ajax update="surnamemsg"/>
                                 </p:inputText>
                                 <p:message id="surnamemsg" for="surname" />
-
+                                
                                 <p:outputLabel for="gender" value="Gender" />
                                 <p:selectOneMenu id="gender" value="#{registrationBean.user.gender}" style="width: 210px" required="true">
                                     <f:selectItem itemLabel="" itemValue="" />
@@ -83,7 +83,7 @@
 
                             </h:panelGrid>
                             <p:messages id="errorMsg" />
-                            <p:commandButton id="btnRegister" value="Register" update="regGrid"
+                            <p:commandButton id="btnRegister" value="Register"
                                              action="#{registrationBean.register()}" />
                             <br /> 
                             * Mandatory fields

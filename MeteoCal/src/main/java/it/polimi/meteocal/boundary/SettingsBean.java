@@ -6,44 +6,29 @@
 package it.polimi.meteocal.boundary;
 
 import it.polimi.meteocal.control.EventController;
+import it.polimi.meteocal.control.ImportExportController;
 import it.polimi.meteocal.utils.Utility;
 import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
-import it.polimi.meteocal.entityManager.EventManager;
 import it.polimi.meteocal.entityManager.UserManager;
 import it.polimi.meteocal.exception.EventOverlapException;
 import it.polimi.meteocal.exception.IllegalEventDateException;
 import it.polimi.meteocal.exception.IllegalInvitedUserException;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /**
  *
@@ -53,26 +38,56 @@ import org.xml.sax.SAXException;
 @RequestScoped
 public class SettingsBean {
     
-    private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy-M-d HH:mm zzz");
-
     @Inject
     UserManager userManager;
     
     @Inject
     EventController eventController;
     
-    private User user;
+    @Inject
+    ImportExportController importExportController;
     
+    @Inject 
+    PictureBean pictureBean;
+    
+    private User user;    
     private String oldPassword;
     private String newPassword;
     private DefaultStreamedContent exportedFile;
     private UploadedFile uploadedFile;
+    private UploadedFile uploadedPicture;
+    private StreamedContent picture;
+
     
     public SettingsBean() {
     }
     
+    public String importPicture(){
+        int i=(int) uploadedPicture.getSize();
+        User currentUser=userManager.getLoggedUser();
+        try {
+            importExportController.saveUploadedFileIntoTheCorrectFolder(currentUser.getEmail()+"_picture.png", uploadedPicture.getInputstream());
+        } catch (IOException ex) {
+            Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            InputStream inputStream=new FileInputStream(currentUser.getEmail()+"_picture.png");
+            byte[] b=new byte[i];
+            inputStream.read(b, 0, i);
+            currentUser.setPicture(b);
+            currentUser.setPictureType(uploadedPicture.getContentType());
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        userManager.update(currentUser);
+        this.importExportController.controlAndDeleteFile(new File(currentUser.getEmail()+"_picture.png"));
+        return "";
+    }
+    
     /**
-     * This function read the uploadedfile and try to insert the events into the calendar's user
+     * This function read the uploaded file and try to insert the events into the calendar's user
      *  NB: i conflitti temporali tra gli eventi memorizzati nel file xml non vengono contorllati, 
      *      semplicemente se ci sono conflitti di questo tipo viene preso il primo evento e 
      *      gli altri che creano conflitti non vengono importati, ma questo non viene segnalato in alcun modo; 
@@ -81,118 +96,27 @@ public class SettingsBean {
      */
     public String importData(){
         //move the uploadedFile in the common folder for the application
-        OutputStream outputStream=null;
-        List<Event> importedEvents=new ArrayList<>();
-        User current=userManager.getLoggedUser();
-            try {
-                outputStream = new FileOutputStream(current.getEmail()+"_import.xml");
-                InputStream inputStream=this.uploadedFile.getInputstream();
-                byte[] buffer = new byte[4096];          
-                int bytesRead;  
-                while(true) {                          
-                    bytesRead = inputStream.read(buffer);  
-                    if(bytesRead > 0) {  
-                        outputStream.write(buffer, 0, bytesRead);  
-                    }else {  
-                        break;  
-                    }                         
-                }
-                outputStream.flush();
-                inputStream.close();
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
-            } finally {
-                try {
-                    outputStream.close();
-                } catch (IOException ex) {
-                    Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            try {
-                File xmlFile = new File(current.getEmail()+"_import.xml");
-                DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-                Document doc = dBuilder.parse(xmlFile);
-                
-                //here start the core of import
-                //the initial data(regarding the user will be skipped.
-                //The events will be fully read
-                NodeList eventList = doc.getElementsByTagName("event");
-                Event event;
-                for (int i = 0; i < eventList.getLength(); i++) {
-                    event=new Event();
-                    
-                    Node eventNode=eventList.item(i);
-                    if (eventNode.getNodeType() == Node.ELEMENT_NODE) {
-                        Element element=(Element) eventNode;
-                        System.out.println("Processing event with title : " + element.getElementsByTagName("title").item(0).getTextContent());
-                        event.setTitle(element.getElementsByTagName("title").item(0).getTextContent());
-                        if(element.getElementsByTagName("description").item(0)!=null){
-                            event.setDescription(element.getElementsByTagName("description").item(0).getTextContent());
-                        }
-                        if(element.getElementsByTagName("locationinfo").item(0)!=null){
-                            event.setLocationInfo(element.getElementsByTagName("locationinfo").item(0).getTextContent());
-                        }
-                        if(element.getElementsByTagName("city").item(0)!=null){
-                            event.setCity(element.getElementsByTagName("city").item(0).getTextContent());
-                        }
-                        if(element.getElementsByTagName("address").item(0)!=null){
-                            event.setAddress(element.getElementsByTagName("address").item(0).getTextContent());
-                        }
-                        event.setCreator(current);
-                        try {
-                            event.setCreatedEvent(new Date());
-                            event.setBeginDate(FORMATTER.parse(element.getElementsByTagName("begindate").item(0).getTextContent()));
-                            event.setEndDate(FORMATTER.parse(element.getElementsByTagName("enddate").item(0).getTextContent()));
-                        } catch (ParseException ex) {
-                            Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                        event.setPublicEvent(Boolean.FALSE);
-                        event.setIndoor(Utility.stringToBoolean(element.getElementsByTagName("indoor").item(0).getTextContent()));
-                        
-                        if(!eventController.isLegalEvent(event, null)){
-                            this.controlAndDeleteFile(xmlFile);
-                            System.out.println("One or more events can't be imported");
-                            //Message on website that say:"One or more events can't be imported"
-                            return "";
-                        }
-                        importedEvents.add(event);
-                    }
-                }
-                this.controlAndDeleteFile(xmlFile);
-            } catch (ParserConfigurationException | SAXException | IOException ex) {
+        try {
+            importExportController.saveUploadedFileIntoTheCorrectFolder(userManager.getLoggedUser().getEmail()+"_import.xml",this.uploadedFile.getInputstream());
+        } catch (IOException ex) {
+            Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        List<Event> importedEvents=this.importExportController.readXmlFile(userManager.getLoggedUser().getEmail()+"_import.xml");
+        if(importedEvents==null){
+            //Message on website that say:"One or more events can't be imported"
+            return "";
+        }
+        //Now we can put them into the DB
+        for(Event event:importedEvents){
+           try {
+                eventController.createEvent(event, null);
+            } catch (EventOverlapException | IllegalInvitedUserException | IllegalEventDateException ex) {
                 Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
-            //Now we can put them into the DB
-            for(Event event:importedEvents){
-               try {
-                    eventController.createEvent(event, null);
-                } catch (EventOverlapException | IllegalInvitedUserException | IllegalEventDateException ex) {
-                    Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            //Message that says "All the event are been correctly imported"
+        }
+        //Message that says "All the event are been correctly imported"
         return "";
     }
-    
-    /**
-     * Delete the file and controls that it is a file with write permission
-     * @param file file to be deleted
-     */
-    private void controlAndDeleteFile(File file){
-        if(file.canWrite()&&file.isFile()){
-            System.out.println("Permission are ok to delete the file");
-        }
-        if(file.delete()){
-            System.out.println("File deletion complete");
-        }else{
-            System.out.println("The events are uploaded, but the uploaded file can't be removed...");
-        }
-    }
-    
     
     /**
      * This function create the exportedFile that have to exported
@@ -203,58 +127,10 @@ public class SettingsBean {
     public String export(){
         User currentUser=userManager.getLoggedUser();
         try {
-            //Read the user data
-            try (FileWriter out = new FileWriter(currentUser.getEmail()+"_export.xml")) {
-                //Read the user data
-                out.write("<user>\n");
-                out.write("\t<email>"+currentUser.getEmail()+"</email>\n");
-                out.write("\t<name>"+currentUser.getName()+"</name>\n");
-                out.write("\t<surname>"+currentUser.getSurname()+"</surname>\n");
-                if(null!=currentUser.getBirthDate()){
-                    out.write("\t<birthday>"+currentUser.getBirthDate()+"</birthday>\n");
-                }
-                if(null!=currentUser.getCity()){
-                    out.write("\t<city>"+currentUser.getCity()+"</city>\n");
-                }
-                if(null!=currentUser.getAddress()){
-                    out.write("\t<address>"+currentUser.getAddress()+"</address>\n");
-                }
-                out.write("\t<gender>"+currentUser.getGender()+"</gender>\n");
-                out.write("\t<privatecalendar>"+currentUser.getPrivateCalendar()+"</privatecalendar>\n");
-
-                //for to insert events data into xml exportedFile
-                Set<Event> listOfEventInCalendar=currentUser.getEvents();
-                out.write("\t<events>\n");
-                for(Event event:listOfEventInCalendar){
-                    out.write("\t\t<event>\n");
-                    out.write("\t\t\t<title>"+event.getTitle()+"</title>\n");
-                    if(null!=event.getDescription()){
-                        out.write("\t\t\t<description>"+event.getDescription()+"</description>\n");
-                    }
-                    if(null!=event.getLocationInfo()){
-                        out.write("\t\t\t<locationinfo>"+event.getLocationInfo()+"</locationinfo>\n");
-                    }
-                    if(null!=event.getCity()){
-                        out.write("\t\t\t<city>"+event.getCity()+"</city>\n");
-                    }
-                    if(null!=event.getAddress()){
-                        out.write("\t\t\t<address>"+event.getAddress()+"</address>\n");
-                    }
-                    out.write("\t\t\t<creator>"+event.getCreator().getEmail()+"</creator>\n");
-                    out.write("\t\t\t<createdevent>"+FORMATTER.format(event.getCreatedEvent())+"</createdevent>\n");
-                    out.write("\t\t\t<begindate>"+FORMATTER.format(event.getBeginDate())+"</begindate>\n");
-                    out.write("\t\t\t<enddate>"+FORMATTER.format(event.getEndDate())+"</enddate>\n");
-                    out.write("\t\t\t<publicevent>"+event.getPublicEvent()+"</publicevent>\n");
-                    out.write("\t\t\t<indoor>"+event.getIndoor()+"</indoor>\n");
-                    out.write("\t\t</event>\n");
-                }
-                out.write("\t</events>\n");
-                out.write("</user>");
-                out.flush();
-                out.close();
-                InputStream stream = new FileInputStream(currentUser.getEmail()+"_export.xml");
-                this.exportedFile=new DefaultStreamedContent(stream,"text/xml", currentUser.getEmail()+"_export.xml");
-            }
+            importExportController.createFileToExport(currentUser.getEmail()+"_export.xml");
+            InputStream stream = new FileInputStream(currentUser.getEmail()+"_export.xml");
+            this.exportedFile=new DefaultStreamedContent(stream,"text/xml", currentUser.getEmail()+"_export.xml");
+            //i can't close the stream at this point because it is downloading
         } catch (IOException ex) {
             Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -370,6 +246,34 @@ public class SettingsBean {
      */
     public void setUploadedFile(UploadedFile uploadedFile) {
         this.uploadedFile = uploadedFile;
+    }
+
+    /**
+     * @return the uploadedPicture
+     */
+    public UploadedFile getUploadedPicture() {
+        return uploadedPicture;
+    }
+
+    /**
+     * @param uploadedPicture the uploadedPicture to set
+     */
+    public void setUploadedPicture(UploadedFile uploadedPicture) {
+        this.uploadedPicture = uploadedPicture;
+    }
+
+    /**
+     * @return the picture
+     */
+    public StreamedContent getPicture() {        
+        return pictureBean.getPictureFromUser(userManager.getLoggedUser());
+    }
+
+    /**
+     * @param picture the picture to set
+     */
+    public void setPicture(StreamedContent picture) {
+        this.picture = picture;
     }
 
 }
