@@ -1,6 +1,6 @@
 /*
  * To change this license header, choose License Headers in Project Properties.
- * To change this template picture, choose Tools | Templates
+ * To change this template uploadedPicture, choose Tools | Templates
  * and open the template in the editor.
  */
 package it.polimi.meteocal.boundary;
@@ -34,7 +34,7 @@ public class RegistrationBean {
     @EJB
     private UserManager um;
 
-    private UploadedFile picture;
+    private UploadedFile uploadedPicture;
     private User user=new User();
 
     public RegistrationBean() {
@@ -72,16 +72,16 @@ public class RegistrationBean {
     }
 
     /**
-     * @return the picture
+     * @return the uploadedPicture
      */
-    public UploadedFile getPicture() {
-        return picture;
+    public UploadedFile getUploadedPicture() {
+        return uploadedPicture;
     }
 
     /**
-     * @param file the picture to set
+     * @param file the uploadedPicture to set
      */
-    public void setPicture(UploadedFile file) {
-        this.picture = file;
+    public void setUploadedPicture(UploadedFile file) {
+        this.uploadedPicture = file;
     }
 }

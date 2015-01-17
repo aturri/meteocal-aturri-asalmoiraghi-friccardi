@@ -14,41 +14,21 @@ import it.polimi.meteocal.entityManager.UserManager;
 import it.polimi.meteocal.exception.EventOverlapException;
 import it.polimi.meteocal.exception.IllegalEventDateException;
 import it.polimi.meteocal.exception.IllegalInvitedUserException;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
-import javax.imageio.ImageIO;
 import javax.inject.Inject;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /**
  *
@@ -81,7 +61,6 @@ public class SettingsBean {
     
     public String importPicture(){
         int i=(int) uploadedPicture.getSize();
-        System.out.println("Trying to import the picture"+uploadedPicture.getFileName()+i+uploadedPicture.getContentType());
         User currentUser=userManager.getLoggedUser();
         try {
             importExportController.saveUploadedFileIntoTheCorrectFolder(currentUser.getEmail()+"_picture.png", uploadedPicture.getInputstream());
@@ -90,8 +69,7 @@ public class SettingsBean {
         }
         try {
             InputStream inputStream=new FileInputStream(currentUser.getEmail()+"_picture.png");
-            byte[] b;
-            b = new byte[i];
+            byte[] b=new byte[i];
             inputStream.read(b, 0, i);
             currentUser.setPicture(b);
         } catch (FileNotFoundException ex) {
@@ -100,13 +78,14 @@ public class SettingsBean {
             Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
         }
         userManager.update(currentUser);
-                    currentUser.setPictureType(uploadedPicture.getContentType());
-       userManager.update(currentUser);
+        currentUser.setPictureType(uploadedPicture.getContentType());
+        userManager.update(currentUser);
+        this.importExportController.controlAndDeleteFile(new File(currentUser.getEmail()+"_picture.png"));
         return "";
     }
     
     /**
-     * This function read the uploadedfile and try to insert the events into the calendar's user
+     * This function read the uploaded file and try to insert the events into the calendar's user
      *  NB: i conflitti temporali tra gli eventi memorizzati nel file xml non vengono contorllati, 
      *      semplicemente se ci sono conflitti di questo tipo viene preso il primo evento e 
      *      gli altri che creano conflitti non vengono importati, ma questo non viene segnalato in alcun modo; 
@@ -286,7 +265,13 @@ public class SettingsBean {
      */
     public StreamedContent getPicture() {
         User currentUser=userManager.getLoggedUser();
+        if(currentUser.getPicture()==null||currentUser.getPictureType()==null){
+            return new DefaultStreamedContent();
+        }
         picture = new DefaultStreamedContent(new ByteArrayInputStream(currentUser.getPicture()),currentUser.getPictureType());
+        if(picture==null){
+            return new DefaultStreamedContent();
+        }
         return picture;
     }
 

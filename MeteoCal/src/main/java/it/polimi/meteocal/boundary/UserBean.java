@@ -29,42 +29,42 @@ import org.primefaces.model.StreamedContent;
 public class UserBean {
 
     @EJB
-    UserManager um;
+    UserManager userManager;
 
     private StreamedContent picture;
     
     public User getLoggedUser(){
-        return um.getLoggedUser();
+        return userManager.getLoggedUser();
     }
     
     @Deprecated
     public String getName() {
-        return um.getLoggedUser().getName();
+        return userManager.getLoggedUser().getName();
     }
     
     @Deprecated
     public String getSurname() {
-        return um.getLoggedUser().getSurname();
+        return userManager.getLoggedUser().getSurname();
     }
     
     @Deprecated
     public String getEmail() {
-        return um.getLoggedUser().getEmail();
+        return userManager.getLoggedUser().getEmail();
     }
     
     public List<Event> getEventsInCalendar() {
-        return new ArrayList<>(um.getLoggedUser().getEvents());
+        return new ArrayList<>(userManager.getLoggedUser().getEvents());
     }
 
     public List<Event> getEventsInvitedTo() {
-        return new ArrayList<>(um.getLoggedUser().getInvitations());
+        return new ArrayList<>(userManager.getLoggedUser().getInvitations());
     }
     
     public boolean hasInFavorite(){
         Map<String, String> params =FacesContext.getCurrentInstance().
                    getExternalContext().getRequestParameterMap();
         String email=params.get("email");
-        return isThisUserInList(um.getLoggedUser().getContacts(),email);
+        return isThisUserInList(userManager.getLoggedUser().getContacts(),email);
     }
     
     /**
@@ -86,8 +86,14 @@ public class UserBean {
      * @return the picture
      */
     public StreamedContent getPicture() {
-        User currentUser=um.getLoggedUser();
+        User currentUser=userManager.getLoggedUser();
+        if(currentUser.getPicture()==null||currentUser.getPictureType()==null){
+            return new DefaultStreamedContent();
+        }
         picture = new DefaultStreamedContent(new ByteArrayInputStream(currentUser.getPicture()),currentUser.getPictureType());
+        if(picture==null){
+            return new DefaultStreamedContent();
+        }
         return picture;
     }
 
