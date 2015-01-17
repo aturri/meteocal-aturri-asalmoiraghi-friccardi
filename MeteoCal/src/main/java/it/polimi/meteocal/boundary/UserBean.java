@@ -8,6 +8,7 @@ package it.polimi.meteocal.boundary;
 import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.UserManager;
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,8 @@ import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 /**
  *
@@ -27,6 +30,8 @@ public class UserBean {
 
     @EJB
     UserManager um;
+
+    private StreamedContent picture;
     
     public User getLoggedUser(){
         return um.getLoggedUser();
@@ -75,5 +80,21 @@ public class UserBean {
             }
         }
         return false;
+    }
+
+    /**
+     * @return the picture
+     */
+    public StreamedContent getPicture() {
+        User currentUser=um.getLoggedUser();
+        picture = new DefaultStreamedContent(new ByteArrayInputStream(currentUser.getPicture()),currentUser.getPictureType());
+        return picture;
+    }
+
+    /**
+     * @param picture the picture to set
+     */
+    public void setPicture(StreamedContent picture) {
+        this.picture = picture;
     }
 }

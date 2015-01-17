@@ -14,6 +14,9 @@ import it.polimi.meteocal.entityManager.UserManager;
 import it.polimi.meteocal.exception.EventOverlapException;
 import it.polimi.meteocal.exception.IllegalEventDateException;
 import it.polimi.meteocal.exception.IllegalInvitedUserException;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -32,12 +35,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -53,8 +58,6 @@ import org.xml.sax.SAXException;
 @RequestScoped
 public class SettingsBean {
     
-    private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy-M-d HH:mm zzz");
-
     @Inject
     UserManager userManager;
     
@@ -64,15 +67,42 @@ public class SettingsBean {
     @Inject
     ImportExportController importExportController;
     
-    
-    private User user;
-    
+    private User user;    
     private String oldPassword;
     private String newPassword;
     private DefaultStreamedContent exportedFile;
     private UploadedFile uploadedFile;
+    private UploadedFile uploadedPicture;
+    private StreamedContent picture;
+
     
     public SettingsBean() {
+    }
+    
+    public String importPicture(){
+        int i=(int) uploadedPicture.getSize();
+        System.out.println("Trying to import the picture"+uploadedPicture.getFileName()+i+uploadedPicture.getContentType());
+        User currentUser=userManager.getLoggedUser();
+        try {
+            importExportController.saveUploadedFileIntoTheCorrectFolder(currentUser.getEmail()+"_picture.png", uploadedPicture.getInputstream());
+        } catch (IOException ex) {
+            Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            InputStream inputStream=new FileInputStream(currentUser.getEmail()+"_picture.png");
+            byte[] b;
+            b = new byte[i];
+            inputStream.read(b, 0, i);
+            currentUser.setPicture(b);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        userManager.update(currentUser);
+                    currentUser.setPictureType(uploadedPicture.getContentType());
+       userManager.update(currentUser);
+        return "";
     }
     
     /**
@@ -235,6 +265,36 @@ public class SettingsBean {
      */
     public void setUploadedFile(UploadedFile uploadedFile) {
         this.uploadedFile = uploadedFile;
+    }
+
+    /**
+     * @return the uploadedPicture
+     */
+    public UploadedFile getUploadedPicture() {
+        return uploadedPicture;
+    }
+
+    /**
+     * @param uploadedPicture the uploadedPicture to set
+     */
+    public void setUploadedPicture(UploadedFile uploadedPicture) {
+        this.uploadedPicture = uploadedPicture;
+    }
+
+    /**
+     * @return the picture
+     */
+    public StreamedContent getPicture() {
+        User currentUser=userManager.getLoggedUser();
+        picture = new DefaultStreamedContent(new ByteArrayInputStream(currentUser.getPicture()),currentUser.getPictureType());
+        return picture;
+    }
+
+    /**
+     * @param picture the picture to set
+     */
+    public void setPicture(StreamedContent picture) {
+        this.picture = picture;
     }
 
 }

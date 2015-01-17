@@ -115,6 +115,20 @@
             </p:panel>
         </h:form>
         
+        <h:form class="picturePanel" enctype="multipart/form-data">
+            <p:panel header="Select your picture">
+                <h:panelGrid columns="2" id="pictureGrid">  
+                    <p:graphicImage value="#{settingsBean.picture}"  height="120" width="120" />
+                    <p:outputLabel></p:outputLabel>
+                    <p:fileUpload value="#{settingsBean.uploadedPicture}"  mode="simple"></p:fileUpload>
+                    <h:commandButton value="Upload Picture" action="#{settingsBean.importPicture()}"></h:commandButton>
+                </h:panelGrid>
+                <p:growl for="PictureMessages" sticky="true"/>
+            </p:panel>
+        </h:form>
+        
+        
+        
         <h:form class="exportPanel">
             <p:panel header="Export your data form">
                 <h:panelGrid columns="2" id="exportGrid">
