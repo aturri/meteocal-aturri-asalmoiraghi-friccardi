@@ -72,13 +72,12 @@ public class SettingsBean {
             byte[] b=new byte[i];
             inputStream.read(b, 0, i);
             currentUser.setPicture(b);
+            currentUser.setPictureType(uploadedPicture.getContentType());
         } catch (FileNotFoundException ex) {
             Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
         }
-        userManager.update(currentUser);
-        currentUser.setPictureType(uploadedPicture.getContentType());
         userManager.update(currentUser);
         this.importExportController.controlAndDeleteFile(new File(currentUser.getEmail()+"_picture.png"));
         return "";

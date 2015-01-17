@@ -141,7 +141,7 @@ public class MailController {
     
     /**
      * This function send a default email
-     * @param destination the address of the recipiet
+     * @param destination the address of the recipient
      * @param kindOfEmail kind of email (it defines the layout of message and subject in the email)
      * @param event the event which the email refer. If the email doesn't use event, it may set to null
      */
@@ -205,7 +205,6 @@ public class MailController {
             sec.setMessage(msg);
             Thread t1=new Thread(sec);
             t1.start();
-            System.out.println("The thread is started!");
         } catch (MessagingException | UnsupportedEncodingException ex) {
             Logger.getLogger(MailController.class.getName()).log(Level.SEVERE, null, ex);
         }
