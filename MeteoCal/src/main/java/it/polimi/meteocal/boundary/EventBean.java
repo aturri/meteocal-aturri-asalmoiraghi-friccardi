@@ -54,6 +54,7 @@ public class EventBean implements Serializable{
     private List<String> invitedUsersList;
     
     private Event event;
+//    private String weatherString;
     
     @PostConstruct
     public void init(){
@@ -354,6 +355,13 @@ public class EventBean implements Serializable{
 //        }
 //    }
     
+//    public void handleWeather2(){
+//        weatherString = handleWeather();
+//    }
+//    
+//    public String getWeatherString(){
+//        return weatherString;
+//    }
     /**
      * This method handles requests to search actual weather forecasts for the event's begin date/time and city
      * @return the string containing the weather

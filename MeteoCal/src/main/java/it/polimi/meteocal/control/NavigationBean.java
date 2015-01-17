@@ -141,6 +141,21 @@ public class NavigationBean implements Serializable {
     }
     
     /**
+     * Go to event edit page.
+     * @param id of the event
+     * @return event detail page name.
+     */
+    public static String toEventEditPage(String id){
+        return "/event/edit?id="+id;
+    }    
+        
+    public static String redirectToEventEditPage(String id){
+        if(id==null)
+            id = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id");
+        return "/event/edit.xhtml?faces-redirect=true&id="+id;
+    }
+    
+    /**
      * Return the link to go to the page to set the new password with correct parameter
      * @param user
      * @return the absolute path to go to the set new password page with correct parameters

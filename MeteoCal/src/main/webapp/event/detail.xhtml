@@ -27,10 +27,9 @@
                                                     <f:param name="id" value="#{eventBean.event.id}" />                 
                                                 </p:button>-->
                         <p:splitButton id="btnEditEvent" value="Edit event"
-                                       action="/event/edit" icon="ui-icon-edit"
+                                       action="#{navigationBean.redirectToEventEditPage(eventBean.event.id)}" icon="ui-icon-edit"
                                        rendered="#{eventBean.isCurrentUserCreator() and 
                                                    eventBean.isEventAfterNow(eventBean.event.id)}">
-                            <f:param name="id" value="#{eventBean.event.id}" />                 
                             <p:menuitem value="Delete" action="#{eventBean.deleteEvent()}" icon="ui-icon-close" />
                         </p:splitButton>
                         <p:commandButton value="Remove event" action="#{eventBean.removeFromMyCalendar()}"
