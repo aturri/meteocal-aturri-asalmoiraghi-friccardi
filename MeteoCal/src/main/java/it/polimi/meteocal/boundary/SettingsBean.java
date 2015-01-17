@@ -47,6 +47,9 @@ public class SettingsBean {
     @Inject
     ImportExportController importExportController;
     
+    @Inject
+    PictureBean pictureBean;
+    
     private User user;    
     private String oldPassword;
     private String newPassword;
@@ -262,16 +265,8 @@ public class SettingsBean {
     /**
      * @return the picture
      */
-    public StreamedContent getPicture() {
-        User currentUser=userManager.getLoggedUser();
-        if(currentUser.getPicture()==null||currentUser.getPictureType()==null){
-            return new DefaultStreamedContent();
-        }
-        picture = new DefaultStreamedContent(new ByteArrayInputStream(currentUser.getPicture()),currentUser.getPictureType());
-        if(picture==null){
-            return new DefaultStreamedContent();
-        }
-        return picture;
+    public StreamedContent getPicture() {        
+        return pictureBean.getPictureFromUser(userManager.getLoggedUser());
     }
 
     /**

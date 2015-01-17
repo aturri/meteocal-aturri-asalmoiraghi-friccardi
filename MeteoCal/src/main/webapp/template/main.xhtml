@@ -26,6 +26,10 @@
                 <div id="notification">
                     <ui:include src="/notification/notification.xhtml" />
                 </div>
+                <div>
+                    <p:graphicImage value="#{userBean.picture}" height="40" width="40" />
+                    #{userBean.loggedUser.name} #{userBean.loggedUser.surname}
+                </div>
             </div>
         </ui:insert>
         <div id="central">

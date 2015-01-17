@@ -17,6 +17,7 @@ import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
@@ -31,8 +32,9 @@ public class UserBean {
     @EJB
     UserManager userManager;
 
-    private StreamedContent picture;
-    
+    @Inject
+    PictureBean pictureBean;
+        
     public User getLoggedUser(){
         return userManager.getLoggedUser();
     }
@@ -86,21 +88,7 @@ public class UserBean {
      * @return the picture
      */
     public StreamedContent getPicture() {
-        User currentUser=userManager.getLoggedUser();
-        if(currentUser.getPicture()==null||currentUser.getPictureType()==null){
-            return new DefaultStreamedContent();
-        }
-        picture = new DefaultStreamedContent(new ByteArrayInputStream(currentUser.getPicture()),currentUser.getPictureType());
-        if(picture==null){
-            return new DefaultStreamedContent();
-        }
-        return picture;
+        return pictureBean.getPictureFromUser(userManager.getLoggedUser());
     }
 
-    /**
-     * @param picture the picture to set
-     */
-    public void setPicture(StreamedContent picture) {
-        this.picture = picture;
-    }
 }
