@@ -35,21 +35,6 @@ public class UserBean {
         return userManager.getLoggedUser();
     }
     
-    @Deprecated
-    public String getName() {
-        return userManager.getLoggedUser().getName();
-    }
-    
-    @Deprecated
-    public String getSurname() {
-        return userManager.getLoggedUser().getSurname();
-    }
-    
-    @Deprecated
-    public String getEmail() {
-        return userManager.getLoggedUser().getEmail();
-    }
-    
     public List<Event> getEventsInCalendar() {
         return new ArrayList<>(userManager.getLoggedUser().getEvents());
     }

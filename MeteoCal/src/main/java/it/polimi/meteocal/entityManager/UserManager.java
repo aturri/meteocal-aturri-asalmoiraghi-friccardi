@@ -85,7 +85,13 @@ public class UserManager {
      * @return the string that represents the code
      */
     public static String getCodeFromUser(User user){
-        String string=user.getEmail()+user.getCity()+user.getLastAccess().toString()+user.getPassword();
+        String string=user.getEmail()+user.getPassword();
+        if(user.getCity()!=null){
+            string+=user.getCity();
+        }
+        if(user.getLastAccess()!=null){
+            string+=user.getLastAccess();
+        }
         return Utility.getHashSHA256(string);
     }
 
