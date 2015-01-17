@@ -47,9 +47,6 @@ public class SettingsBean {
     @Inject
     ImportExportController importExportController;
     
-    @Inject 
-    PictureBean pictureBean;
-    
     private User user;    
     private String oldPassword;
     private String newPassword;
@@ -65,24 +62,28 @@ public class SettingsBean {
     public String importPicture(){
         int i=(int) uploadedPicture.getSize();
         User currentUser=userManager.getLoggedUser();
-        try {
-            importExportController.saveUploadedFileIntoTheCorrectFolder(currentUser.getEmail()+"_picture.png", uploadedPicture.getInputstream());
-        } catch (IOException ex) {
-            Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+        if(i>0){
+            try {
+                importExportController.saveUploadedFileIntoTheCorrectFolder(currentUser.getEmail()+"_picture.png", uploadedPicture.getInputstream());
+            } catch (IOException ex) {
+                Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                byte[] b=Utility.getBytesFromFile(currentUser.getEmail()+"_picture.png");
+                currentUser.setPicture(b);
+                currentUser.setPictureType(uploadedPicture.getContentType());
+                userManager.update(currentUser);
+                this.importExportController.controlAndDeleteFile(new File(currentUser.getEmail()+"_picture.png"));
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }else{
+            currentUser.setPicture(null);
+            currentUser.setPictureType(null);
+            userManager.update(currentUser);
         }
-        try {
-            InputStream inputStream=new FileInputStream(currentUser.getEmail()+"_picture.png");
-            byte[] b=new byte[i];
-            inputStream.read(b, 0, i);
-            currentUser.setPicture(b);
-            currentUser.setPictureType(uploadedPicture.getContentType());
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        userManager.update(currentUser);
-        this.importExportController.controlAndDeleteFile(new File(currentUser.getEmail()+"_picture.png"));
         return "";
     }
     
@@ -266,7 +267,7 @@ public class SettingsBean {
      * @return the picture
      */
     public StreamedContent getPicture() {        
-        return pictureBean.getPictureFromUser(userManager.getLoggedUser());
+        return Utility.getPictureFromUser(userManager.getLoggedUser());
     }
 
     /**

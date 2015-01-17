@@ -2,6 +2,7 @@ package it.polimi.meteocal.boundary;
 
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.UserManager;
+import it.polimi.meteocal.utils.Utility;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.inject.Named;
@@ -20,9 +21,6 @@ public class GenericUserBean {
 
     @Inject
     UserManager userManager;
-    
-    @Inject 
-    PictureBean pictureBean;
     
     private User user;
     
@@ -78,10 +76,10 @@ public class GenericUserBean {
         this.user = user;
     }
     
-        /**
+     /**
      * @return the picture
      */
     public StreamedContent getPicture() {        
-        return pictureBean.getPictureFromUser(user);
+        return Utility.getPictureFromUser(user);
     }
 }

@@ -7,10 +7,18 @@ package it.polimi.meteocal.utils;
 
 import it.polimi.meteocal.boundary.RecoverPasswordBean;
 import it.polimi.meteocal.entity.User;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 /**
  *  This class contains some utility like hashing function
@@ -52,5 +60,47 @@ public class Utility {
      */
     public static Boolean stringToBoolean(String string){
         return "t".equals(string)||"true".equals(string)||"TRUE".equals(string)||"T".equals(string)||"1".equals(string);
+    }
+    
+    
+    /**
+     * Get all the byte from the file passed as argument
+     * @param filename
+     * @return the entire file as byte[]
+     * @throws FileNotFoundException
+     * @throws IOException 
+     */
+    public static byte[] getBytesFromFile(String filename) throws FileNotFoundException, IOException{
+        if(filename==null){
+            throw new NullPointerException();
+        }
+        File f=new File(filename);
+        int dim=(int) f.length();
+        InputStream stream=new FileInputStream(filename);
+        byte[] b = new byte[dim];
+        stream.read(b, 0, dim);
+        return b;
+    }
+    
+    /**
+     * Given a user, this return the picture in primefaces format (StreamedContent)
+     * @param user
+     * @return 
+     */
+    public static StreamedContent getPictureFromUser(User user){
+        StreamedContent picture = null;
+        if(user.getPicture()==null||user.getPictureType()==null){
+            try {
+                byte[] b=Utility.getBytesFromFile("anonimus_user.png");
+                picture = new DefaultStreamedContent(new ByteArrayInputStream(b),"image/png");
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Utility.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Utility.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }else{
+            picture = new DefaultStreamedContent(new ByteArrayInputStream(user.getPicture()),user.getPictureType());
+        }
+        return picture;
     }
 }

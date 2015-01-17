@@ -54,9 +54,12 @@ public class RegistrationBean {
         }
     }
 
+    /**
+     * Function called from the register.xhmlt page. The picture and its type are null
+     * @return 
+     */
     public String register() {
         try {
-            user.setPictureType("Tipo di prova");
             um.save(user);
             mailControl.sendMail(user.getEmail(),KindOfEmail.REGISTRATION,null);
             return NavigationBean.redirectToLogin();

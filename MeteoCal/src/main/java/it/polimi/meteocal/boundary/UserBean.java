@@ -8,6 +8,7 @@ package it.polimi.meteocal.boundary;
 import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.UserManager;
+import it.polimi.meteocal.utils.Utility;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,9 +27,7 @@ import org.primefaces.model.StreamedContent;
 @Named
 @RequestScoped
 public class UserBean {
-
-    @Inject 
-    PictureBean pictureBean;
+    
     @EJB
     UserManager userManager;
         
@@ -85,7 +84,7 @@ public class UserBean {
      * @return the picture
      */
     public StreamedContent getPicture() {
-        return pictureBean.getPictureFromUser(userManager.getLoggedUser());
+        return Utility.getPictureFromUser(userManager.getLoggedUser());
     }
 
 }
