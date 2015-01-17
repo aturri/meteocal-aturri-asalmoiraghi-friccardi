@@ -14,18 +14,24 @@ import it.polimi.meteocal.entityManager.UserManager;
 import it.polimi.meteocal.exception.EventOverlapException;
 import it.polimi.meteocal.exception.IllegalEventDateException;
 import it.polimi.meteocal.exception.IllegalInvitedUserException;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.FacesException;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.imageio.stream.FileImageOutputStream;
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
+import org.primefaces.event.CaptureEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
@@ -36,7 +42,7 @@ import org.primefaces.model.UploadedFile;
  */
 @Named
 @RequestScoped
-public class SettingsBean {
+public class SettingsBean{
     
     @Inject
     UserManager userManager;
@@ -275,6 +281,49 @@ public class SettingsBean {
      */
     public void setPicture(StreamedContent picture) {
         this.picture = picture;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    private String filename;
+     
+    private String getRandomImageName() {
+        int i = (int) (Math.random() * 10000000);
+         
+        return String.valueOf(i);
+    }
+ 
+    public String getFilename() {
+        return filename;
+    }
+     
+    public void oncapture(CaptureEvent captureEvent) {
+        filename = getRandomImageName();
+        byte[] data = captureEvent.getData();
+         
+        ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+        String newPathName = servletContext.getRealPath("") + File.separator + "resources" +
+                                    File.separator + "images" + File.separator + "photocam" ;
+        //create the path if it doesn't exist
+        (new File(newPathName)).mkdirs();
+        System.out.println(newPathName);
+        String pathAndNameFile=newPathName+ File.separator+filename + ".jpeg";
+        FileImageOutputStream imageOutput;
+        try {
+            imageOutput = new FileImageOutputStream(new File(pathAndNameFile));
+            imageOutput.write(data, 0, data.length);
+            imageOutput.close();
+        }
+        catch(IOException e) {
+            throw new FacesException("Error in writing captured image.", e);
+        }
     }
 
 }

@@ -17,6 +17,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
@@ -91,7 +93,10 @@ public class Utility {
         StreamedContent picture = null;
         if(user.getPicture()==null||user.getPictureType()==null){
             try {
-                byte[] b=Utility.getBytesFromFile("anonimus_user.png");
+                ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+                String newFileName = servletContext.getRealPath("") + File.separator + "resources"+ File.separator + "images" + File.separator + "icon"+File.separator +"anonimus_user.png";
+                
+                byte[] b=Utility.getBytesFromFile(newFileName);
                 picture = new DefaultStreamedContent(new ByteArrayInputStream(b),"image/png");
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(Utility.class.getName()).log(Level.SEVERE, null, ex);
