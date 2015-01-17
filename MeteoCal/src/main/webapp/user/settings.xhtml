@@ -133,7 +133,7 @@
                 <p:photoCam widgetVar="pc" listener="#{settingsBean.oncapture}" update="photo" />
                 <p:commandButton type="button" value="Capture" onclick="PF('pc').capture()"/>
                 <p:outputPanel id="photo">
-                    <p:graphicImage name="images/photocam/#{settingsBean.filename}.jpeg" rendered="#{not empty settingsBean.filename}"/>
+                    <p:graphicImage name="images/photocam/#{userBean.loggedUser.email}_photocam.jpeg" rendered="#{settingsBean.existsFile()}"/>
                 </p:outputPanel>
             </h:panelGrid>
         </h:form>

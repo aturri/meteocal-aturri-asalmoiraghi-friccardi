@@ -314,7 +314,7 @@ public class SettingsBean{
         //create the path if it doesn't exist
         (new File(newPathName)).mkdirs();
         System.out.println(newPathName);
-        String pathAndNameFile=newPathName+ File.separator+filename + ".jpeg";
+        String pathAndNameFile=newPathName+ File.separator+userManager.getLoggedUser().getEmail() + "_photocam.jpeg";
         FileImageOutputStream imageOutput;
         try {
             imageOutput = new FileImageOutputStream(new File(pathAndNameFile));
@@ -326,4 +326,15 @@ public class SettingsBean{
         }
     }
 
+    /**
+     * Says if the photocam file exists (it controls the current user)
+     * @return 
+     */
+    public boolean existsFile(){
+        ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+        String newPathName = servletContext.getRealPath("") + File.separator + "resources" +
+                                    File.separator + "images" + File.separator + "photocam" +File.separator+userManager.getLoggedUser().getEmail() + "_photocam.jpeg";
+        File f=new File(newPathName);
+        return f.exists();
+    }
 }
