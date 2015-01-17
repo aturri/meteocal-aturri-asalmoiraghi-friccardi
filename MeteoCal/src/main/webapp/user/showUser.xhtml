@@ -9,7 +9,7 @@
     <ui:define name="title">Show User</ui:define>
 
     <ui:define name="left">
-        <p:graphicImage value="#{userBean.picture}" height="150" width="150" />
+        <p:graphicImage value="#{genericUserBean.picture}" height="150" width="150" />
         <br/>
         <h:form id="favForm" >
             <p:growl id="growl" life="2000" />
@@ -21,15 +21,15 @@
         </h:form>
         <br/>
         <br/>
-        #{calendarBean.user.name} #{calendarBean.user.surname}
+        #{genericUserBean.user.name} #{calendarBean.user.surname}
         <br/>
-        Gender: #{calendarBean.user.gender}
+        Gender: #{genericUserBean.user.gender}
         <br/>
-        Birthday: #{calendarBean.user.birthDate}
+        Birthday: #{genericUserBean.user.birthDate}
         <br/>
-        Address: #{calendarBean.user.address}
+        Address: #{genericUserBean.user.address}
         <br/>
-        City: #{calendarBean.user.city}
+        City: #{genericUserBean.user.city}
         <br/>
         <br/>
         <br/>

@@ -47,7 +47,7 @@ public class SettingsBean {
     @Inject
     ImportExportController importExportController;
     
-    @Inject
+    @Inject 
     PictureBean pictureBean;
     
     private User user;    

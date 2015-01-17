@@ -2,8 +2,7 @@ package it.polimi.meteocal.boundary;
 
 import it.polimi.meteocal.entity.User;
 import java.io.ByteArrayInputStream;
-import javax.inject.Named;
-import javax.enterprise.context.Dependent;
+import javax.ejb.Stateless;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
@@ -11,9 +10,8 @@ import org.primefaces.model.StreamedContent;
  *
  * @author Fabiuz
  */
-@Named(value = "pictureBean")
-@Dependent
-public class PictureBean {
+@Stateless
+public class PictureBean{
     
     /**
      * Creates a new instance of PictureBean
@@ -27,9 +25,6 @@ public class PictureBean {
         }
         StreamedContent picture;
         picture = new DefaultStreamedContent(new ByteArrayInputStream(user.getPicture()),user.getPictureType());
-        if(picture==null){
-            return new DefaultStreamedContent();
-        }
         return picture;
     }
     
