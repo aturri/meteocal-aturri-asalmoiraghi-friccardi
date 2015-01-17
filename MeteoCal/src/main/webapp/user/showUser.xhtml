@@ -9,7 +9,9 @@
     <ui:define name="title">Show User</ui:define>
 
     <ui:define name="left">
-        <p:graphicImage value="#{genericUserBean.picture}" height="150" width="150" />
+        <p:graphicImage value="#{genericUserBean.picture}" height="150" width="150">
+            <f:param id="email" name="email" value="#{param['email']}" />
+        </p:graphicImage>
         <br/>
         <h:form id="favForm" >
             <p:growl id="growl" life="2000" />
@@ -37,9 +39,9 @@
     </ui:define>
 
     <ui:define name="main">
-        
+
         Calendar of user: #{calendarBean.user.name} #{calendarBean.user.surname}
-        
+
         <h:form rendered="#{calendarBean.publicCalendar}">
             <p:growl id="messages" showDetail="true" sticky="true"/>
 
