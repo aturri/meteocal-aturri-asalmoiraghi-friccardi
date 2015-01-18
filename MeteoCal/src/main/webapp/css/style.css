@@ -303,6 +303,7 @@ a.searchLink:hover{
     margin-right: 10px;
     float: left;
     vertical-align: middle;
+    border-radius: 5px;
 }
 .notificationItem{
     height: 31px;

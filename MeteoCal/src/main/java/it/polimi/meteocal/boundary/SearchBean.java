@@ -11,6 +11,7 @@ import it.polimi.meteocal.control.SearchController;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -30,7 +31,8 @@ public class SearchBean implements Serializable{
     private List<Event> events;
     private List<User> users;
     
-    public SearchBean(){
+    @PostConstruct
+    public void init(){
         this.events = new ArrayList<>();
         this.users = new ArrayList<>();
     }
@@ -52,9 +54,15 @@ public class SearchBean implements Serializable{
     }
     
     public void searchKeyword(){
-        this.events = sc.getEvents(keyword);
-        this.users = sc.getUsers(keyword);
-        MessageBean.addInfo("resultsMessage","Found " + Integer.toString(users.size()) + " users");
-        MessageBean.addInfo("resultsMessage","Found " + Integer.toString(events.size()) + " events");
+        if(keyword.length()>2){
+            this.events = sc.getEvents(keyword);
+            this.users = sc.getUsers(keyword);
+            MessageBean.addInfo("resultsMessage","Found " + Integer.toString(users.size()) + " users");
+            MessageBean.addInfo("resultsMessage","Found " + Integer.toString(events.size()) + " events");
+        }
+        else{
+            this.events = new ArrayList<>();
+            this.users = new ArrayList<>();
+        }
     }
 }

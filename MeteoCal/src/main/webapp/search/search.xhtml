@@ -7,7 +7,6 @@
     <p:growl id="searchMessages" for="resultsMessage"/>
     <h:form>
         <p:inputText id="txtSearch" value="#{searchBean.keyword}" required="true" label="Keyword" placeholder="Search">
-            <f:validateLength minimum="3" />
             <p:ajax listener="#{searchBean.searchKeyword()}"
                     update=":searchMessages" event="keyup" onstart="PF('searchResults').show()"/>
         </p:inputText>
@@ -26,8 +25,9 @@
                             <h:link outcome="#{navigationBean.toShowUser(usersResult.email)}" >
                                 <div class="notificationItem">
                                     <div style="vertical-align:middle; float:left;">
-                                        <h:graphicImage library="images/icon" name="user2.png" 
-                                                        class="notificationIcon"/>
+                                        <p:graphicImage value="#{genericUserBean.picture}" class="notificationIcon">
+                                            <f:param id="email" name="email" value="#{usersResult.email}" />
+                                        </p:graphicImage>
                                     </div>
                                     <div style="vertical-align:middle; float:left; padding-top:5px;">
                                         #{usersResult.name} #{usersResult.surname}
