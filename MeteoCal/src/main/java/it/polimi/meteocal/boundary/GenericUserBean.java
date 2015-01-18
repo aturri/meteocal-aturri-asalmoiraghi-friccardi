@@ -4,6 +4,7 @@ import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.UserManager;
 import it.polimi.meteocal.utils.DateUtils;
 import it.polimi.meteocal.utils.Utility;
+import java.util.Date;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.inject.Named;
@@ -71,7 +72,10 @@ public class GenericUserBean {
     }
     
     public String getBirthdateFormatted(){
-        return DateUtils.formatNumericDate(user.getBirthDate());
+        Date userBirth = user.getBirthDate();
+        if(userBirth!=null)
+            return DateUtils.formatNumericDate(user.getBirthDate());
+        return "n.a.";
     }
 
     /**
@@ -86,5 +90,27 @@ public class GenericUserBean {
      */
     public StreamedContent getPicture() {        
         return Utility.getPictureFromUser(user);
+    }
+    
+    /**
+     * This mtehod adds a user as a contact
+     */
+    public void addToFavorite(){
+        User loggedUser=userManager.getLoggedUser();
+        if(user!=null && !user.equals(loggedUser) 
+                && !loggedUser.getContacts().contains(user)) {
+            MessageBean.addInfo("User added");
+            loggedUser.getContacts().add(user);
+            userManager.update(loggedUser);  
+        }
+    }
+    
+    /**
+     * This method says if a user is a contact for current user
+     * @return true if the current user is contact for the logged one
+     */
+    public Boolean isContact() {
+        User loggedUser=userManager.getLoggedUser();
+        return loggedUser.getContacts().contains(user);
     }
 }

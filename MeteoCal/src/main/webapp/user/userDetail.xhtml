@@ -5,11 +5,12 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
     <p:panel>
         <f:facet name="header">
-            <h:form>
+            <h:form id="addToContactForm">
                 #{genericUserBean.user.name} #{calendarBean.user.surname}
                 <h:graphicImage id="notificationButton" library="images/icon" name="add.png" class="addUserIcon"
-                                title="Add user to favorites">
-                    <p:ajax listener="#{calendarBean.addToFavorite}" event="click"/>
+                                title="Add user to favorites" rendered="#{!genericUserBean.isContact()}">
+                    <f:param id="email" name="email" value="#{param['email']}" />
+                    <p:ajax listener="#{genericUserBean.addToFavorite}" event="click" update="addToContactForm"/>
                 </h:graphicImage>
             </h:form>
         </f:facet>

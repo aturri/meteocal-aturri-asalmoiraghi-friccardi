@@ -164,4 +164,12 @@ public class NavigationBean implements Serializable {
         return "http://localhost:8080/MeteoCal/setNewPassword.xhtml?faces-redirect=true&code="
                 + UserManager.getCodeFromUser(user) + "&email="+user.getEmail();
     }
+    
+    /**
+     * Go to contacts editing page
+     * @return path to contacts editing page
+     */
+    public static String toContacts() {
+        return "/user/favoriteUsers";
+    }
 }

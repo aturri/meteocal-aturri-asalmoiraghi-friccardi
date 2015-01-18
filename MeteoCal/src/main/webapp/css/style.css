@@ -3,6 +3,7 @@ html, body {
         margin: 0;
         padding: 0;
         font-family: 'Helvetica','Arial';
+        min-width: 950px;
 }
 hr {
     width: 94%;
@@ -25,6 +26,7 @@ hr {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#499bea', endColorstr='#207ce5',GradientType=0 ); /* IE6-9 */
 
     width: 100%;
+    min-width: 950px;
     height: 50px;
     display: block;
 
@@ -205,6 +207,13 @@ hr {
     float: right;
     margin-right: -10px;
     color: #ffffff;
+}
+.userIcon {
+    height: 26px;
+    margin-right: 10px;
+    float: left;
+    vertical-align: middle;
+    border-radius: 13px;
 }
 
 /*a.searchLink{
