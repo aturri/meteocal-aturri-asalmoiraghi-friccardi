@@ -95,8 +95,7 @@
                             </p:splitButton>
                             <p:commandButton id="detailsButton" rendered="#{calendarBean.showDetailsLink()}"
                                              value="Details"
-                                             action="#{navigationBean.redirectToEventDetailsPage(calendarBean.event.id)}"
-                                             update="messages" />
+                                             action="#{navigationBean.redirectToEventDetailsPage(calendarBean.event.id)}"/>
                         </h:panelGrid>
 
                         <h:panelGrid id="eventDetails" columns="3" rendered="#{!calendarBean.scheduleEvent.editable}">

@@ -44,10 +44,11 @@
                     <p:panel header="You received an invitation by 
                              #{eventBean.event.creator.name} #{eventBean.event.creator.surname}">
                         <p:messages id="errorMsgId" for="errorMsg" />
+                        <div style="text-align: center;">
                         <p:commandButton value="Accept" action="#{eventBean.acceptInvitation()}"
                                          update="errorMsgId" rendered="#{eventBean.isEventAfterNow(eventBean.event.id)}" />
-                        <br />
                         <p:commandButton value="Refuse" action="#{eventBean.refuseInvitation()}" />
+                        </div>
                     </p:panel>
                 </h:form>
 

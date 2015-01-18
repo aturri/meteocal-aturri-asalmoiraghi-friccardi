@@ -166,7 +166,7 @@ public class EventBean implements Serializable{
             MessageBean.addError("errorMsg",message);
             return "";
         }
-        return NavigationBean.redirectToHome();
+        return NavigationBean.redirectToEventDetailsPage(Integer.toString(event.getId()));
     }
     
     /**
