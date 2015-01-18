@@ -51,7 +51,7 @@
         </div>
 
         <h:form>
-            <p:idleMonitor timeout="1800000">
+            <p:idleMonitor timeout="1800000" rendered="#{loginBean.logged}">
                 <p:ajax event="idle" global="false" listener="#{loginBean.logout()}" oncomplete="PF('timeoutDialog').show()"/>
             </p:idleMonitor>
             <p:dialog  widgetVar="timeoutDialog" header="Session timeout" showEffect="clip" hideEffect="clip"

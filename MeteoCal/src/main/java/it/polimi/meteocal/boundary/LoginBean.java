@@ -93,5 +93,9 @@ public class LoginBean implements Serializable{
         request.getSession().invalidate();
         return NavigationBean.redirectToIndex();
     }
+    
+    public boolean isLogged(){
+        return um.getLoggedUser()!=null;
+    }
 }
 
