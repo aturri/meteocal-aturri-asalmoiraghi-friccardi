@@ -7,45 +7,16 @@
     template="/template/main.xhtml">
 
     <ui:define name="title">Show User</ui:define>
-
+    
     <ui:define name="left">
-        <p:graphicImage value="#{genericUserBean.picture}" height="150" width="150">
-            <f:param id="email" name="email" value="#{param['email']}" />
-        </p:graphicImage>
-        <br/>
-        <h:form id="favForm" >
-            <p:growl id="growl" life="2000" />
-            <p:commandLink id="ajax" update="growl" actionListener="#{calendarBean.addToFavorite}" rendered="#{!userBean.hasInFavorite()}">
-                <p:outputPanel autoUpdate="true">
-                    <h:outputText value="Add to favorite" />
-                </p:outputPanel>
-            </p:commandLink>
-        </h:form>
-        <br/>
-        <br/>
-        #{genericUserBean.user.name} #{calendarBean.user.surname}
-        <br/>
-        Gender: #{genericUserBean.user.gender}
-        <br/>
-        Birthday: #{genericUserBean.user.birthDate}
-        <br/>
-        Address: #{genericUserBean.user.address}
-        <br/>
-        City: #{genericUserBean.user.city}
-        <br/>
-        <br/>
-        <br/>
-        <p:link outcome="/user/favoriteUsers" value="Favorite Users"/>                
+        <ui:include src="/user/userDetail.xhtml" />
     </ui:define>
 
     <ui:define name="main">
-
-        Calendar of user: #{calendarBean.user.name} #{calendarBean.user.surname}
-
-        <h:form rendered="#{calendarBean.publicCalendar}">
+        <h:form rendered="#{calendarBean.canShowCalendar()}">
             <p:growl id="messages" showDetail="true" sticky="true"/>
 
-            <h:panelGrid style="width:100%">
+            <h:panelGrid style="width:100%" styleClass="centredContent">
                 <p:schedule id="schedule" value="#{calendarBean.eventModel}"
                             slotMinutes="15" widgetVar="myschedule" timeZone="GMT+1"
                             draggable="false" resizable="false" allDaySlot="false">

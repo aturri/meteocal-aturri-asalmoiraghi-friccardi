@@ -96,6 +96,14 @@ public class CalendarBean implements Serializable {
     public boolean isPublicCalendar(){
         return !user.getPrivateCalendar();
     }
+    
+    public boolean isLoggedUserCalendar(){
+        return user.equals(um.getLoggedUser());
+    }
+    
+    public boolean canShowCalendar(){
+        return isPublicCalendar() || isLoggedUserCalendar();
+    }
      
     public String addEvent(ActionEvent actionEvent) {
         if(scheduleEvent.getId() == null){

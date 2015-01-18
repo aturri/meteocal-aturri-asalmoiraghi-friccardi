@@ -2,6 +2,7 @@ package it.polimi.meteocal.boundary;
 
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.UserManager;
+import it.polimi.meteocal.utils.DateUtils;
 import it.polimi.meteocal.utils.Utility;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -67,6 +68,10 @@ public class GenericUserBean {
      */
     public User getUser() {
         return user;
+    }
+    
+    public String getBirthdateFormatted(){
+        return DateUtils.formatNumericDate(user.getBirthDate());
     }
 
     /**

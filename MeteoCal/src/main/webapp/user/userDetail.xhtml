@@ -1,0 +1,32 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <p:panel>
+        <f:facet name="header">
+            <h:form>
+                #{genericUserBean.user.name} #{calendarBean.user.surname}
+                <h:graphicImage id="notificationButton" library="images/icon" name="add.png" class="addUserIcon"
+                                title="Add user to favorites">
+                    <p:ajax listener="#{calendarBean.addToFavorite}" event="click"/>
+                </h:graphicImage>
+            </h:form>
+        </f:facet>
+        <p:graphicImage value="#{genericUserBean.picture}" styleClass="userImgBig">
+            <f:param id="email" name="email" value="#{param['email']}" />
+        </p:graphicImage>
+
+        <h:outputText value="Gender:" styleClass="textDetails"/>
+        <h:outputText value="#{genericUserBean.user.gender}"/>
+        <br/>
+        <h:outputText value="Birthday:" styleClass="textDetails"/>
+        <h:outputText value="#{genericUserBean.birthdateFormatted}"/>
+        <br/>
+        <h:outputText value="Address:" styleClass="textDetails"/>
+        <h:outputText value="#{genericUserBean.user.address}"/>
+        <br/>
+        <h:outputText value="City:" styleClass="textDetails"/>
+        <h:outputText value="#{genericUserBean.user.city}"/>
+    </p:panel>
+</ui:composition>

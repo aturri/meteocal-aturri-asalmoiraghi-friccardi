@@ -7,20 +7,14 @@
     <ui:define name="title">Home</ui:define>
 
     <ui:define name="left">
-        <p:graphicImage value="#{userBean.picture}" height="150" width="150" />
-        <br/><br/>
-        Welcome back #{userBean.loggedUser.name} #{userBean.loggedUser.surname}
-        <br/>
-        <p:link outcome="/user/favoriteUsers" value="Contacts"/>                
+<!--        <ui:include src="/user/loggedUserDetail.xhtml" />-->
+        <ui:include src="/user/contacts.xhtml" />
     </ui:define>
 
     <ui:define name="main">
-        <div id="mainContent" style="float: left">
-            Calendar of user: #{calendarBean.user.name} #{calendarBean.user.surname} 
-            <h:form>
-                <p:growl for="calendarMessage" id="messages"/>
+            <h:form rendered="#{calendarBean.canShowCalendar()}">
 
-                <h:panelGrid style="width:100%">
+                <h:panelGrid style="width:100%" styleClass="centredContent">
                     <p:schedule id="schedule" value="#{calendarBean.eventModel}"
                                 slotMinutes="15" widgetVar="myschedule" timeZone="GMT+1"
                                 draggable="false" resizable="false"
@@ -117,19 +111,9 @@
                     </p:outputPanel>
                 </p:dialog>    
             </h:form>
-        </div>
     </ui:define>
 
     <ui:define name="right">
-        <p>Pending invitations:</p>
-        <ul>
-            <ui:repeat value="#{userBean.eventsInvitedTo}" var="event">
-                <li>
-                    <h:link value="#{event.title}" outcome="/event/detail">
-                        <f:param name="id" value="#{event.id}" />
-                    </h:link>
-                </li>
-            </ui:repeat>
-        </ul>                
+        <ui:include src="/user/pendingInvitations.xhtml" />              
     </ui:define>
 </ui:composition>

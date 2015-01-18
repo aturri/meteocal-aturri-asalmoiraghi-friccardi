@@ -17,6 +17,7 @@ import java.util.Locale;
 public class DateUtils {
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy", Locale.ENGLISH);
     private static final SimpleDateFormat EXT_DATE_FORMAT = new SimpleDateFormat("EEE, d MMM yyyy HH:mm", Locale.ENGLISH);
+    private static final SimpleDateFormat NUMERIC_DATE_FORMAT = new SimpleDateFormat("MM/d/YYYY", Locale.ENGLISH);
     
     /**
      * This method returns the current date, rounded to the next :00/:15/:30/:45 minute
@@ -74,6 +75,15 @@ public class DateUtils {
      */      
     public static String formatExtDate(Date date) {
         return EXT_DATE_FORMAT.format(date);
+    }
+    
+    /**
+     * This method return an extended formatted date
+     * @param date to format
+     * @return date formatted
+     */      
+    public static String formatNumericDate(Date date) {
+        return NUMERIC_DATE_FORMAT.format(date);
     }
     
 }

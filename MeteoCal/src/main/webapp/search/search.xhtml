@@ -21,7 +21,8 @@
                         </p:outputPanel>
                     </f:facet>
                     <p:outputPanel autoUpdate="true">
-                        <p:dataList value="#{searchBean.users}" var="usersResult" type="none" class="searchData">
+                        <p:dataList value="#{searchBean.users}" var="usersResult" type="none" class="searchData"
+                                    emptyMessage="No users found">
                             <h:link outcome="#{navigationBean.toShowUser(usersResult.email)}" >
                                 <div class="notificationItem">
                                     <div style="vertical-align:middle; float:left;">
@@ -47,7 +48,8 @@
                         </p:outputPanel>
                     </f:facet>
                     <p:outputPanel autoUpdate="true">
-                        <p:dataList value="#{searchBean.events}" var="eventsResult" type="none" class="searchData">
+                        <p:dataList value="#{searchBean.events}" var="eventsResult" type="none" class="searchData"
+                                    emptyMessage="No events found">
                             <h:link outcome="#{navigationBean.toEventDetailsPage(eventsResult.id)}" >
                                 <div class="notificationItem">
                                     <div style="vertical-align:middle; float:left;">
