@@ -3,21 +3,28 @@
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <p:growl for="contactsMessage" autoUpdate="true"/>
     <p:panel>
         <f:facet name="header">
             <h:form id="addToContactForm">
                 #{genericUserBean.user.name} #{calendarBean.user.surname}
-                <h:graphicImage id="notificationButton" library="images/icon" name="add.png" class="addUserIcon"
+                <h:graphicImage library="images/icon" name="add.png" class="addUserIcon"
                                 title="Add user to favorites" rendered="#{!genericUserBean.isContact()}">
-                    <f:param id="email" name="email" value="#{param['email']}" />
+                    <f:param name="email" value="#{param['email']}" />
                     <p:ajax listener="#{genericUserBean.addToFavorite}" event="click" update="addToContactForm"/>
+                </h:graphicImage>
+                <h:graphicImage library="images/icon" name="remove.png" class="addUserIcon"
+                                title="Remove user from favorites" rendered="#{genericUserBean.isContact()}">
+                    <f:param name="email" value="#{param['email']}" />
+                    <p:ajax listener="#{genericUserBean.removeFromFavorite}" event="click" update="addToContactForm"/>
                 </h:graphicImage>
             </h:form>
         </f:facet>
-        <p:graphicImage value="#{genericUserBean.picture}" styleClass="userImgBig">
-            <f:param id="email" name="email" value="#{param['email']}" />
-        </p:graphicImage>
-
+        <div style="text-align: center;">
+            <p:graphicImage value="#{genericUserBean.picture}" styleClass="userImgBig">
+                <f:param id="email" name="email" value="#{param['email']}" />
+            </p:graphicImage>
+        </div>
         <h:outputText value="Gender:" styleClass="textDetails"/>
         <h:outputText value="#{genericUserBean.user.gender}"/>
         <br/>

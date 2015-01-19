@@ -34,7 +34,7 @@
                     <p:commandButton id="submit" action="#{settingsBean.changePassword()}" value="Set New Password" 
                                      ajax="true" update="@form"/>                   
                 </h:panelGrid>
-                <p:growl for="PasswordMessages" sticky="true" severity="info"/>
+                <p:growl for="PasswordMessages" severity="info"/>
                 <p:messages for="PasswordMessages" severity="error"/>
             </p:panel>
         </h:form>
@@ -86,7 +86,7 @@
                     </p:inputText>
                     <p:message id="citymsg" for="city" />                        
                 </h:panelGrid>
-                <p:growl for="UserDataMessages" sticky="true"/>
+                <p:growl for="UserDataMessages"/>
                 
                 <p:commandButton id="btnSave" value="Save" ajax="true" update="@form"
                                  action="#{settingsBean.changeUsersData()}" />
@@ -108,7 +108,7 @@
                     </p:selectOneMenu>                    
                     <p:message id="visibilitymsg" for="visibility" />
                 </h:panelGrid>
-                <p:growl for="VisibilityMessages" sticky="true"/>
+                <p:growl for="VisibilityMessages"/>
                 <p:commandButton id="btnSave" value="Save"  ajax="true" update="@form"
                                  action="#{settingsBean.changeCalendarVisibilityData()}" />
                 <br /> 
@@ -124,7 +124,7 @@
                     <p:fileUpload value="#{settingsBean.uploadedPicture}"  mode="simple"></p:fileUpload>
                     <h:commandButton value="Upload Picture" action="#{settingsBean.importPicture()}"></h:commandButton>
                 </h:panelGrid>
-                <p:growl for="PictureMessages" sticky="true"/>
+                <p:growl for="PictureMessages"/>
             </p:panel>
         </h:form>
         
@@ -146,7 +146,7 @@
                         <p:fileDownload value="#{settingsBean.file}" />
                     </p:commandButton>
                 </h:panelGrid>
-                <p:growl for="ExportMessages" sticky="true"/>
+                <p:growl for="ExportMessages"/>
             </p:panel>
         </h:form>
         
@@ -157,7 +157,7 @@
                     <p:fileUpload value="#{settingsBean.uploadedFile}"  mode="simple"></p:fileUpload>
                     <h:commandButton value="Upload" action="#{settingsBean.importData}"></h:commandButton>
                 </h:panelGrid>
-                <p:growl for="ImportMessages" sticky="true"/>
+                <p:growl for="ImportMessages"/>
             </p:panel>
         </h:form>
     </ui:define>

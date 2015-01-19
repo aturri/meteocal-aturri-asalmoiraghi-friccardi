@@ -116,11 +116,13 @@ hr {
 }
 #leftSide {
     width: 240px;
+    min-width: 185px;
     display: table-cell;
     vertical-align: top;
 }
 #rightSide {
-    width: 200px;
+    width: 240px;
+    min-width: 185px;
     display: table-cell;
     vertical-align: top;
 }

@@ -93,15 +93,28 @@ public class GenericUserBean {
     }
     
     /**
-     * This mtehod adds a user as a contact
+     * This method adds a user as a contact
      */
     public void addToFavorite(){
         User loggedUser=userManager.getLoggedUser();
         if(user!=null && !user.equals(loggedUser) 
                 && !loggedUser.getContacts().contains(user)) {
-            MessageBean.addInfo("User added");
             loggedUser.getContacts().add(user);
             userManager.update(loggedUser);  
+            MessageBean.addInfo("contactsMessage","User added to favorites");
+        }
+    }
+    
+    /**
+     * This method remove a user as a contact
+     */
+    public void removeFromFavorite(){
+        User loggedUser=userManager.getLoggedUser();
+        if(user!=null && !user.equals(loggedUser) 
+                && loggedUser.getContacts().contains(user)) {
+            loggedUser.getContacts().remove(user);
+            userManager.update(loggedUser);  
+            MessageBean.addInfo("contactsMessage","User removed from favorites");
         }
     }
     
