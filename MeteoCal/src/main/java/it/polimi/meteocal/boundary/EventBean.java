@@ -379,14 +379,14 @@ public class EventBean implements Serializable{
                 if(weather.getBad()) {
                     Weather firstGood = this.searchFirstSunnyDay();
                     if(firstGood!=null) {
-                        MessageBean.addInfo("growlMsg","There is bad weather for the time and location you chose!\n"
+                        MessageBean.addWarning("growlMsg","There is bad weather for the time and location you chose!\n"
                                 + "But MeteoCal found good weather on "+
                                 DateUtils.formatDate(firstGood.getForecastDate())+": "+
                                 firstGood.getWeather()+
                                 ", with high of "+Float.toString(firstGood.getMaxTemp())+
                                 "°C and low of "+Float.toString(firstGood.getMinTemp())+"°C");
                     } else {
-                        MessageBean.addInfo("growlMsg","There is bad weather for the time and location you chose!\n"
+                        MessageBean.addError("growlMsg","There is bad weather for the time and location you chose!\n"
                                 + "Unfortunately MeteoCal did't find a close good day :(");
                     }
                 }
@@ -397,6 +397,21 @@ public class EventBean implements Serializable{
         }
         return "Please insert start date/time and city.";
     }
+    
+//    public String getEventWeather(){
+//        if(this.event.getCity()!=null && this.event.getBeginDate()!=null) {
+//            Weather weather = this.event.getWeather();
+//            if(weather!=null){
+//                return "Forecast for "+weather.getCity()+
+//                        " on "+DateUtils.formatDate(weather.getForecastDate())+
+//                        ": "+weather.getWeather()+
+//                        ", with high of "+Float.toString(weather.getMaxTemp())+
+//                        "°C and low of "+Float.toString(weather.getMinTemp())+"°C";
+//            }
+//            return "Not available";
+//        }
+//        return "Please insert start date/time and city.";
+//    }
     
     /**
      * This method asks the controller to search for the closest good weather day in the specified begin time and location
