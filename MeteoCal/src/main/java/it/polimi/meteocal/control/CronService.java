@@ -33,11 +33,11 @@ public class CronService {
     
     @Schedule(hour="10", dayOfWeek="*", persistent=false)
     public void sendBadWeatherAlerts() {
-        Logger.getLogger(CronService.class.getName()).log(Level.INFO,"SCHEDULED TASK #3 BEGIN");
+        Logger.getLogger(CronService.class.getName()).log(Level.INFO,"SCHEDULED TASK #2 BEGIN");
         Logger.getLogger(CronService.class.getName()).log(Level.INFO,"Repeated every day at 10:00 am");
         Logger.getLogger(CronService.class.getName()).log(Level.INFO,new Date().toString());
         eventControl.checkBadWeatherTomorrow();
-        Logger.getLogger(CronService.class.getName()).log(Level.INFO,"SCHEDULED TASK #3 END");
+        Logger.getLogger(CronService.class.getName()).log(Level.INFO,"SCHEDULED TASK #2 END");
     }
     
     @Schedule(hour="10", dayOfWeek="*", persistent=false)
