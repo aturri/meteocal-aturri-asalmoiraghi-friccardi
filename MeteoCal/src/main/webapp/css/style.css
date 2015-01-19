@@ -429,3 +429,10 @@ a.searchLink:hover{
     margin-right: -50px;
     color: #ffffff;
 }
+
+/*DEFERRED LOAD ICON*/
+.ui-outputpanel-loading{
+    background: url('/MeteoCal/javax.faces.resource/loadingBar.gif.xhtml?ln=images/loader') center center no-repeat !important;
+    height:20px !important;
+    width: 210px !important;
+}

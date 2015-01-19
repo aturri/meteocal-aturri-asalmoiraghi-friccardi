@@ -39,6 +39,6 @@
         <p:poll listener="#{notificationService.checkNewNotifications()}"
                 interval="6" widgetVar="pollNotification"
                 autoStart="true" update="@parent"
-                process="@this" global="false"/>
+                process="@this" global="false" ignoreAutoUpdate="true"/>
     </h:form>
 </ui:composition>

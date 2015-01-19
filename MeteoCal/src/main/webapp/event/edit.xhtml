@@ -10,9 +10,9 @@
     <h:body>
         <ui:composition template="/template/main.xhtml">
             <ui:define name="title">Edit Event</ui:define>
-            
+
             <ui:define name="left"></ui:define>
-            
+
             <ui:define name="paramLogout">
                 <input type="hidden" name="id" value="#{eventBean.event.id}" />
             </ui:define>
@@ -32,7 +32,7 @@
 
                                 <p:outputLabel for="description" value="Description" />
                                 <p:inputTextarea cols="23" id="description" value="#{eventBean.event.description}" required="false"
-                                        maxlength="255">
+                                                 maxlength="255">
                                     <p:ajax update="descriptionmsg"/>
                                 </p:inputTextarea>
                                 <p:message id="descriptionmsg" for="description" />
@@ -47,7 +47,7 @@
                                 <h:outputLabel for="end" value="End time *" />
                                 <p:calendar readonlyInput="true" id="end" pattern="MM/dd/yyyy HH:mm" value="#{eventBean.event.endDate}"
                                             stepMinute="15" navigator="true" mindate="#{eventBean.event.minEndDate}" required="true">
-                                     <p:ajax event="dateSelect" process="start end city"/>   
+                                    <p:ajax event="dateSelect" process="start end city"/>   
                                 </p:calendar>
                                 <p:message id="endmsg" for="end" />
 
@@ -64,12 +64,15 @@
                                 <p:message id="cityMsg" for="city" />
 
                                 <p:outputLabel for="weather" value="Weather"/>
-                                <p:outputPanel id="weather" style="width: 210px;">#{eventBean.handleWeather()}</p:outputPanel> 
+                                <p:outputPanel id="weather" autoUpdate="false" 
+                                    deferred="true" style="width: 210px;">
+                                    #{eventBean.handleWeather()}
+                                </p:outputPanel> 
                                 <p:message id="weatherMsg" for="weather" />
 
                                 <p:outputLabel for="locationInfo" value="Location addtitional info" />
                                 <p:inputTextarea cols="23" id="locationInfo" value="#{eventBean.event.locationInfo}" required="false"
-                                        maxlength="255">
+                                                 maxlength="255">
                                     <p:ajax update="locationInfoMsg"/>
                                 </p:inputTextarea>
                                 <p:message id="locationInfoMsg" for="locationInfo" />                    
@@ -109,7 +112,7 @@
                         </p:panel>
                         <p:growl for="growlMsg" id="growl" sticky="true" />
                     </h:form>   
-                    
+
                     <p:panel styleClass="centredContent" rendered="#{!eventBean.isCurrentUserCreatorOf(eventBean.event.id)}">
                         <div class='divCalendarPrivate'>
                             You can't edit this event because you are not the owner of the event.
@@ -117,7 +120,7 @@
                     </p:panel>
                 </div>
             </ui:define>
-            
+
             <ui:define name="right"></ui:define>
         </ui:composition>
     </h:body>
