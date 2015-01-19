@@ -132,8 +132,38 @@ hr {
     padding-left: 10px;
     padding-right: 10px;
 }
+#leftColumn {
+    vertical-align: top;
+}
+#rightColumn {
+    vertical-align: top;
+}
+
+@media (min-width: 1000px){
+    #leftColumn {
+        width: 50%;
+        display: table-cell;
+    }
+    #rightColumn {
+        width: 50%;
+        display: table-cell;
+    }   
+}
+
+
 
 /*VARIOUS*/
+
+.settingsPanel{
+    margin: auto;
+    width: 90%;
+}
+@media (max-width: 1000px){
+    .settingsPanel{
+        width: 70%;
+    }
+}
+
 .centredContent {
     padding-left: 40px !important;
     padding-right: 40px !important;
@@ -236,11 +266,6 @@ a.searchLink:hover{
 .divCalendarPrivate{
     text-align: center;
     margin: 20px;
-}
-
-.settingsPanel{
-    width: 70%;
-    margin: auto;
 }
 
 #homepageCentral {
@@ -435,4 +460,10 @@ a.searchLink:hover{
     background: url('/MeteoCal/javax.faces.resource/loadingBar.gif.xhtml?ln=images/loader') center center no-repeat !important;
     height:20px !important;
     width: 210px !important;
+}
+
+
+.mandatoryText{
+    font-size: small;
+    font-style: oblique;
 }

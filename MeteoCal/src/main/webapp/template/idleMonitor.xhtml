@@ -1,0 +1,18 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:form>
+        <p:idleMonitor timeout="1800000" rendered="#{loginBean.logged}">
+            <p:ajax event="idle" global="false" listener="#{loginBean.logout()}" oncomplete="PF('timeoutDialog').show()"/>
+        </p:idleMonitor>
+        <p:dialog  widgetVar="timeoutDialog" header="Session timeout" showEffect="clip" hideEffect="clip"
+                   resizable="false" draggable="false" closable="false" modal="true">
+            Warning! Your session is expired.<br/>
+            Login again to use MeteoCal.<br/><br/>
+            <p:button outcome="#{navigationBean.toHome()}" value="Login"/>
+        </p:dialog>
+    </h:form>
+</ui:composition>

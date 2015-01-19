@@ -110,7 +110,7 @@
                                 <p:menuitem value="Delete" action="#{eventBean.deleteEvent()}" ajax="false" icon="ui-icon-close" />
                             </p:splitButton>
                             <br />
-                            * Mandatory fields
+                            <h:outputText value="* Mandatory fields" styleClass="mandatoryText"/>
                         </p:panel>
                         <p:growl for="growlMsg" id="growl" sticky="true" />
                     </h:form>   

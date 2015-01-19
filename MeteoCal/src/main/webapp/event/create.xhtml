@@ -106,7 +106,7 @@
                             <p:messages id="errorMsgId" for="errorMsg" />
                             <p:commandButton id="btnCreateEvent" value="Create" update="createEventGrid errorMsgId" action="#{eventBean.createEvent()}" />
                             <br /> 
-                            * Mandatory fields
+                            <h:outputText value="* Mandatory fields" styleClass="mandatoryText"/>
                         </p:panel>
                         <p:growl for="growlMsg" id="growl" sticky="true" />
                     </h:form> 

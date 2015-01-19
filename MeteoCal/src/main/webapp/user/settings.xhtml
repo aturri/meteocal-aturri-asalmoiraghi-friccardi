@@ -4,23 +4,22 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:p="http://primefaces.org/ui"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
-    template="/template/main.xhtml">
-    
-    <ui:define name="title">Show User</ui:define>
-    
-    <ui:define name="left">
-         Welcome back #{userBean.loggedUser.name} #{userBean.loggedUser.surname}
-        <br/>
-        <p:link outcome="/user/favoriteUsers" value="Favorite Users"/> 
-    </ui:define>
-    
-    <ui:define name="main">
+    template="/template/twoColumn.xhtml">
+
+    <ui:define name="title">Settings</ui:define>
+
+    <ui:define name="leftColumn">
+        <p:ajaxStatus onstart="PF('status').show()" oncomplete="PF('status').hide()"/>
+        <p:dialog header="Please wait..." widgetVar="status" modal="true" closable="false" draggable="false">
+            <h:graphicImage library="images/loader" name="loadingBar.gif"/>
+        </p:dialog>
+
         <h:form class='settingsPanel'>
-            <p:panel header="Change Password Form">
+            <p:panel header="Change Password">
                 <h:panelGrid columns="3" id="changePasswordGrid">
                     <p:outputLabel for="passwordInput" value="Old Password"/>
                     <p:password id="passwordInput" value="#{settingsBean.oldPassword}" 
-                                 required="true" requiredMessage="Old password is required"/>
+                                required="true" requiredMessage="Old password is required"/>
                     <p:message id="oldPwdMsg" for="passwordInput" />
                     <p:outputLabel for="newPasswordInput" value="New Password"/>
                     <p:password id="newPasswordInput" value="#{settingsBean.newPassword}" 
@@ -38,29 +37,30 @@
                 <p:messages for="PasswordMessages" severity="error"/>
             </p:panel>
         </h:form>
-        
+
+        <p:separator/>
+
         <h:form class='settingsPanel'>
-            <p:panel header="Change User's Data Form">
+            <p:panel header="Change User's Data">
                 <h:panelGrid columns="3" id="usersDataGrid">
                     <p:outputLabel for="name" value="Name" />
                     <p:inputText id="name"  required="true" value="#{settingsBean.user.name}"
-                                  requiredMessage="Insert your name">
+                                 requiredMessage="Insert your name">
                         <p:ajax update="namemsg"/>
                     </p:inputText>
                     <p:message id="namemsg" for="name" />
-                    
+
                     <p:outputLabel for="surname" value="Surname" />
                     <p:inputText id="surname" value="#{settingsBean.user.surname}" required="true"
-                                  requiredMessage="Insert your last name">
+                                 requiredMessage="Insert your last name">
                         <p:ajax update="surnamemsg"/>
                     </p:inputText>
                     <p:message id="surnamemsg" for="surname" />
 
-                    
+
                     <p:outputLabel for="gender" value="Gender" />
                     <p:selectOneMenu id="gender" value="#{settingsBean.user.gender}" style="width: 210px" required="true"
-                                      requiredMessage="Select your gender">
-                        <f:selectItem itemLabel="" itemValue="" />
+                                     requiredMessage="Select your gender">
                         <f:selectItem itemLabel="Man" itemValue="M" />
                         <f:selectItem itemLabel="Woman" itemValue="F" />
                         <p:ajax update="gendermsg"/>
@@ -70,16 +70,16 @@
                     <h:outputLabel for="birthdate" value="Date of birth" />
                     <p:calendar id="birthdate" value="#{settingsBean.user.birthDate}" navigator="true" 
                                 maxdate="#{registrationBean.today}" yearRange='1900:c'>
-                         <p:ajax update="birthdatemsg"/>                       
+                        <p:ajax update="birthdatemsg"/>                       
                     </p:calendar>
                     <p:message id="birthdatemsg" for="birthdate" />
-                                                           
+
                     <p:outputLabel for="address" value="Address" />
                     <p:inputText id="address" value="#{settingsBean.user.address}" required="false">
                         <p:ajax update="addressmsg"/>
                     </p:inputText>
                     <p:message id="addressmsg" for="address" />    
-                    
+
                     <p:outputLabel for="city" value="City"/>
                     <p:inputText id="city" value="#{settingsBean.user.city}" required="false">
                         <p:ajax update="citymsg"/>
@@ -87,21 +87,22 @@
                     <p:message id="citymsg" for="city" />                        
                 </h:panelGrid>
                 <p:growl for="UserDataMessages"/>
-                
+
                 <p:commandButton id="btnSave" value="Save" ajax="true" update="@form"
                                  action="#{settingsBean.changeUsersData()}" />
                 <br /> 
-                * Mandatory fields
+                <h:outputText value="* Mandatory fields" styleClass="mandatoryText"/>
             </p:panel>
         </h:form>
-        
+
+        <p:separator/>
+
         <h:form class="settingsPanel">
-            <p:panel header="Change Calendar Visibility Form">
+            <p:panel header="Change Calendar Visibility">
                 <h:panelGrid columns="3" id="visibilityDataGrid">
                     <p:outputLabel for="visibility" value="Visibility " />
                     <p:selectOneMenu id="visibility" value="#{settingsBean.user.privateCalendar}" 
                                      style="width: 210px" required="true" requiredMessage="Select the calendar's visibility">
-                        <f:selectItem itemLabel="" itemValue="" />
                         <f:selectItem itemLabel="Public" itemValue="false" />
                         <f:selectItem itemLabel="Private" itemValue="true" />
                         <p:ajax update="visibilitymsg"/>
@@ -112,33 +113,41 @@
                 <p:commandButton id="btnSave" value="Save"  ajax="true" update="@form"
                                  action="#{settingsBean.changeCalendarVisibilityData()}" />
                 <br /> 
-                * Mandatory fields
+                <h:outputText value="* Mandatory fields" styleClass="mandatoryText"/>
             </p:panel>
         </h:form>
-        
-        <h:form class="picturePanel" enctype="multipart/form-data">
+
+
+    </ui:define>
+
+    <ui:define name="rightColumn">
+        <h:form class='settingsPanel'>
+            <p:panel header="Change Theme">
+                <p:themeSwitcher style="width:150px" value="#{settingsBean.user.theme}">
+                    <f:selectItem itemLabel="Choose Theme" itemValue="" />
+                    <f:selectItems value="#{themeSwitcherBean.themes}" />
+                    <p:ajax listener="#{settingsBean.changeTheme()}" update="@form"/>
+                </p:themeSwitcher>
+            </p:panel>
+            <p:growl for="ThemeMessages"/>
+        </h:form>
+
+        <p:separator/>
+
+        <h:form class="settingsPanel picturePanel" enctype="multipart/form-data">
             <p:panel header="Select your picture">
-                <h:panelGrid columns="2" id="pictureGrid">  
-                    <p:graphicImage value="#{settingsBean.picture}"  height="120" width="120" />
-                    <p:outputLabel></p:outputLabel>
-                    <p:fileUpload value="#{settingsBean.uploadedPicture}"  mode="simple"></p:fileUpload>
-                    <h:commandButton value="Upload Picture" action="#{settingsBean.importPicture()}"></h:commandButton>
-                </h:panelGrid>
+                <div style="text-align: center">
+                    <p:graphicImage value="#{settingsBean.picture}" styleClass="userImgBig" />
+                </div>
+                <p:fileUpload value="#{settingsBean.uploadedPicture}"  mode="simple"/>
+                <h:commandButton value="Upload Picture" action="#{settingsBean.importPicture()}" />
                 <p:growl for="PictureMessages"/>
             </p:panel>
         </h:form>
-        
-        <h:form>        
-            <h:panelGrid columns="3" cellpadding="5">
-                <p:photoCam widgetVar="pc" listener="#{settingsBean.oncapture}" update="photo" />
-                <p:commandButton type="button" value="Capture" onclick="PF('pc').capture()"/>
-                <p:outputPanel id="photo">
-                    <p:graphicImage name="images/photocam/#{userBean.loggedUser.email}_photocam.jpeg" rendered="#{settingsBean.existsFile()}"/>
-                </p:outputPanel>
-            </h:panelGrid>
-        </h:form>
 
-        <h:form class="exportPanel">
+        <p:separator/>
+
+        <h:form class="settingsPanel exportPanel">
             <p:panel header="Export your data form">
                 <h:panelGrid columns="2" id="exportGrid">
                     <p:outputLabel value="Export" />
@@ -149,9 +158,10 @@
                 <p:growl for="ExportMessages"/>
             </p:panel>
         </h:form>
-        
-        
-        <h:form class="importPanel" enctype="multipart/form-data">
+
+        <p:separator/>
+
+        <h:form class="settingsPanel importPanel" enctype="multipart/form-data">
             <p:panel header="Import your data">
                 <h:panelGrid columns="2" id="importGrid">    
                     <p:fileUpload value="#{settingsBean.uploadedFile}"  mode="simple"></p:fileUpload>
@@ -159,19 +169,6 @@
                 </h:panelGrid>
                 <p:growl for="ImportMessages"/>
             </p:panel>
-        </h:form>
-    </ui:define>
-    
-    <ui:define name="right">
-        <h:form>
-            <p:panel header="Change Theme">
-                <p:themeSwitcher style="width:150px" value="#{settingsBean.user.theme}">
-                    <f:selectItem itemLabel="Choose Theme" itemValue="" />
-                    <f:selectItems value="#{themeSwitcherBean.themes}" />
-                    <p:ajax listener="#{settingsBean.changeTheme()}" update="@form"/>
-                </p:themeSwitcher>
-            </p:panel>
-            <p:growl for="ThemeMessages"/>
         </h:form>
     </ui:define>
 </ui:composition>
