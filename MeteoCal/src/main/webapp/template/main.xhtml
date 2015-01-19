@@ -11,29 +11,7 @@
     </h:head>
     <h:body>
         <ui:insert name="header">
-            <div id="topbar">
-                <div id="logo"><h:link outcome="/user/home" value="MeteoCal"/></div>
-                <div id="search">
-                    <ui:include src="/search/search.xhtml" />
-                </div>
-                <div id="buttons">
-                    <p:link outcome="/event/create" value="Create Event"/>
-                    <p:outputPanel id="userBubble">
-                        <p:graphicImage value="#{userBean.picture}" />
-                        <span>#{userBean.loggedUser.name} #{userBean.loggedUser.surname}</span>
-                    </p:outputPanel>
-                    <p:overlayPanel for="userBubble" class="userPanel">
-                        <p:link outcome="/user/settings" value="Settings"/>
-                        <h:form>
-                            <ui:insert name="paramLogout"></ui:insert>
-                            <p:commandLink action="#{loginBean.logout()}" value="Logout"/>
-                        </h:form>
-                    </p:overlayPanel>
-                </div>
-                <div id="notification">
-                    <ui:include src="/notification/notification.xhtml" />
-                </div>
-            </div>
+            <ui:include src="/template/topBar.xhtml" />              
         </ui:insert>
         <div id="central">
             <div id="content">
