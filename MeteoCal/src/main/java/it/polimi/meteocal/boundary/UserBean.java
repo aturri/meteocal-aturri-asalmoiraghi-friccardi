@@ -10,6 +10,7 @@ import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.UserManager;
 import it.polimi.meteocal.utils.Utility;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -71,5 +72,23 @@ public class UserBean {
     public StreamedContent getPicture() {
         return Utility.getPictureFromUser(userManager.getLoggedUser());
     }
+    
+    public List<User> getContacts(){
+        List<User> contacts = new ArrayList<>(userManager.getLoggedUser().getContacts());
+        contacts.sort(new UserComparator());
+        return contacts;
+    }
 
+    static class UserComparator  implements Comparator<User>{
+        
+        private UserComparator() {
+        }
+
+        @Override
+        public int compare(User o1, User o2) {
+            String name1 = o1.getName() + o1.getSurname();
+            String name2 = o2.getName() + o2.getSurname();
+            return name1.compareToIgnoreCase(name2);
+        }
+    }
 }

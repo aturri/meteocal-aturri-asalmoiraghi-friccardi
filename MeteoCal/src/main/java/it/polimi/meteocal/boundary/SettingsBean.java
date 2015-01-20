@@ -40,78 +40,85 @@ import org.primefaces.model.UploadedFile;
  */
 @Named
 @RequestScoped
-public class SettingsBean{
-    
+public class SettingsBean {
+
     @Inject
     UserManager userManager;
-    
+
     @Inject
     EventController eventController;
-    
+
     @Inject
     ImportExportController importExportController;
-    
-    private User user;    
+
+    private User user;
     private String oldPassword;
     private String newPassword;
     private DefaultStreamedContent exportedFile;
     private UploadedFile uploadedFile;
     private UploadedFile uploadedPicture;
-    
+
     public SettingsBean() {
     }
-    
-    public String importPicture(){
-        int i=(int) uploadedPicture.getSize();
-        User currentUser=userManager.getLoggedUser();
-        if(i>0){
+
+    public String importPicture() {
+        int i = (int) uploadedPicture.getSize();
+        User currentUser = userManager.getLoggedUser();
+        if (i > 0) {
             try {
-                importExportController.saveUploadedFileIntoTheCorrectFolder(currentUser.getEmail()+"_picture.png", uploadedPicture.getInputstream());
+                importExportController.saveUploadedFileIntoTheCorrectFolder(currentUser.getEmail() + "_picture.png", uploadedPicture.getInputstream());
             } catch (IOException ex) {
                 Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
-                byte[] b=Utility.getBytesFromFile(currentUser.getEmail()+"_picture.png");
+                byte[] b = Utility.getBytesFromFile(currentUser.getEmail() + "_picture.png");
                 currentUser.setPicture(b);
                 currentUser.setPictureType(uploadedPicture.getContentType());
                 userManager.update(currentUser);
-                this.importExportController.controlAndDeleteFile(new File(currentUser.getEmail()+"_picture.png"));
+                this.importExportController.controlAndDeleteFile(new File(currentUser.getEmail() + "_picture.png"));
+                MessageBean.addInfo("PictureMessages", "Picture correctly changed");
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+                MessageBean.addWarning("PictureMessages", "Error during picture upload");
             } catch (IOException ex) {
                 Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+                MessageBean.addWarning("PictureMessages", "Error during picture upload");
             }
-        }else{
+        } else {
             currentUser.setPicture(null);
             currentUser.setPictureType(null);
             userManager.update(currentUser);
+            MessageBean.addWarning("PictureMessages", "Default picture loaded");
         }
         return "";
     }
-    
+
     /**
-     * This function read the uploaded file and try to insert the events into the calendar's user
-     *  NB: i conflitti temporali tra gli eventi memorizzati nel file xml non vengono contorllati, 
-     *      semplicemente se ci sono conflitti di questo tipo viene preso il primo evento e 
-     *      gli altri che creano conflitti non vengono importati, ma questo non viene segnalato in alcun modo; 
-     *      invece vengono segnalati conflitti tra eventi in xml e nel calendario dell'utente
-     * @return 
+     * This function read the uploaded file and try to insert the events into
+     * the calendar's user NB: i conflitti temporali tra gli eventi memorizzati
+     * nel file xml non vengono contorllati, semplicemente se ci sono conflitti
+     * di questo tipo viene preso il primo evento e gli altri che creano
+     * conflitti non vengono importati, ma questo non viene segnalato in alcun
+     * modo; invece vengono segnalati conflitti tra eventi in xml e nel
+     * calendario dell'utente
+     *
+     * @return
      */
-    public String importData(){
+    public String importData() {
         //move the uploadedFile in the common folder for the application
         try {
-            importExportController.saveUploadedFileIntoTheCorrectFolder(userManager.getLoggedUser().getEmail()+"_import.xml",this.uploadedFile.getInputstream());
+            importExportController.saveUploadedFileIntoTheCorrectFolder(userManager.getLoggedUser().getEmail() + "_import.xml", this.uploadedFile.getInputstream());
         } catch (IOException ex) {
             Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
         }
-        List<Event> importedEvents=this.importExportController.readXmlFile(userManager.getLoggedUser().getEmail()+"_import.xml");
-        if(importedEvents==null){
+        List<Event> importedEvents = this.importExportController.readXmlFile(userManager.getLoggedUser().getEmail() + "_import.xml");
+        if (importedEvents == null) {
             //Message on website that say:"One or more events can't be imported"
             return "";
         }
         //Now we can put them into the DB
-        for(Event event:importedEvents){
-           try {
+        for (Event event : importedEvents) {
+            try {
                 eventController.createEvent(event, null);
             } catch (EventOverlapException | IllegalInvitedUserException | IllegalEventDateException ex) {
                 Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
@@ -120,63 +127,69 @@ public class SettingsBean{
         //Message that says "All the event are been correctly imported"
         return "";
     }
-    
+
     /**
-     * This function create the exportedFile that have to exported
-     *  NB:il percorso in cui posso scrivere parte da netbeans/glassfish-4.1/
-     *      fuori dal quella cartella non ho i permessi
+     * This function create the exportedFile that have to exported NB:il
+     * percorso in cui posso scrivere parte da netbeans/glassfish-4.1/ fuori dal
+     * quella cartella non ho i permessi
+     *
      * @return an empty string
      */
-    public String export(){
-        User currentUser=userManager.getLoggedUser();
+    public String export() {
+        User currentUser = userManager.getLoggedUser();
         try {
-            importExportController.createFileToExport(currentUser.getEmail()+"_export.xml");
-            InputStream stream = new FileInputStream(currentUser.getEmail()+"_export.xml");
-            this.exportedFile=new DefaultStreamedContent(stream,"text/xml", currentUser.getEmail()+"_export.xml");
+            importExportController.createFileToExport(currentUser.getEmail() + "_export.xml");
+            InputStream stream = new FileInputStream(currentUser.getEmail() + "_export.xml");
+            this.exportedFile = new DefaultStreamedContent(stream, "text/xml", currentUser.getEmail() + "_export.xml");
             //i can't close the stream at this point because it is downloading
+            MessageBean.addInfo("ExportMessages", "Calendar  correctly exported");
+
         } catch (IOException ex) {
             Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+            MessageBean.addError("ExportMessages", "Error during exporting calendar");
+
         }
-        MessageBean.addInfo("ExportMessages","Data  correctly exported");
         return "";
     }
 
-
-    public String changePassword(){
+    public String changePassword() {
         //verify the old password is correct
-        String old=Utility.getHashSHA256(this.oldPassword);
-        User currentUser=userManager.getLoggedUser();
-        String saved=currentUser.getPassword();
-        if(!saved.equals(old)){
+        String old = Utility.getHashSHA256(this.oldPassword);
+        User currentUser = userManager.getLoggedUser();
+        String saved = currentUser.getPassword();
+        if (!saved.equals(old)) {
             MessageBean.addError("PasswordMessages", "Insert the right password before change it");
-        }else{
+        } else {
             //password update
             //NB: we don't need to hash the new password. This is computed from glassfish automatically
             currentUser.setPassword(this.newPassword);
             userManager.update(currentUser);
-            MessageBean.addInfo("PasswordMessages","Password correctly changed");
+            MessageBean.addInfo("PasswordMessages", "Password correctly changed");
         }
         return "";
     }
-    
-    public String changeUsersData(){
+
+    public String changeUsersData() {
+        System.out.println("qui");
         userManager.update(this.user);
-        MessageBean.addInfo("UserDataMessages","User's data correctly changed");
+        System.out.println("dopo");
+
+        MessageBean.addInfo("UserDataMessages", "User's data correctly changed");
         return "";
     }
-    
-    public String changeCalendarVisibilityData(){
+
+    public String changeCalendarVisibilityData() {
         userManager.update(this.user);
-        MessageBean.addInfo("VisibilityMessages","Calendar's visibility correctly changed");
+        MessageBean.addInfo("VisibilityMessages", "Calendar's visibility correctly changed");
         return "";
     }
-    
-    public String changeTheme(){
+
+    public String changeTheme() {
         userManager.update(this.user);
-        MessageBean.addInfo("ThemeMessages","Theme correctly changed");
+        MessageBean.addInfo("ThemeMessages", "Theme correctly changed");
         return "";
     }
-    
+
     /**
      * @return the oldPassword
      */
@@ -209,8 +222,8 @@ public class SettingsBean{
      * @return the user
      */
     public User getUser() {
-        if(this.user==null){
-            this.user=userManager.getLoggedUser();
+        if (this.user == null) {
+            this.user = userManager.getLoggedUser();
         }
         return user;
     }
@@ -268,62 +281,53 @@ public class SettingsBean{
     /**
      * @return the picture of the logged User
      */
-    public StreamedContent getPicture() {        
+    public StreamedContent getPicture() {
         return Utility.getPictureFromUser(userManager.getLoggedUser());
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
     private String filename;
-     
+
     private String getRandomImageName() {
         int i = (int) (Math.random() * 10000000);
-         
+
         return String.valueOf(i);
     }
- 
+
     public String getFilename() {
         return filename;
     }
-     
+
     public void oncapture(CaptureEvent captureEvent) {
         filename = getRandomImageName();
         byte[] data = captureEvent.getData();
-         
+
         ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-        String newPathName = servletContext.getRealPath("") + File.separator + "resources" +
-                                    File.separator + "images" + File.separator + "photocam" ;
+        String newPathName = servletContext.getRealPath("") + File.separator + "resources"
+                + File.separator + "images" + File.separator + "photocam";
         //create the path if it doesn't exist
         (new File(newPathName)).mkdirs();
         System.out.println(newPathName);
-        String pathAndNameFile=newPathName+ File.separator+userManager.getLoggedUser().getEmail() + "_photocam.jpeg";
+        String pathAndNameFile = newPathName + File.separator + userManager.getLoggedUser().getEmail() + "_photocam.jpeg";
         FileImageOutputStream imageOutput;
         try {
             imageOutput = new FileImageOutputStream(new File(pathAndNameFile));
             imageOutput.write(data, 0, data.length);
             imageOutput.close();
-        }
-        catch(IOException e) {
+        } catch (IOException e) {
             throw new FacesException("Error in writing captured image.", e);
         }
     }
 
     /**
      * Says if the photocam file exists (it controls the current user)
-     * @return 
+     *
+     * @return
      */
-    public boolean existsFile(){
+    public boolean existsFile() {
         ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-        String newPathName = servletContext.getRealPath("") + File.separator + "resources" +
-                                    File.separator + "images" + File.separator + "photocam" +File.separator+userManager.getLoggedUser().getEmail() + "_photocam.jpeg";
-        File f=new File(newPathName);
+        String newPathName = servletContext.getRealPath("") + File.separator + "resources"
+                + File.separator + "images" + File.separator + "photocam" + File.separator + userManager.getLoggedUser().getEmail() + "_photocam.jpeg";
+        File f = new File(newPathName);
         return f.exists();
     }
 }
