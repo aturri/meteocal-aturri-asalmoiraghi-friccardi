@@ -46,14 +46,14 @@
                     <p:outputLabel for="name" value="Name" />
                     <p:inputText id="name"  required="true" value="#{settingsBean.user.name}"
                                  requiredMessage="Insert your name">
-                        <p:ajax update="namemsg"/>
+                        <p:ajax update="namemsg" global="false"/>
                     </p:inputText>
                     <p:message id="namemsg" for="name" />
 
                     <p:outputLabel for="surname" value="Surname" />
                     <p:inputText id="surname" value="#{settingsBean.user.surname}" required="true"
                                  requiredMessage="Insert your last name">
-                        <p:ajax update="surnamemsg"/>
+                        <p:ajax update="surnamemsg"  global="false"/>
                     </p:inputText>
                     <p:message id="surnamemsg" for="surname" />
 
@@ -63,26 +63,26 @@
                                      requiredMessage="Select your gender">
                         <f:selectItem itemLabel="Man" itemValue="M" />
                         <f:selectItem itemLabel="Woman" itemValue="F" />
-                        <p:ajax update="gendermsg"/>
+                        <p:ajax update="gendermsg"  global="false"/>
                     </p:selectOneMenu>                    
                     <p:message id="gendermsg" for="gender" /> 
 
                     <h:outputLabel for="birthdate" value="Date of birth" />
-                    <p:calendar id="birthdate" value="#{settingsBean.user.birthDate}" navigator="true" 
+                    <p:calendar readonlyInput="true" id="birthdate" value="#{settingsBean.user.birthDate}" navigator="true" 
                                 maxdate="#{registrationBean.today}" yearRange='1900:c'>
-                        <p:ajax update="birthdatemsg"/>                       
+                        <p:ajax update="birthdatemsg" global="false"/>                       
                     </p:calendar>
                     <p:message id="birthdatemsg" for="birthdate" />
 
                     <p:outputLabel for="address" value="Address" />
                     <p:inputText id="address" value="#{settingsBean.user.address}" required="false">
-                        <p:ajax update="addressmsg"/>
+                        <p:ajax update="addressmsg" global="false"/>
                     </p:inputText>
                     <p:message id="addressmsg" for="address" />    
 
                     <p:outputLabel for="city" value="City"/>
                     <p:inputText id="city" value="#{settingsBean.user.city}" required="false">
-                        <p:ajax update="citymsg"/>
+                        <p:ajax update="citymsg" global="false"/>
                     </p:inputText>
                     <p:message id="citymsg" for="city" />                        
                 </h:panelGrid>
@@ -105,7 +105,7 @@
                                      style="width: 210px" required="true" requiredMessage="Select the calendar's visibility">
                         <f:selectItem itemLabel="Public" itemValue="false" />
                         <f:selectItem itemLabel="Private" itemValue="true" />
-                        <p:ajax update="visibilitymsg"/>
+                        <p:ajax update="visibilitymsg" global="false"/>
                     </p:selectOneMenu>                    
                     <p:message id="visibilitymsg" for="visibility" />
                 </h:panelGrid>
@@ -139,7 +139,7 @@
                 <div style="text-align: center">
                     <p:graphicImage value="#{settingsBean.picture}" styleClass="userImgBig" />
                 </div>
-                <p:fileUpload value="#{settingsBean.uploadedPicture}"  mode="simple"/>
+                <p:fileUpload value="#{settingsBean.uploadedPicture}"  mode="simple"  update="@form"/>
                 <h:commandButton value="Upload Picture" action="#{settingsBean.importPicture()}" />
                 <p:growl for="PictureMessages"/>
             </p:panel>
@@ -151,7 +151,7 @@
             <p:panel header="Export your data form">
                 <h:panelGrid columns="2" id="exportGrid">
                     <p:outputLabel value="Export" />
-                    <p:commandButton value="Download" ajax="false">
+                    <p:commandButton value="Download" ajax="false" update="@form">
                         <p:fileDownload value="#{settingsBean.file}" />
                     </p:commandButton>
                 </h:panelGrid>

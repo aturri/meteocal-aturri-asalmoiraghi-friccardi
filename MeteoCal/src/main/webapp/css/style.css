@@ -56,7 +56,7 @@ hr {
     text-decoration: none;
 }
 #buttons {
-    width: 330px;
+/*    width: 330px;*/
     height: 50px;
     line-height: 50px;
     float: right;
@@ -86,12 +86,12 @@ hr {
     border-radius: 6px;
 }
 #userBubble {
-    height: 45px;
-    width: 165px;
+    /*height: 45px;*/
+    /*width: 165px;*/
     float: right;
     display: block;
     overflow: hidden;
-    text-overflow: ellipsis;
+    /*text-overflow: ellipsis;*/
     white-space: nowrap;
     font-size: 17px;
     cursor: pointer;
