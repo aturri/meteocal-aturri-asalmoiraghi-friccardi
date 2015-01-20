@@ -340,14 +340,12 @@ public class SettingsBean {
     
     public String importPictureFromWebcam(){
         System.out.println("trying to save");
-        byte[] buf=null;
+        User currentUser=userManager.getLoggedUser();
         try {
-             buf=Utility.getBytesFromFile(this.pathOfPhotocam() + File.separator + userManager.getLoggedUser().getEmail() + "_photocam.jpeg");
+             currentUser.setPicture(Utility.getBytesFromFile(this.pathOfPhotocam() + File.separator + userManager.getLoggedUser().getEmail() + "_photocam.jpeg"));
         } catch (IOException ex) {
             Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
         }
-        User currentUser=userManager.getLoggedUser();
-        currentUser.setPicture(buf);
         currentUser.setPictureType("image/jpg");
         userManager.update(currentUser);
         importExportController.controlAndDeleteFile(new File(this.pathOfPhotocam() + File.separator + userManager.getLoggedUser().getEmail() + "_photocam.jpeg"));

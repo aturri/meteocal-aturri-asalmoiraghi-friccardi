@@ -5,7 +5,6 @@
  */
 package it.polimi.meteocal.entity;
 
-import it.polimi.meteocal.boundary.MessageBean;
 import it.polimi.meteocal.utils.DateUtils;
 import java.io.Serializable;
 import java.util.Date;
@@ -158,7 +157,7 @@ public class Event implements Serializable {
      * @param beginDate date to be set
      */
     public void setBeginDateAndControl(Date beginDate) {
-        if(this.beginDate.before(DateUtils.getToday())){
+        if(beginDate.before(DateUtils.getToday())){
             this.beginDate = DateUtils.getToday();
         }else{
             this.beginDate = beginDate;
