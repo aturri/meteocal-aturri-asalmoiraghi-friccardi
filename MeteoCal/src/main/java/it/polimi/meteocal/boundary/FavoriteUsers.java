@@ -55,6 +55,7 @@ public class FavoriteUsers {
             loggedUser.getContacts().remove(y);
         }
         um.update(loggedUser);
+        MessageBean.addInfo("contactsMessage","Users removed from favorites");
         return "";
     }
 

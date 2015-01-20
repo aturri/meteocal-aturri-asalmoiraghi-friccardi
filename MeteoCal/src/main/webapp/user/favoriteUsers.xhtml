@@ -1,27 +1,41 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <h:head>
-    </h:head>
-    <h:body>
-        <ui:composition template="/template/main.xhtml">
-            <ui:define name="title">Contacts</ui:define>
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    template="/template/mainOneColumn.xhtml">
 
-            <ui:define name="main">
-                <div id="mainContent">
-                    <h:form>
-                        Favorite user
-                        <p:selectManyCheckbox id="basic" value="#{favoriteUsers.selectedUsers}" layout="grid" columns="1">
-                            <f:selectItems value="#{userBean.loggedUser.contacts}" var="contact" itemLabel="#{contact.name} #{contact.surname}     #{contact.email}" itemValue="#{contact.email}" />                
-                        </p:selectManyCheckbox>
-                        <p:commandButton id="btnRegister" value="Delete" action="#{favoriteUsers.deleteFavoriteUsers()}" update="@form" />
-                    </h:form>    
-                </div>
-            </ui:define>
-        </ui:composition>
-    </h:body>
-</html>
+    <ui:define name="title">Contacts</ui:define>
+
+    <ui:define name="left">
+        <!--        <ui:include src="/user/loggedUserDetail.xhtml" />-->
+        <ui:include src="/user/contacts.xhtml" />
+        <p:separator/>
+        <ui:include src="/user/pendingInvitations.xhtml" />              
+    </ui:define>
+
+    <ui:define name="main">
+        <div id="mainContent">
+            <p:growl id="favoritesGrowl" for="contactsMessage" />
+            <p:panel>
+                <f:facet name="header">
+                    <div>
+                        Manage Favorites Users
+                        <h:graphicImage library="images/icon" name="users.png" class="iconContacts"/>
+                        <div class="searchBubblePanel">#{userBean.loggedUser.contacts.size()}</div>
+                    </div>
+                </f:facet>
+                <h:form>
+                    <p:selectManyCheckbox id="basic" value="#{favoriteUsers.selectedUsers}" layout="grid" columns="1">
+                        <f:selectItems value="#{userBean.contacts}" var="contact" 
+                                       itemLabel="#{contact.name} #{contact.surname} (#{contact.email})" 
+                                       itemValue="#{contact.email}" />                
+                    </p:selectManyCheckbox>
+                    <p:commandButton id="btnRegister" value="Remove from favorites" action="#{favoriteUsers.deleteFavoriteUsers()}" 
+                                     update="@form :userContacts :favoritesGrowl" />
+                </h:form>
+            </p:panel>
+        </div>
+    </ui:define>
+</ui:composition>
