@@ -19,14 +19,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.FacesException;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.imageio.stream.FileImageOutputStream;
 import javax.inject.Inject;
@@ -59,8 +57,6 @@ public class SettingsBean{
     private DefaultStreamedContent exportedFile;
     private UploadedFile uploadedFile;
     private UploadedFile uploadedPicture;
-    private StreamedContent picture;
-
     
     public SettingsBean() {
     }
@@ -270,17 +266,10 @@ public class SettingsBean{
     }
 
     /**
-     * @return the picture
+     * @return the picture of the logged User
      */
     public StreamedContent getPicture() {        
         return Utility.getPictureFromUser(userManager.getLoggedUser());
-    }
-
-    /**
-     * @param picture the picture to set
-     */
-    public void setPicture(StreamedContent picture) {
-        this.picture = picture;
     }
     
     

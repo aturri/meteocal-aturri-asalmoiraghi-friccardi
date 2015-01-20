@@ -127,36 +127,25 @@ public class ImportExportController {
     }
     
     /**
-     * Useful to move the uploaded file into the common file folder (common for import/export)
+     * Useful to move the uploaded file into the common file folder (common for import/export).
+     * NB: inputStream won't be close in this function.
      * @param filename destination file name (or pathname)
      * @param inputStream stream of the just uploaded file
      */
     public void saveUploadedFileIntoTheCorrectFolder(String filename, InputStream inputStream){
-        OutputStream outputStream=null;
         try {
-            outputStream = new FileOutputStream(filename);
-            byte[] buffer = new byte[4096];          
-            int bytesRead;  
-            while(true) {                          
-                bytesRead = inputStream.read(buffer);  
-                if(bytesRead > 0) {  
-                    outputStream.write(buffer, 0, bytesRead);  
-                }else {  
-                    break;  
-                }                         
+            try (OutputStream outputStream = new FileOutputStream(filename)) {
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while(0<=(bytesRead = inputStream.read(buffer))) {
+                    outputStream.write(buffer, 0, bytesRead);                         
+                }
+                outputStream.flush();
             }
-            outputStream.flush();
-            inputStream.close();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                outputStream.close();
-            } catch (IOException ex) {
-                Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
     }
     
