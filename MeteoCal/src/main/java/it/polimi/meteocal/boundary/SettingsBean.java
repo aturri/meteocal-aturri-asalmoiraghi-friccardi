@@ -296,14 +296,11 @@ public class SettingsBean{
     public void oncapture(CaptureEvent captureEvent) {
         filename = getRandomImageName();
         byte[] data = captureEvent.getData();
-         
-        ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-        String newPathName = servletContext.getRealPath("") + File.separator + "resources" +
-                                    File.separator + "images" + File.separator + "photocam" ;
+        String path=this.pathOfPhotocam();
         //create the path if it doesn't exist
-        (new File(newPathName)).mkdirs();
-        System.out.println(newPathName);
-        String pathAndNameFile=newPathName+ File.separator+userManager.getLoggedUser().getEmail() + "_photocam.jpeg";
+        (new File(path)).mkdirs();
+        System.out.println(path);
+        String pathAndNameFile=path+ File.separator+userManager.getLoggedUser().getEmail() + "_photocam.jpeg";
         FileImageOutputStream imageOutput;
         try {
             imageOutput = new FileImageOutputStream(new File(pathAndNameFile));
@@ -325,5 +322,13 @@ public class SettingsBean{
                                     File.separator + "images" + File.separator + "photocam" +File.separator+userManager.getLoggedUser().getEmail() + "_photocam.jpeg";
         File f=new File(newPathName);
         return f.exists();
+    }
+    
+    public String pathOfPhotocam(){
+        ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+        String newPathName = servletContext.getRealPath("") + File.separator +".."+File.separator+".."+File.separator+ 
+                                "src"+File.separator+"main"+File.separator+"webapp"+File.separator+"resources" +
+                                File.separator + "images" + File.separator + "photocam" ;
+        return newPathName;
     }
 }

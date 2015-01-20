@@ -144,7 +144,16 @@
                 <p:growl for="PictureMessages"/>
             </p:panel>
         </h:form>
-
+        <h:form class='settingsPanel'>        
+            <h:panelGrid columns="3" cellpadding="5">
+                <p:photoCam widgetVar="pc" listener="#{settingsBean.oncapture}" update="photooo" />
+                <p:commandButton type="button" value="Capture" onclick="PF('pc').capture()"/>
+                <p:outputPanel id="photooo">
+                    <p:graphicImage name="images/photocam/#{userBean.loggedUser.email}_photocam.jpeg" rendered="#{settingsBean.existsFile()}"/>
+                </p:outputPanel>
+            </h:panelGrid>
+        </h:form>
+        
         <p:separator/>
 
         <h:form class="settingsPanel exportPanel">
