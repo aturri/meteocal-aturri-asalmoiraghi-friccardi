@@ -7,6 +7,7 @@ package it.polimi.meteocal.utils;
 
 import it.polimi.meteocal.boundary.RecoverPasswordBean;
 import it.polimi.meteocal.entity.User;
+import it.polimi.meteocal.exception.InvalidArgumentException;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -78,9 +79,12 @@ public class Utility {
         }
         File f=new File(filename);
         int dim=(int) f.length();
-        InputStream stream=new FileInputStream(filename);
-        byte[] b = new byte[dim];
-        stream.read(b, 0, dim);
+        byte[] b;
+        try (InputStream stream = new FileInputStream(filename)) {
+            b = new byte[dim];
+            stream.read(b, 0, dim);
+            stream.close();
+        }
         return b;
     }
     
@@ -107,5 +111,18 @@ public class Utility {
             picture = new DefaultStreamedContent(new ByteArrayInputStream(user.getPicture()),user.getPictureType());
         }
         return picture;
+    }
+    
+    /**
+     * Return the value of the corresponding key in URL.
+     * E.g. meteocal.it/home.html?user=000012 if i'll pass "user" returns the string "000012"
+     * @param key 
+     * @return the corresponding value
+     */
+    public static String getValueFromURL(String key){
+        if(key!=null){
+            return FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get(key);
+        }
+        throw new InvalidArgumentException();
     }
 }

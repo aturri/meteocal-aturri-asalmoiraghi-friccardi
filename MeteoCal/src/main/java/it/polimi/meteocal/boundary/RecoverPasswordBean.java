@@ -10,16 +10,11 @@ import it.polimi.meteocal.control.MailController;
 import it.polimi.meteocal.control.NavigationBean;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.UserManager;
-import java.io.UnsupportedEncodingException;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import it.polimi.meteocal.utils.Utility;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
-import javax.mail.MessagingException;
 
 /**
  *
@@ -67,11 +62,8 @@ public class RecoverPasswordBean {
      * @return the destination page
      */
     public String setNewPassword(){
-        Map<String, String> params =FacesContext.getCurrentInstance().
-                   getExternalContext().getRequestParameterMap();
-        String codeFromEmail = params.get("code");
-        String emailFromEmail=params.get("email");
-        System.out.println(""+ params.keySet());
+        String codeFromEmail = Utility.getValueFromURL("code");
+        String emailFromEmail=Utility.getValueFromURL("email");
 
         //verify that the user exists
         if(!userManager.existsUser(emailFromEmail)){
@@ -99,13 +91,12 @@ public class RecoverPasswordBean {
     }
 
     /**
-     * Get email From "GET" paramenter (if class field are not initializated) or from the class field
+     * Get email From "GET" parameter (if class field are not null) or from the class field
      * @return the email
      */
     public String getEmail() {
         if(this.email==null){
-            Map<String, String> params =FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-            String emailFromEmail = params.get("email");
+            String emailFromEmail = Utility.getValueFromURL("email");
             if(emailFromEmail!=null){
                 this.email=emailFromEmail;
             }
@@ -155,7 +146,7 @@ public class RecoverPasswordBean {
      */
     public String getCode() {
         if(this.code==null){
-            String codeFromEmail = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("code");
+            String codeFromEmail = Utility.getValueFromURL("code");
             if(codeFromEmail==null){
             } else {
                 this.code=codeFromEmail;
