@@ -44,7 +44,7 @@ import org.xml.sax.SAXException;
 @Stateless
 public class ImportExportController {
 
-    private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy-M-d HH:mm zzz");
+    private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm zzz");
 
     @Inject
     EventController eventController;

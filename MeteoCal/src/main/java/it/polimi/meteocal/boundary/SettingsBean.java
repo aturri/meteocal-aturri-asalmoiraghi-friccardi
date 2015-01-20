@@ -297,12 +297,14 @@ public class SettingsBean {
         return filename;
     }
 
+    //To improve the update, we could use a number to identify the attempt of the user in shotting photo
     public void oncapture(CaptureEvent captureEvent) {
-        filename = getRandomImageName();
+        File f=new File(this.pathOfPhotocam()+File.separator+userManager.getLoggedUser().getEmail() + "_photocam.jpeg");
+        f.delete();
+        
         byte[] data = captureEvent.getData();
         String path=this.pathOfPhotocam();
-        //create the path if it doesn't exist
-        (new File(path)).mkdirs();
+        
         System.out.println(path);
         String pathAndNameFile=path+ File.separator+userManager.getLoggedUser().getEmail() + "_photocam.jpeg";
         FileImageOutputStream imageOutput;
@@ -334,5 +336,21 @@ public class SettingsBean {
                                 "src"+File.separator+"main"+File.separator+"webapp"+File.separator+"resources" +
                                 File.separator + "images" + File.separator + "photocam" ;
         return newPathName;
+    }
+    
+    public String importPictureFromWebcam(){
+        System.out.println("trying to save");
+        byte[] buf=null;
+        try {
+             buf=Utility.getBytesFromFile(this.pathOfPhotocam() + File.separator + userManager.getLoggedUser().getEmail() + "_photocam.jpeg");
+        } catch (IOException ex) {
+            Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        User currentUser=userManager.getLoggedUser();
+        currentUser.setPicture(buf);
+        currentUser.setPictureType("image/jpg");
+        userManager.update(currentUser);
+        importExportController.controlAndDeleteFile(new File(this.pathOfPhotocam() + File.separator + userManager.getLoggedUser().getEmail() + "_photocam.jpeg"));
+        return "";
     }
 }

@@ -62,7 +62,7 @@ public class EventBean implements Serializable{
             this.setEventByParam();
         }else if(this.event==null){
             this.event=new Event();
-            this.event.setBeginDate(DateUtils.getToday());
+            this.event.setBeginDateAndControl(DateUtils.getToday());
         }
         
         invitedUsersList = new ArrayList<>();

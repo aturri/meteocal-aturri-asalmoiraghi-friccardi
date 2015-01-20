@@ -151,6 +151,10 @@
                 <p:outputPanel id="photooo">
                     <p:graphicImage name="images/photocam/#{userBean.loggedUser.email}_photocam.jpeg" rendered="#{settingsBean.existsFile()}"/>
                 </p:outputPanel>
+                    
+                <p:commandLink id="ajax" rendered="#{settingsBean.existsFile()}" actionListener="#{settingsBean.importPictureFromWebcam()}">
+                    <h:outputText value="Conferma" />
+                </p:commandLink>
             </h:panelGrid>
         </h:form>
         
