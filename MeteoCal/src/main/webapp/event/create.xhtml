@@ -35,8 +35,7 @@
                                 <p:calendar readonlyInput="true"  id="start" pattern="MM/dd/yyyy HH:mm" value="#{eventBean.event.beginDate}" 
                                             stepMinute="15" navigator="true" mindate="#{eventBean.today}" required="true"
                                             showButtonPanel="true" >
-                                    <p:ajax event="dateSelect" update="startMsg end weather growl" process="start city"/>                       
-                                    <p:ajax event="blur" update="startMsg end weather growl" process="start city"/>                       
+                                    <p:ajax event="dateSelect" update="startMsg end weather growl weatherMsg" process="start city"/>                       
                                 </p:calendar>
                                 <p:message id="startMsg" for="start" />
 
@@ -46,7 +45,6 @@
                                             stepMinute="15" navigator="true" mindate="#{eventBean.event.minEndDate}" 
                                             required="true" showButtonPanel="true">
                                     <p:ajax event="dateSelect" process="start end city"/>   
-                                    <p:ajax event="blur" process="start end city"/>   
                                 </p:calendar>
                                 <p:message id="endmsg" for="end" />
 
@@ -58,7 +56,7 @@
 
                                 <p:outputLabel for="city" value="City"/>
                                 <p:inputText id="city" value="#{eventBean.event.city}" required="false" maxlength="160">
-                                    <p:ajax update="cityMsg weather growl" process="start end city"/>
+                                    <p:ajax update="cityMsg weather growl weatherMsg" process="start end city"/>
                                 </p:inputText>
                                 <p:message id="cityMsg" for="city" />
 
@@ -67,7 +65,7 @@
                                                deferred="true" style="width: 210px;">
                                     #{eventBean.handleWeather()}
                                 </p:outputPanel>
-                                <p:message id="weatherMsg" for="weather" />
+                                <p:message id="weatherMsg" for="weather">#{eventBean.handleBadWeather()}</p:message>
 
                                 <p:outputLabel for="locationInfo" value="Location addtitional info" />
                                 <p:inputTextarea cols="23" id="locationInfo" value="#{eventBean.event.locationInfo}" required="false"

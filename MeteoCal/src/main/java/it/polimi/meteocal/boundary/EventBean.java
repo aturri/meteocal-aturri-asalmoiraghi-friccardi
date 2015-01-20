@@ -376,7 +376,21 @@ public class EventBean implements Serializable{
                         ": "+weather.getWeather()+
                         ", with high of "+Float.toString(weather.getMaxTemp())+
                         "°C and low of "+Float.toString(weather.getMinTemp())+"°C";
-                if(weather.getBad()) {
+                return formattedForecast;
+            } else {
+                return "Not available";
+            }
+        }
+        return "Please insert start date/time and city.";
+    }
+    
+    /**
+     * This method handles requests to search the closest good weather forecasts for the event's begin date/time and city
+     */
+    public void handleBadWeather() {
+        if(this.event.getCity()!=null && this.event.getBeginDate()!=null) {
+            Weather weather = weatherControl.createWeather(this.event.getCity(), this.event.getBeginDate(), false);
+            if(weather!=null && weather.getBad()) {
                     Weather firstGood = this.searchFirstSunnyDay();
                     if(firstGood!=null) {
                         MessageBean.addWarning("growlMsg","There is bad weather for the time and location you chose!\n"
@@ -389,13 +403,8 @@ public class EventBean implements Serializable{
                         MessageBean.addError("growlMsg","There is bad weather for the time and location you chose!\n"
                                 + "Unfortunately MeteoCal did't find a close good day :(");
                     }
-                }
-                return formattedForecast;
-            } else {
-                return "Not available";
             }
         }
-        return "Please insert start date/time and city.";
     }
     
 //    public String getEventWeather(){
