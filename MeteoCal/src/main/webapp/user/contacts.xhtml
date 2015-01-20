@@ -5,7 +5,7 @@
     xmlns:p="http://primefaces.org/ui"
     xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-    <p:panel styleClass="contactsPanel">
+    <p:panel id="userContacts" styleClass="contactsPanel">
         <f:facet name="header">
             <div>
                 <p:link outcome="#{navigationBean.toContacts()}" value="Favorites"/>
@@ -13,7 +13,7 @@
                     <div class="searchBubblePanel">#{userBean.loggedUser.contacts.size()}</div>
             </div>
         </f:facet>
-        <p:dataList value="#{userBean.loggedUser.contacts}" var="contact" type="none" class="searchData"
+        <p:dataList value="#{userBean.contacts}" var="contact" type="none" class="searchData"
                     emptyMessage="No favorite users">
             <h:link outcome="#{navigationBean.toShowUser(contact.email)}" >
                 <div class="notificationItem">
