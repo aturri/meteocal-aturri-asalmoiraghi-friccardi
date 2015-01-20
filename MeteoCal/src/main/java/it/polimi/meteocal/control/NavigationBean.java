@@ -8,6 +8,10 @@ package it.polimi.meteocal.control;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.UserManager;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
@@ -161,8 +165,13 @@ public class NavigationBean implements Serializable {
      * @return the absolute path to go to the set new password page with correct parameters
      */
     public static String getLinkForResetEmail(User user) {
-        return "http://localhost:8080/MeteoCal/setNewPassword.xhtml?faces-redirect=true&code="
-                + UserManager.getCodeFromUser(user) + "&email="+user.getEmail();
+        try {
+            return "http://localhost:8080/MeteoCal/setNewPassword.xhtml?faces-redirect=true&code="
+                    + UserManager.getCodeFromUser(user) + "&email="+URLEncoder.encode(user.getEmail(), "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(NavigationBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "";
     }
     
     /**
