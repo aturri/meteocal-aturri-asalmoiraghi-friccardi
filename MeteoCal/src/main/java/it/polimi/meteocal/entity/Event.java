@@ -157,6 +157,10 @@ public class Event implements Serializable {
         if(this.endDate == null || (this.endDate != null && !this.endDate.after(beginDate)))
             this.endDate = new Date(beginDate.getTime() + TimeUnit.MINUTES.toMillis(30));
     }
+    
+    public void simpleSetBeginDate(Date beginDate) {
+        this.beginDate = beginDate;
+    }
 
     public Date getEndDate() {
         return endDate;

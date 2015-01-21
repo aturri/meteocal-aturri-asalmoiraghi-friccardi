@@ -190,7 +190,7 @@ public class ImportExportController {
                     event.setCreator(userManager.getLoggedUser());
                     try {
                         event.setCreatedEvent(new Date());
-                        event.setBeginDate(FORMATTER.parse(element.getElementsByTagName("begindate").item(0).getTextContent()));
+                        event.simpleSetBeginDate(FORMATTER.parse(element.getElementsByTagName("begindate").item(0).getTextContent()));
                         event.setEndDate(FORMATTER.parse(element.getElementsByTagName("enddate").item(0).getTextContent()));
                     } catch (ParseException ex) {
                         Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
