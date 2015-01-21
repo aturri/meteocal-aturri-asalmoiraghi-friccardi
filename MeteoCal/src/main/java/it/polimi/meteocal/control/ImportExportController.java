@@ -203,7 +203,9 @@ public class ImportExportController {
                         System.out.println("One or more events can't be imported");
                         return null;
                     }
-                    importedEvents.add(event);
+                    
+                    if(event.getBeginDate().after(new Date()))
+                        importedEvents.add(event);
                 }
             }
             controlAndDeleteFile(xmlFile);
