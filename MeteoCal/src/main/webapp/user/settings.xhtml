@@ -144,19 +144,19 @@
                 <p:growl for="PictureMessages"/>
             </p:panel>
         </h:form>
-        <h:form class='settingsPanel'>        
+        <!--<h:form class='settingsPanel'>        
             <h:panelGrid columns="3" cellpadding="5">
-                <p:photoCam widgetVar="pc" listener="#{settingsBean.oncapture}" update="photooo" />
+                <p:photoCam widgetVar="pc" listener="# {settingsBean.oncapture}" update="photooo" />
                 <p:commandButton type="button" value="Capture" onclick="PF('pc').capture()"/>
                 <p:outputPanel id="photooo">
-                    <p:graphicImage name="images/photocam/#{userBean.loggedUser.email}_photocam.jpeg" rendered="#{settingsBean.existsFile()}"/>
+                    <p:graphicImage name="images/photocam/# {userBean.loggedUser.email}_photocam.jpeg" rendered="# {settingsBean.existsFile()}"/>
                 </p:outputPanel>
                     
-                <p:commandLink id="ajax" rendered="#{settingsBean.existsFile()}" actionListener="#{settingsBean.importPictureFromWebcam()}">
+                <p:commandLink id="ajax" rendered="# {settingsBean.existsFile()}" actionListener="# {settingsBean.importPictureFromWebcam()}">
                     <h:outputText value="Conferma" />
                 </p:commandLink>
             </h:panelGrid>
-        </h:form>
+        </h:form>-->
         
         <p:separator/>
 
