@@ -173,7 +173,9 @@ public class ImportExportController {
                 Node eventNode=eventList.item(i);
                 if (eventNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element element=(Element) eventNode;
-                    System.out.println("Processing event with title : " + element.getElementsByTagName("title").item(0).getTextContent());
+                    Logger.getLogger(SettingsBean.class.getName()).log(Level.INFO, 
+                            "Processing event with title : "+
+                                    element.getElementsByTagName("title").item(0).getTextContent());
                     event.setTitle(element.getElementsByTagName("title").item(0).getTextContent());
                     if(element.getElementsByTagName("description").item(0)!=null){
                         event.setDescription(element.getElementsByTagName("description").item(0).getTextContent());
@@ -193,14 +195,15 @@ public class ImportExportController {
                         event.simpleSetBeginDate(FORMATTER.parse(element.getElementsByTagName("begindate").item(0).getTextContent()));
                         event.setEndDate(FORMATTER.parse(element.getElementsByTagName("enddate").item(0).getTextContent()));
                     } catch (ParseException ex) {
-                        Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SettingsBean.class.getName()).log(Level.INFO, "File with events to import not legal");
+                        return null;
                     }
                     event.setPublicEvent(Boolean.FALSE);
                     event.setIndoor(Utility.stringToBoolean(element.getElementsByTagName("indoor").item(0).getTextContent()));
 
                     if(!eventController.isLegalEvent(event, null)){
                         controlAndDeleteFile(xmlFile);
-                        System.out.println("One or more events can't be imported");
+                        Logger.getLogger(SettingsBean.class.getName()).log(Level.INFO, "One or more events cannot be imported. Import aborted.");
                         return null;
                     }
                     
@@ -210,7 +213,8 @@ public class ImportExportController {
             }
             controlAndDeleteFile(xmlFile);
         } catch (ParserConfigurationException | SAXException | IOException ex) {
-            Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SettingsBean.class.getName()).log(Level.INFO, "File with events to import not legal");
+            return null;
         }
         return importedEvents;
     }

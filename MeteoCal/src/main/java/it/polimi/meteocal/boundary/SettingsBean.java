@@ -68,7 +68,8 @@ public class SettingsBean {
             try {
                 importExportController.saveUploadedFileIntoTheCorrectFolder(currentUser.getEmail() + "_picture.png", uploadedPicture.getInputstream());
             } catch (IOException ex) {
-                Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+                MessageBean.addError("PictureMessages", "Error during picture upload");
+                Logger.getLogger(SettingsBean.class.getName()).log(Level.INFO, "Image not uploaded");
             }
             try {
                 byte[] b = Utility.getBytesFromFile(currentUser.getEmail() + "_picture.png");
@@ -78,11 +79,11 @@ public class SettingsBean {
                 this.importExportController.controlAndDeleteFile(new File(currentUser.getEmail() + "_picture.png"));
                 MessageBean.addInfo("PictureMessages", "Picture correctly changed");
             } catch (FileNotFoundException ex) {
-                Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
-                MessageBean.addWarning("PictureMessages", "Error during picture upload");
+                Logger.getLogger(SettingsBean.class.getName()).log(Level.INFO, "Image not uploaded");
+                MessageBean.addError("PictureMessages", "Error during picture upload");
             } catch (IOException ex) {
-                Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
-                MessageBean.addWarning("PictureMessages", "Error during picture upload");
+                Logger.getLogger(SettingsBean.class.getName()).log(Level.INFO, "Image not uploaded");
+                MessageBean.addError("PictureMessages", "Error during picture upload");
             }
         } else {
             currentUser.setPicture(null);
@@ -109,11 +110,11 @@ public class SettingsBean {
         try {
             importExportController.saveUploadedFileIntoTheCorrectFolder(userManager.getLoggedUser().getEmail() + "_import.xml", this.uploadedFile.getInputstream());
         } catch (IOException ex) {
-            Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
+            MessageBean.addError("ExportMessages","An error occurred while uploading the file!");
         }
         List<Event> importedEvents = this.importExportController.readXmlFile(userManager.getLoggedUser().getEmail() + "_import.xml");
         if (importedEvents == null) {
-            //Message on website that say:"One or more events can't be imported"
+            MessageBean.addError("ExportMessages","One or more events cannot be imported. No event has been imported!");
             return "";
         }
         //Now we can put them into the DB
@@ -124,7 +125,7 @@ public class SettingsBean {
                 Logger.getLogger(SettingsBean.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        //Message that says "All the event are been correctly imported"
+        MessageBean.addInfo("ExportMessages","Events are correctly imported.");
         return "";
     }
 
