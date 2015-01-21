@@ -129,7 +129,7 @@ public class CalendarBean implements Serializable {
             RequestContext.getCurrentInstance().addCallbackParam("pastDate", true);
         else{
             event = new Event();
-            event.setBeginDateAndControl(dateSelected);
+            event.setBeginDate(dateSelected);
             event.setIndoor(Boolean.TRUE);
             scheduleEvent = new DefaultScheduleEvent("", event.getBeginDate(), event.getEndDate(), event);
         }

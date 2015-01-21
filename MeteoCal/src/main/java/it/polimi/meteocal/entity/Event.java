@@ -148,19 +148,10 @@ public class Event implements Serializable {
     }
 
     
-    public void setBeginDate(Date beginDate){
-        this.beginDate=beginDate;
-    }
-    
-    /**
-     * This set the begin date of the event (force today if the date is passed) and set properly the correct minimum EndDate
-     * @param beginDate date to be set
-     */
-    public void setBeginDateAndControl(Date beginDate) {
-        if(beginDate.before(DateUtils.getToday())){
+    public void setBeginDate(Date beginDate) {
+        this.beginDate = beginDate;
+        if(this.beginDate.before(DateUtils.getToday())){
             this.beginDate = DateUtils.getToday();
-        }else{
-            this.beginDate = beginDate;
         }
         //For new event or event with beginDate after endDate, set endDate after 30 minutes when beginDate change
         if(this.endDate == null || (this.endDate != null && !this.endDate.after(beginDate)))
