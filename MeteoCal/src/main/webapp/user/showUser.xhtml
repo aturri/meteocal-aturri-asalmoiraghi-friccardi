@@ -30,14 +30,14 @@
                     <div><i>From:</i> #{calendarBean.event.eventBeginString()}</div> 
                     <div><i>To:</i> #{calendarBean.event.eventEndString()}</div> 
 
-                    <h:link rendered="#{calendarBean.canSeeEventDetails()}" outcome="#{navigationBean.toEventDetailsPage(calendarBean.event.id)}" title="See details...">
+                    <h:link rendered="#{calendarBean.canSeeEventDetails()}" outcome="#{navigationService.toEventDetailsPage(calendarBean.event.id)}" title="See details...">
                         <h:graphicImage id="detailsLink" library="images/icon" name="details.png" class="detailsLink"/>
                     </h:link>
                 </h:panelGrid>
             </p:dialog>    
         </h:form>
 
-        <p:panel styleClass="centredContent" rendered="#{!calendarBean.publicCalendar}">
+        <p:panel styleClass="centredContent" rendered="#{!calendarBean.canShowCalendar()}">
             <div class='divCalendarPrivate'>
                 You can't view the calendar of this user cause the owner set his calendar private.
             </div>

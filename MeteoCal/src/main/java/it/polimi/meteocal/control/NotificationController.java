@@ -5,6 +5,8 @@
  */
 package it.polimi.meteocal.control;
 
+import it.polimi.meteocal.control.kind.KindOfEmail;
+import it.polimi.meteocal.control.kind.KindOfNotification;
 import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.Notification;
 import it.polimi.meteocal.entity.User;
@@ -155,6 +157,13 @@ public class NotificationController {
         }
     }
     
+    /**
+     * This method check the type of notification and return the string of corresponding styleClass.
+     * It can be read / notReadnotification.
+     * The types available are also invite, update, weather notification.
+     * @param notification
+     * @return styleClass of the notification
+     */
     public String getNotificationClass(Notification notification){
         String style;
         if(!notification.getReadByUser())
@@ -169,6 +178,12 @@ public class NotificationController {
         return style + " weatherNotification";
     }
     
+    /**
+     * This method check the type of notification and return the corresponding icon,
+     * for invite, update or weather notification.
+     * @param notification
+     * @return the string of the name of the icon 
+     */
     public String getNotificationIcon(Notification notification){
         if(notification.getType()=='A')
             return "inviteNotification.png";

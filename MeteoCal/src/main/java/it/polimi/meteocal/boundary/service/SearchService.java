@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.polimi.meteocal.boundary;
+package it.polimi.meteocal.boundary.service;
 
+import it.polimi.meteocal.utils.MessageUtility;
 import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.control.SearchController;
@@ -22,7 +23,7 @@ import javax.inject.Named;
  */
 @Named
 @ViewScoped
-public class SearchBean implements Serializable{
+public class SearchService implements Serializable{
     
     @EJB
     SearchController sc;
@@ -37,28 +38,49 @@ public class SearchBean implements Serializable{
         this.users = new ArrayList<>();
     }
     
+    /**
+     * Get the search keywords
+     * @return keyword
+     */
     public String getKeyword() {
         return this.keyword;
     }
     
+    /**
+     * Set the search keywords
+     * @param keyword 
+     */
     public void setKeyword(String keyword) {
         this.keyword = keyword;
     }
     
+    /**
+     * Get the list of events that match the searched keywords
+     * @return list of events
+     */
     public List<Event> getEvents (){
         return this.events;
     }
     
+    /**
+     * Get the list of users that match the searched keywords
+     * @return the list of users
+     */
     public List<User> getUsers (){
         return this.users;
     }
     
+    /**
+     * Do the search of events/users with the keywords.
+     * Notify the user of the number of events/users found.
+     * The search start when the keyword is at least length 3 characters.
+     */
     public void searchKeyword(){
         if(keyword.length()>2){
             this.events = sc.getEvents(keyword);
             this.users = sc.getUsers(keyword);
-            MessageBean.addInfo("resultsMessage","Found " + Integer.toString(users.size()) + " users");
-            MessageBean.addInfo("resultsMessage","Found " + Integer.toString(events.size()) + " events");
+            MessageUtility.addInfo("resultsMessage","Found " + Integer.toString(users.size()) + " users");
+            MessageUtility.addInfo("resultsMessage","Found " + Integer.toString(events.size()) + " events");
         }
         else{
             this.events = new ArrayList<>();

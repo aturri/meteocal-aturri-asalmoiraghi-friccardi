@@ -94,12 +94,12 @@
                             <p:splitButton id="addButton" value="Save" actionListener="#{calendarBean.addEvent}"
                                            oncomplete="PF('myschedule').update();closeDialog(xhr,status,args);"
                                            icon="ui-icon-disk">
-                                <p:menuitem value="Save and Open" action="#{calendarBean.addEventAndGo()}"
+                                <p:menuitem value="Save and Open" action="#{calendarBean.addEvent}"
                                             icon="ui-icon-disk" />
                             </p:splitButton>
                             <p:commandButton id="detailsButton" rendered="#{calendarBean.showDetailsLink()}"
                                              value="Details"
-                                             action="#{navigationBean.redirectToEventDetailsPage(calendarBean.event.id)}"/>
+                                             action="#{navigationService.redirectToEventDetailsPage(calendarBean.event.id)}"/>
                         </h:panelGrid>
 
                         <h:panelGrid id="eventDetails" columns="3" rendered="#{!calendarBean.scheduleEvent.editable}">
@@ -107,7 +107,7 @@
                             <div><i>From:</i> #{calendarBean.event.eventBeginString()}</div> 
                             <div><i>To:</i> #{calendarBean.event.eventEndString()}</div> 
 
-                            <h:link outcome="#{navigationBean.toEventDetailsPage(calendarBean.event.id)}" title="See details...">
+                            <h:link outcome="#{navigationService.toEventDetailsPage(calendarBean.event.id)}" title="See details...">
                                 <h:graphicImage id="detailsLink" library="images/icon" name="details.png" class="detailsLink"/>
                             </h:link>
                         </h:panelGrid>

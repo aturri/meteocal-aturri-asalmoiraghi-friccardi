@@ -5,9 +5,10 @@
  */
 package it.polimi.meteocal.boundary;
 
-import it.polimi.meteocal.control.KindOfEmail;
+import it.polimi.meteocal.utils.MessageUtility;
+import it.polimi.meteocal.control.kind.KindOfEmail;
 import it.polimi.meteocal.control.MailController;
-import it.polimi.meteocal.control.NavigationBean;
+import it.polimi.meteocal.boundary.service.NavigationService;
 import it.polimi.meteocal.entityManager.UserManager;
 import it.polimi.meteocal.entity.User;
 import java.util.Date;
@@ -50,21 +51,21 @@ public class RegistrationBean {
    
     public void handleExistsUser() {
         if(um.existsUser(user.getEmail())) {
-            MessageBean.addWarning("Email already registered");
+            MessageUtility.addWarning("Email already registered");
         }
     }
 
     /**
-     * Function called from the register.xhmlt page. The picture and its type are null
+     * Function called from the register.xhml page. The picture and its type are null
      * @return 
      */
     public String register() {
         try {
             um.save(user);
             mailControl.sendMail(user.getEmail(),KindOfEmail.REGISTRATION,null);
-            return NavigationBean.redirectToLogin();
+            return NavigationService.redirectToLogin();
         }catch (EJBException e){
-            MessageBean.addWarning("Email already registered");
+            MessageUtility.addWarning("Email already registered");
             Logger.getLogger(RegistrationBean.class.getName()).log(Level.SEVERE, null, e);
         }
         return "";

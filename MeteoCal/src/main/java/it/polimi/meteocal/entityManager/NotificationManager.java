@@ -81,9 +81,14 @@ public class NotificationManager {
         return ((Number)query.getSingleResult()).intValue();
     }
 
-    public List<Notification> findNotReadNotificationsByUser(String email) {
-        TypedQuery<Notification> query = em.createQuery("SELECT n FROM Notification n WHERE n.user.email = :param_email AND n.readByUser = false ORDER BY n.id.created DESC", Notification.class).
-                setParameter("param_email", email).setMaxResults(MAX_NOTIF);
-        return query.getResultList();
-    }
+//    /**
+//     * This method 
+//     * @param email
+//     * @return 
+//     */
+//    public List<Notification> findNotReadNotificationsByUser(String email) {
+//        TypedQuery<Notification> query = em.createQuery("SELECT n FROM Notification n WHERE n.user.email = :param_email AND n.readByUser = false ORDER BY n.id.created DESC", Notification.class).
+//                setParameter("param_email", email).setMaxResults(MAX_NOTIF);
+//        return query.getResultList();
+//    }
 }

@@ -27,12 +27,12 @@
                     </div>
                 </f:facet>
                 <h:form>
-                    <p:selectManyCheckbox id="basic" value="#{favoriteUsers.selectedUsers}" layout="grid" columns="1">
+                    <p:selectManyCheckbox id="basic" value="#{favoriteUsersBean.selectedUsers}" layout="grid" columns="1">
                         <f:selectItems value="#{userBean.contacts}" var="contact" 
                                        itemLabel="#{contact.name} #{contact.surname} (#{contact.email})" 
                                        itemValue="#{contact.email}" />                
                     </p:selectManyCheckbox>
-                    <p:commandButton id="btnRegister" value="Remove from favorites" action="#{favoriteUsers.deleteFavoriteUsers()}" 
+                    <p:commandButton id="btnRegister" value="Remove from favorites" action="#{favoriteUsersBean.deleteFavoriteUsers()}" 
                                      update="@form :userContacts :favoritesGrowl" />
                 </h:form>
             </p:panel>

@@ -147,7 +147,13 @@ public class Event implements Serializable {
         return beginDate;
     }
 
-    
+    /**
+     * Check if the beginDate is before today.
+     * if true, set the beginDate to today.
+     * Check also if the endDate is after the beginDate.
+     * If not, set the endDate, 30minutes after the beginDate.
+     * @param beginDate 
+     */
     public void setBeginDate(Date beginDate) {
         this.beginDate = beginDate;
         if(this.beginDate.before(DateUtils.getToday())){
@@ -244,6 +250,11 @@ public class Event implements Serializable {
         return hash;
     }
 
+    /**
+     * Two event are equals if they have the same id
+     * @param obj
+     * @return true if the events are equals
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {

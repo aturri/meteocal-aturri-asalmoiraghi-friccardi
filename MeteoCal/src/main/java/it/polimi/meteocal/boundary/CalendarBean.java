@@ -1,7 +1,8 @@
 package it.polimi.meteocal.boundary;
 
+import it.polimi.meteocal.utils.MessageUtility;
 import it.polimi.meteocal.control.EventController;
-import it.polimi.meteocal.control.NavigationBean;
+import it.polimi.meteocal.boundary.service.NavigationService;
 import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.UserManager;
@@ -21,16 +22,18 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.primefaces.context.RequestContext;
- 
-import org.primefaces.event.ScheduleEntryMoveEvent;
-import org.primefaces.event.ScheduleEntryResizeEvent;
+import org.primefaces.context.RequestContext; 
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
 import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
- 
+
+/**
+ * This bean is used to show the calendar of an user.
+ * If the user is the logged user, he can fast create/edit events also.
+ * @author andrea
+ */
 @Named
 @ViewScoped
 public class CalendarBean implements Serializable {
@@ -60,43 +63,76 @@ public class CalendarBean implements Serializable {
         }
         loadUserEvents();
     }
-     
+    
+    /**
+     * Get the eventModel to load the calendar
+     * @return the eventModel
+     */
     public ScheduleModel getEventModel() {
         return eventModel;
     }
-     
+    
+    /**
+     * Get the current scheduled event
+     * @return the current scheduled event
+     */
     public ScheduleEvent getScheduleEvent() {
         return scheduleEvent;
     }
  
+    /**
+     * Set the current scheduled event
+     * @param event 
+     */
     public void setScheduleEvent(ScheduleEvent event) {
         this.scheduleEvent = event;
     }
     
+    /**
+     * Get the current event
+     * @return the current event
+     */
     public Event getEvent() {
         return event;
     }
  
+    /**
+     * Set the current event
+     * @param event 
+     */
     public void setEvent(Event event) {
         this.event = event;
     }
     
-    public User getUser() {
-        return user;
-    }
-    
+    /**
+     * Check if the calendar is public
+     * @return true if the calendar is public
+     */
     public boolean isPublicCalendar(){
         return !user.getPrivateCalendar();
     }
     
+    /**
+     * Check if the calendar shown is the loggedUser's calendar
+     * @return true if is the loggedUser's calendar
+     */
     public boolean isLoggedUserCalendar(){
         return user.equals(um.getLoggedUser());
     }
     
+    /**
+     * Check if the calendar can be shown.
+     * @return true if is the loggedUser's calendar or the calendar is public
+     */
     public boolean canShowCalendar(){
         return isPublicCalendar() || isLoggedUserCalendar();
     }
-     
+    
+    /**
+     * This method save (if the current scheduleEvent is null) or update an event.
+     * @param actionEvent
+     * @return the link to event details
+     */
     public String addEvent(ActionEvent actionEvent) {
         if(scheduleEvent.getId() == null){
             saveEvent();
@@ -110,17 +146,25 @@ public class CalendarBean implements Serializable {
         scheduleEvent = new DefaultScheduleEvent();
         event = new Event();
         
-        return NavigationBean.redirectToEventDetailsPage(id);
-    }
-    public String addEventAndGo() {
-        return addEvent(null);
+        return NavigationService.redirectToEventDetailsPage(id);
     }
      
+    /**
+     * Set the current scheduled event and the current event to the selected event from the calendar
+     * @param selectEvent 
+     */
     public void onEventSelect(SelectEvent selectEvent) {
         scheduleEvent = (ScheduleEvent) selectEvent.getObject();
         event = (Event) scheduleEvent.getData();
     }
      
+    /**
+     * Create a new event and a scheduled event on the date selected from the calendar.
+     * Check if the date selected from the calendar is allowed (it's a future date).
+     * If ok, create a new event on that date.
+     * If not ok, set a callbackParam "pastDate" to true.
+     * @param selectEvent 
+     */
     public void onDateSelect(SelectEvent selectEvent) {
         Date dateSelected = (Date) selectEvent.getObject();
         if(DateUtils.isToday(dateSelected))
@@ -134,15 +178,11 @@ public class CalendarBean implements Serializable {
             scheduleEvent = new DefaultScheduleEvent("", event.getBeginDate(), event.getEndDate(), event);
         }
     }
-     
-    public void onEventMove(ScheduleEntryMoveEvent movedEvent) {}
-     
-    public void onEventResize(ScheduleEntryResizeEvent resizedEvent) {}
     
     /**
      * Check if the parameter exists
      * @param param
-     * @return 
+     * @return true if the parameter exist
      */
     public boolean existsParam(String param){
         return FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().containsKey(param);
@@ -160,6 +200,13 @@ public class CalendarBean implements Serializable {
         }
     }
 
+    /**
+     * Load the events of the user.
+     * Create a scheduled event for each event loaded.
+     * Set the colors of the scheduled events.
+     * Set if a scheduled event is editable by the user or not.
+     * Add the scheduled event to the event model 
+     */
     private void loadUserEvents() {
         Set<Event> events = this.user.getEvents();
         
@@ -171,16 +218,37 @@ public class CalendarBean implements Serializable {
             }
     }
     
+    /**
+     * Get the title of the event.
+     * Check if the user is participating at the event or the event is public.
+     * If is true, return the original title.
+     * If not, return the string "Occupied"
+     * @param event
+     * @return the title of the event
+     */
     private String getTitle(Event event){
         if(!event.getUsers().contains(um.getLoggedUser()) && !event.getPublicEvent())
             return "Occupied";
         return event.getTitle();
     }
     
+    /**
+     * Check if the event is editable.
+     * Check if the user is the owner of the event and the beginDate of the event is not passed.
+     * @param event
+     * @return true if editable
+     */
     private Boolean isEditable(Event event){
         return event.getCreator().equals(um.getLoggedUser()) && event.getBeginDate().after(DateUtils.getToday());
     }
     
+    /**
+     * Return the styleClass for the event.
+     * Check if is a own event, a participating event, a invited event, a public or private event.
+     * Check also if is a past event, current event or future event.
+     * @param event
+     * @return 
+     */
     private String getEventClassStyle(Event event){
         User loggedUser = um.getLoggedUser();
         String style;
@@ -205,6 +273,9 @@ public class CalendarBean implements Serializable {
         
     }
     
+    /**
+     * Update the current event and notify the result to user.
+     */
     private void updateEvent(){
         Boolean addSuccess = false;            
         String message;
@@ -213,23 +284,26 @@ public class CalendarBean implements Serializable {
             addSuccess = true;
             eventModel.deleteEvent(scheduleEvent);
             eventModel.addEvent(new DefaultScheduleEvent(event.getTitle(), event.getBeginDate(), event.getEndDate(), event));
-            MessageBean.addInfo("calendarMessage","Event succesfully updated.");
+            MessageUtility.addInfo("calendarMessage","Event succesfully updated.");
         } catch (EventOverlapException ex) {
             message = "This event overlaps with an existing one!";
             Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
-            MessageBean.addError("calendarMessage",message);
+            MessageUtility.addError("calendarMessage",message);
         } catch (IllegalInvitedUserException ex) {
             message = "Check the invitation list!";
             Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
-            MessageBean.addError("calendarMessage",message);
+            MessageUtility.addError("calendarMessage",message);
         } catch (IllegalEventDateException ex) {
             message = "End date must be after begin date!";
             Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
-            MessageBean.addError("calendarMessage",message);
+            MessageUtility.addError("calendarMessage",message);
         }
         RequestContext.getCurrentInstance().addCallbackParam("addSuccess", addSuccess);
     }
     
+    /**
+     * Save the new current event and notify the result to user.
+     */
     private void saveEvent() {
         Boolean addSuccess = false;            
         String message;
@@ -237,31 +311,41 @@ public class CalendarBean implements Serializable {
             ec.createEvent(event, null);
             addSuccess = true;
             eventModel.addEvent(new DefaultScheduleEvent(event.getTitle(), event.getBeginDate(), event.getEndDate(), event));
-            MessageBean.addInfo("calendarMessage", "New event succesfully created.");
+            MessageUtility.addInfo("calendarMessage", "New event succesfully created.");
         } catch (EventOverlapException ex) {
             message = "This event overlaps with an existing one!";
             Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
-            MessageBean.addError("calendarMessage",message);
+            MessageUtility.addError("calendarMessage",message);
         } catch (IllegalInvitedUserException ex) {
             message = "Check the invitation list!";
             Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
-            MessageBean.addError("calendarMessage",message);
+            MessageUtility.addError("calendarMessage",message);
         } catch (IllegalEventDateException ex) {
             message = "End date must be after begin date!";
             Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
-            MessageBean.addError("calendarMessage",message);
+            MessageUtility.addError("calendarMessage",message);
         } catch (IllegalArgumentException ex) {
             message = "Unexpected error during creation! Operation cancelled!";
             Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
-            MessageBean.addError("calendarMessage",message);
+            MessageUtility.addError("calendarMessage",message);
         }    
         RequestContext.getCurrentInstance().addCallbackParam("addSuccess", addSuccess);
     }
     
+    /**
+     * Check if it is a new event or an existing event.
+     * If is an existing event return true to show the link to its details page.
+     * @return true if can show the link to event details page
+     */
     public Boolean showDetailsLink(){
         return this.scheduleEvent != null && !"".equals(this.scheduleEvent.getTitle());
     }
     
+    /**
+     * Check if the current user can see the event details of the current event.
+     * Return true if is a public event or the user is participating at the event
+     * @return true if can see the details of the event
+     */
     public Boolean canSeeEventDetails(){
         if(this.event != null)
             return this.event.getPublicEvent() || this.event.getUsers().contains(um.getLoggedUser());

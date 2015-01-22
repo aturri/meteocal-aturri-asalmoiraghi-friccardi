@@ -1,5 +1,7 @@
 package it.polimi.meteocal.control;
 
+import it.polimi.meteocal.control.kind.KindOfEmail;
+import it.polimi.meteocal.boundary.service.NavigationService;
 import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.UserManager;
@@ -157,7 +159,7 @@ public class MailController {
                 break;
             case FORGOTTENPASSWORD:
                 subject=this.subjects.get(KindOfEmail.FORGOTTENPASSWORD);
-                message=String.format(this.messages.get(KindOfEmail.FORGOTTENPASSWORD), user.getName(),user.getSurname(),NavigationBean.getLinkForResetEmail(user),NavigationBean.getLinkForResetEmail(user));
+                message=String.format(this.messages.get(KindOfEmail.FORGOTTENPASSWORD), user.getName(),user.getSurname(),NavigationService.getLinkForResetEmail(user),NavigationService.getLinkForResetEmail(user));
                 break;
             case INVITEDTOEVENT:
                 subject=String.format(this.subjects.get(KindOfEmail.INVITEDTOEVENT), event.getTitle());

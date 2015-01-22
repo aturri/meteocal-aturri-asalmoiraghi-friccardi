@@ -228,6 +228,11 @@ public class User implements Serializable {
         return hash;
     }
 
+    /**
+     * Two users are equals if they have the same email
+     * @param obj
+     * @return true if the users are equals
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {

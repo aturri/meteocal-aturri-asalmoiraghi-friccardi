@@ -6,8 +6,8 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core">
     <p:growl id="searchMessages" for="resultsMessage"/>
     <h:form>
-        <p:inputText id="txtSearch" value="#{searchBean.keyword}" required="true" label="Keyword" placeholder="Search">
-            <p:ajax listener="#{searchBean.searchKeyword()}"
+        <p:inputText id="txtSearch" value="#{searchService.keyword}" required="true" label="Keyword" placeholder="Search">
+            <p:ajax listener="#{searchService.searchKeyword()}"
                     update=":searchMessages" event="keyup" onstart="PF('searchResults').show()"/>
         </p:inputText>
 
@@ -17,13 +17,13 @@
                     <f:facet name="title">
                         <h:graphicImage library="images/icon" name="users.png" class="iconSearchTab"/>
                         <p:outputPanel autoUpdate="true">
-                            <div class="searchBubble">#{searchBean.users.size()}</div>
+                            <div class="searchBubble">#{searchService.users.size()}</div>
                         </p:outputPanel>
                     </f:facet>
                     <p:outputPanel autoUpdate="true">
-                        <p:dataList value="#{searchBean.users}" var="usersResult" type="none" class="searchData"
+                        <p:dataList value="#{searchService.users}" var="usersResult" type="none" class="searchData"
                                     emptyMessage="No users found">
-                            <h:link outcome="#{navigationBean.toShowUser(usersResult.email)}" >
+                            <h:link outcome="#{navigationService.toShowUser(usersResult.email)}" >
                                 <div class="notificationItem">
                                     <div style="vertical-align:middle; float:left;">
                                         <p:graphicImage value="#{genericUserBean.picture}" class="userIcon">
@@ -44,13 +44,13 @@
                     <f:facet name="title">
                         <h:graphicImage library="images/icon" name="calendar.png" class="iconSearchTab"/>
                         <p:outputPanel autoUpdate="true">
-                            <div class="searchBubble">#{searchBean.events.size()}</div>
+                            <div class="searchBubble">#{searchService.events.size()}</div>
                         </p:outputPanel>
                     </f:facet>
                     <p:outputPanel autoUpdate="true">
-                        <p:dataList value="#{searchBean.events}" var="eventsResult" type="none" class="searchData"
+                        <p:dataList value="#{searchService.events}" var="eventsResult" type="none" class="searchData"
                                     emptyMessage="No events found">
-                            <h:link outcome="#{navigationBean.toEventDetailsPage(eventsResult.id)}" >
+                            <h:link outcome="#{navigationService.toEventDetailsPage(eventsResult.id)}" >
                                 <div class="notificationItem">
                                     <div style="vertical-align:middle; float:left;">
                                         <h:graphicImage library="images/icon" name="inviteNotification.png" 

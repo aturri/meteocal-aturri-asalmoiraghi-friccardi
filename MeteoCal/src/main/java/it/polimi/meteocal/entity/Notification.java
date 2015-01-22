@@ -86,6 +86,11 @@ public class Notification implements Serializable {
         this.readByUser = readByUser;
     }
     
+    /**
+     * Two notification are equals if they have the same id
+     * @param obj
+     * @return true if notifications are equals
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {

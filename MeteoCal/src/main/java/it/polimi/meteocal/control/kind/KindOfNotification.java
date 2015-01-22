@@ -1,4 +1,4 @@
-package it.polimi.meteocal.control;
+package it.polimi.meteocal.control.kind;
 
 /**
  * This ENUM contains the DEFAULT kind of notification used in MeteoCal 

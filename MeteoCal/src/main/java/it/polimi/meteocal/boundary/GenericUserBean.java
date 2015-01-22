@@ -1,5 +1,6 @@
 package it.polimi.meteocal.boundary;
 
+import it.polimi.meteocal.utils.MessageUtility;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.UserManager;
 import it.polimi.meteocal.utils.DateUtils;
@@ -65,12 +66,17 @@ public class GenericUserBean {
     }
 
     /**
+     * Return the current loaded user
      * @return the user
      */
     public User getUser() {
         return user;
     }
     
+    /**
+     * Return the formatted MM/DD/YYYY birthdate of the current user
+     * @return formatted birthdate
+     */
     public String getBirthdateFormatted(){
         Date userBirth = user.getBirthDate();
         if(userBirth!=null)
@@ -79,6 +85,7 @@ public class GenericUserBean {
     }
 
     /**
+     * Set the current user
      * @param user the user to set
      */
     public void setUser(User user) {
@@ -86,6 +93,7 @@ public class GenericUserBean {
     }
     
      /**
+      * Get the picture of the current user
      * @return the picture
      */
     public StreamedContent getPicture() {        
@@ -93,7 +101,7 @@ public class GenericUserBean {
     }
     
     /**
-     * This method adds a user as a contact
+     * This method adds the current user to the loggedUser's favorites.
      */
     public void addToFavorite(){
         User loggedUser=userManager.getLoggedUser();
@@ -101,12 +109,12 @@ public class GenericUserBean {
                 && !loggedUser.getContacts().contains(user)) {
             loggedUser.getContacts().add(user);
             userManager.update(loggedUser);  
-            MessageBean.addInfo("contactsMessage","User added to favorites");
+            MessageUtility.addInfo("contactsMessage","User added to favorites");
         }
     }
     
     /**
-     * This method remove a user as a contact
+     * This method remove the current user from the loggedUser's favorites.
      */
     public void removeFromFavorite(){
         User loggedUser=userManager.getLoggedUser();
@@ -114,7 +122,7 @@ public class GenericUserBean {
                 && loggedUser.getContacts().contains(user)) {
             loggedUser.getContacts().remove(user);
             userManager.update(loggedUser);  
-            MessageBean.addInfo("contactsMessage","User removed from favorites");
+            MessageUtility.addInfo("contactsMessage","User removed from favorites");
         }
     }
     

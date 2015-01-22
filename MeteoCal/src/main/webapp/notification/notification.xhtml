@@ -5,9 +5,10 @@
     xmlns:p="http://primefaces.org/ui"
     xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-    <p:growl for="notifyMessage" autoUpdate="true" sticky="true"/>
+    
 
     <h:form id="notificationForm">
+        <p:growl for="notifyMessage"  sticky="true"/>
         <panel id="notificationPanel">
             <div class="notificationButtonDiv">
                 <h:graphicImage id="notificationButton" library="images/icon" name="notification.png" class="notificationButton">
@@ -25,7 +26,7 @@
                         onShow="PF('pollNotification').stop();"
                         onHide="PF('pollNotification').start();">
             <p:dataScroller value="#{notificationService.notifications}" var="notification" chunkSize="10" class="searchData">
-                <h:link outcome="#{navigationBean.toEventDetailsPage(notification.event.id)}" >
+                <h:link outcome="#{navigationService.toEventDetailsPage(notification.event.id)}" >
                     <div class="notificationItem #{notificationService.getNotificationClass(notification)}">
                         <h:graphicImage library="images/icon" name="#{notificationService.getNotificationIcon(notification)}" 
                                         class="notificationIcon"/>
@@ -38,7 +39,7 @@
 
         <p:poll listener="#{notificationService.checkNewNotifications()}"
                 interval="6" widgetVar="pollNotification"
-                autoStart="true" update="@parent"
+                autoStart="true" update="@parent @(.pendingsPanel)"
                 process="@this" global="false" ignoreAutoUpdate="true"/>
     </h:form>
 </ui:composition>

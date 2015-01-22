@@ -5,6 +5,7 @@
  */
 package it.polimi.meteocal.boundary;
 
+import it.polimi.meteocal.utils.MessageUtility;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.UserManager;
 import java.util.ArrayList;
@@ -20,19 +21,13 @@ import javax.enterprise.context.RequestScoped;
  */
 @Named
 @RequestScoped
-public class FavoriteUsers {
+public class FavoriteUsersBean {
 
     @EJB
     UserManager um;
     
     private String[] selectedUsers; 
-    private List<String> favoriteUsers=new ArrayList<String>();
-    /**
-     * Creates a new instance of FavoriteUsers
-     */
-    public FavoriteUsers() {
-    }
-    
+    private final List<String> favoriteUsers=new ArrayList<>();
     
     @PostConstruct
     public void init() {
@@ -55,11 +50,12 @@ public class FavoriteUsers {
             loggedUser.getContacts().remove(y);
         }
         um.update(loggedUser);
-        MessageBean.addInfo("contactsMessage","Users removed from favorites");
+        MessageUtility.addInfo("contactsMessage","Users removed from favorites");
         return "";
     }
 
     /**
+     * Get the selected user
      * @return the selectedUsers
      */
     public String[] getSelectedUsers() {
@@ -67,13 +63,10 @@ public class FavoriteUsers {
     }
 
     /**
+     * Set the selected users by the email
      * @param selectedUsers the selectedUsers to set
      */
     public void setSelectedUsers(String[] selectedUsers) {
         this.selectedUsers = selectedUsers;
     }
-
-    
-    
-    
 }

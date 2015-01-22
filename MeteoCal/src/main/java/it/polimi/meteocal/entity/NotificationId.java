@@ -49,6 +49,11 @@ public class NotificationId implements Serializable {
         this.eventId = eventId;
     }
 
+    /**
+     * Two notificationId are equals if they have same userId, eventId and created time
+     * @param obj
+     * @return true if the ids are equals
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {

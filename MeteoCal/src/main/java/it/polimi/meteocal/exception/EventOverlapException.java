@@ -6,7 +6,7 @@
 package it.polimi.meteocal.exception;
 
 /**
- *
+ *This exception is thrown when an event is in conflict with an other event because they overlap
  * @author Andrea
  */
 public class EventOverlapException extends Exception {

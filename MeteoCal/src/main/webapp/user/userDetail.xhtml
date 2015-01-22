@@ -7,7 +7,7 @@
     <p:panel>
         <f:facet name="header">
             <h:form id="addToContactForm">
-                #{genericUserBean.user.name} #{calendarBean.user.surname}
+                #{genericUserBean.user.name} #{genericUserBean.user.surname}
                 <h:graphicImage library="images/icon" name="add.png" class="addUserIcon"
                                 title="Add user to favorites" rendered="#{!genericUserBean.isContact()}">
                     <f:param name="email" value="#{param['email']}" />

@@ -34,6 +34,16 @@ public class SearchController {
     
     private List<String> keywords;
 
+    /**
+     * This method split the keywords received and search all events that match at least one keyword.
+     * So, reorder the events found respect the number of match with the keywords.
+     * With more matching, the event is in the first results of the list.
+     * 
+     * NB: The keywords are search in the title and in the city of the event.
+     * A matching in the title is more important for the sort. 
+     * @param keyword
+     * @return sorted list of events
+     */
     public List<Event> getEvents(String keyword) {
         keywords = java.util.Arrays.asList(keyword.split(" "));
         String queryText = "SELECT * FROM Event e WHERE e.publicEvent = 1 AND (";        
@@ -52,6 +62,15 @@ public class SearchController {
         return results;
     }
     
+    /**
+     * This method split the keywords received and search all users that match at least one keyword.
+     * So, reorder the users found respect first results of the list.
+     * 
+     * NB: The keywords are search in the name, surname and email of the city.
+     * A matching in the surname is more important for the sort. 
+     * @param keyword
+     * @return sorted list of users
+     */ 
     public List<User> getUsers(String keyword) {
         keywords = java.util.Arrays.asList(keyword.split(" "));
         String queryText = "SELECT * FROM User u WHERE u.email NOT LIKE '"+um.getLoggedUser().getEmail()+"' AND (";

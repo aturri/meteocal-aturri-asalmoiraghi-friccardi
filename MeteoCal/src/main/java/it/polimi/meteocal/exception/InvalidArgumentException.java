@@ -6,7 +6,7 @@
 package it.polimi.meteocal.exception;
 
 /**
- *
+ *This exception is thrown when there is an invalid argument
  * @author Fabiuz
  */
 public class InvalidArgumentException extends RuntimeException {

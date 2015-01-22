@@ -16,7 +16,7 @@
             <div style="float: left;">
                 <div><h:outputText value="Unexpected error! Something goes wrong." /></div>
                 <div style="margin-top: 10px;"><h:outputText value="Please, return to home." /></div>
-                <p:button outcome="#{navigationBean.toHome()}" value="Go to home"/>
+                <p:button outcome="#{navigationService.toHome()}" value="Go to home"/>
             </div>
             <div style="float: right;">
                 <h:graphicImage library="images/icon" name="error.png" styleClass="errorImg"/>

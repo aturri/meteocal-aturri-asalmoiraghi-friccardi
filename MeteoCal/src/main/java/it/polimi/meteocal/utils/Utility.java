@@ -24,7 +24,7 @@ import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
 /**
- *  This class contains some utility like hashing function
+ *  This class contains some general utility.
  * @author Fabiuz
  */
 public class Utility {

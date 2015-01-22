@@ -95,6 +95,10 @@ public class UserManager {
         return Utility.getHashSHA256(string);
     }
 
+    /**
+     * Get the list of all meteoCla users, except the current loggedUser
+     * @return list of other users
+     */
     public List<User> getOtherUsers() {
         TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.email <> :loggedUser", User.class).
                 setParameter("loggedUser", this.getLoggedUser().getEmail());

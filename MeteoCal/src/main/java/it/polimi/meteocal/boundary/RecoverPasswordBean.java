@@ -5,9 +5,10 @@
  */
 package it.polimi.meteocal.boundary;
 
-import it.polimi.meteocal.control.KindOfEmail;
+import it.polimi.meteocal.utils.MessageUtility;
+import it.polimi.meteocal.control.kind.KindOfEmail;
 import it.polimi.meteocal.control.MailController;
-import it.polimi.meteocal.control.NavigationBean;
+import it.polimi.meteocal.boundary.service.NavigationService;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.UserManager;
 import it.polimi.meteocal.utils.Utility;
@@ -47,14 +48,14 @@ public class RecoverPasswordBean {
      */
     public String recoverPassword(){
         if(!userManager.existsUser(email)){
-            MessageBean.addError("User not found");
+            MessageUtility.addError("User not found");
             return "";
         }
         else{
             this.mailControl.sendMail(email, KindOfEmail.FORGOTTENPASSWORD,null);
-            MessageBean.addInfo("Recover link sent to the specified email");
+            MessageUtility.addInfo("Recover link sent to the specified email");
         }
-        return NavigationBean.redirectToIndex();
+        return NavigationService.redirectToIndex();
     }
     
     /**
@@ -67,19 +68,19 @@ public class RecoverPasswordBean {
 
         //verify that the user exists
         if(!userManager.existsUser(emailFromEmail)){
-            MessageBean.addError("User not found");
+            MessageUtility.addError("User not found");
             return "";
         }
         //verifica che il codice sia corretto
         User user=userManager.findByEmail(emailFromEmail);
         String aux1=UserManager.getCodeFromUser(user);
         if(!aux1.equals(codeFromEmail)){
-            MessageBean.addError("The code is not valid");
+            MessageUtility.addError("The code is not valid");
             return "";
         }
         //verifica che la password siano corrette
         if(!this.password1.equals(this.password2)){
-            MessageBean.addError("password don't match");
+            MessageUtility.addError("password don't match");
             //returns "" implies that the page is the same
             return "";
         }
@@ -87,7 +88,7 @@ public class RecoverPasswordBean {
         //Set the new password
         user.setPassword(password1);
         userManager.update(user);
-        return NavigationBean.redirectToIndex();
+        return NavigationService.redirectToIndex();
     }
 
     /**

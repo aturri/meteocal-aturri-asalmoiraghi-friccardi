@@ -11,10 +11,10 @@
             <ui:define name="title">Login</ui:define>
             <ui:define name="header">
                 <div id="topbar">
-                    <div id="logo"><h:link outcome="/index" value="MeteoCal"/></div>
+                    <div id="logo"><h:link outcome="#{navigationService.toIndex()}" value="MeteoCal"/></div>
                     <div id="buttons">
-                            <p:link outcome="#{navigationBean.toHome()}" value="Login"/>
-                            <p:link outcome="#{navigationBean.toRegister()}" value="Register"/>
+                            <p:link outcome="#{navigationService.toHome()}" value="Login"/>
+                            <p:link outcome="#{navigationService.toRegister()}" value="Register"/>
                     </div>
                 </div>                
             </ui:define>
@@ -34,7 +34,7 @@
                                 <p:messages style="color: red"/>
                             </p:panelGrid>
                         </p:panel>
-                        <p:link outcome="#{navigationBean.toRecoverPassword()}" value="Recover password"/>
+                        <p:link outcome="#{navigationService.toRecoverPassword()}" value="Recover password"/>
                     </h:form>
                 </div>                
             </ui:define>

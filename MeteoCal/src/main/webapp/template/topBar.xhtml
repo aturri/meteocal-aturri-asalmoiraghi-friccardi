@@ -5,18 +5,18 @@
     xmlns:p="http://primefaces.org/ui"
     xmlns:f="http://xmlns.jcp.org/jsf/core">
     <div id="topbar">
-        <div id="logo"><h:link outcome="/user/home" value="MeteoCal"/></div>
+        <div id="logo"><h:link outcome="#{navigationService.toHome()}" value="MeteoCal"/></div>
         <div id="search">
             <ui:include src="/search/search.xhtml" />
         </div>
         <div id="buttons">
-            <p:link outcome="/event/create" value="Create Event"/>
+            <p:link outcome="#{navigationService.toEventCreate()}" value="Create Event"/>
             <p:outputPanel id="userBubble">
                 <p:graphicImage value="#{userBean.picture}" />
                 <span>#{userBean.loggedUser.name} #{userBean.loggedUser.surname}</span>
             </p:outputPanel>
             <p:overlayPanel for="userBubble" class="userPanel">
-                <p:link outcome="/user/settings" value="Settings"/>
+                <p:link outcome="#{navigationService.toSettings()}" value="Settings"/>
                 <h:form>
                     <ui:insert name="paramLogout"></ui:insert>
                     <p:commandLink action="#{loginBean.logout()}" value="Logout"/>

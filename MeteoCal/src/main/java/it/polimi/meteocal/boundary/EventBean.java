@@ -1,12 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.polimi.meteocal.boundary;
 
+import it.polimi.meteocal.utils.MessageUtility;
 import it.polimi.meteocal.control.EventController;
-import it.polimi.meteocal.control.NavigationBean;
+import it.polimi.meteocal.boundary.service.NavigationService;
 import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.Weather;
 import it.polimi.meteocal.entity.User;
@@ -54,7 +50,6 @@ public class EventBean implements Serializable{
     private List<String> invitedUsersList;
     
     private Event event;
-//    private String weatherString;
     
     @PostConstruct
     public void init(){
@@ -95,25 +90,25 @@ public class EventBean implements Serializable{
         } catch (EventOverlapException ex) {
             message = "This event overlaps with an existing one!";
             Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
-            MessageBean.addError("errorMsg",message);
+            MessageUtility.addError("errorMsg",message);
             return "";
         } catch (IllegalInvitedUserException ex) {
             message = "Check the invitation list!";
             Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
-            MessageBean.addError("errorMsg",message);
+            MessageUtility.addError("errorMsg",message);
             return "";
         } catch (IllegalEventDateException ex) {
             message = "End date must be after begin date!";
             Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
-            MessageBean.addError("errorMsg",message);
+            MessageUtility.addError("errorMsg",message);
             return "";
         } catch (IllegalArgumentException ex) {
             message = "Unexpected error during creation! Operation cancelled!";
             Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
-            MessageBean.addError("calendarMessage",message);
+            MessageUtility.addError("calendarMessage",message);
             return "";
         }
-        return NavigationBean.redirectToEventDetailsPage(event.getId().toString());
+        return NavigationService.redirectToEventDetailsPage(event.getId().toString());
     }
     
     /**
@@ -127,20 +122,20 @@ public class EventBean implements Serializable{
         } catch (EventOverlapException ex) {
             message = "This event overlaps with an existing one!";
             Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
-            MessageBean.addError("errorMsg",message);
+            MessageUtility.addError("errorMsg",message);
             return "";
         } catch (IllegalInvitedUserException ex) {
             message = "Check the invitation list!";
             Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
-            MessageBean.addError("errorMsg",message);
+            MessageUtility.addError("errorMsg",message);
             return "";
         } catch (IllegalEventDateException ex) {
             message = "End date must be after begin date!";
             Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
-            MessageBean.addError("errorMsg",message);
+            MessageUtility.addError("errorMsg",message);
             return "";
         }
-        return NavigationBean.redirectToEventDetailsPage(event.getId().toString());
+        return NavigationService.redirectToEventDetailsPage(event.getId().toString());
     }
     
     /**
@@ -149,7 +144,7 @@ public class EventBean implements Serializable{
      */
     public String deleteEvent() {
         eventControl.deleteEvent(event);
-        return NavigationBean.redirectToHome();
+        return NavigationService.redirectToHome();
     }
     
     /**
@@ -163,10 +158,10 @@ public class EventBean implements Serializable{
         } catch (EventOverlapException ex) {
             message = "This event overlaps with an existing one!";
             Logger.getLogger(EventBean.class.getName()).log(Level.FINE, message);
-            MessageBean.addError("errorMsg",message);
+            MessageUtility.addError("errorMsg",message);
             return "";
         }
-        return NavigationBean.redirectToEventDetailsPage(Integer.toString(event.getId()));
+        return NavigationService.redirectToEventDetailsPage(Integer.toString(event.getId()));
     }
     
     /**
@@ -175,7 +170,7 @@ public class EventBean implements Serializable{
      */
     public String refuseInvitation() {
         eventControl.refuseInvitation(event);
-        return NavigationBean.redirectToHome();
+        return NavigationService.redirectToHome();
     }
  
     /**
@@ -184,7 +179,7 @@ public class EventBean implements Serializable{
      */
     public String removeFromMyCalendar() {
         eventControl.removeFromCalendar(event);
-        return NavigationBean.redirectToHome();
+        return NavigationService.redirectToHome();
     }
     
     /**
@@ -194,7 +189,7 @@ public class EventBean implements Serializable{
      */
     public String removeParticipant(String email) {
         eventControl.removeParticipant(event, email);
-        return NavigationBean.redirectToEventDetailsPage(event.getId().toString());
+        return NavigationService.redirectToEventDetailsPage(event.getId().toString());
     }    
     
     /**
@@ -204,7 +199,7 @@ public class EventBean implements Serializable{
      */
     public String removeInvitation(String email) {
         eventControl.removeInvitedUser(event, email);
-        return NavigationBean.redirectToEventDetailsPage(event.getId().toString());
+        return NavigationService.redirectToEventDetailsPage(event.getId().toString());
     }
  
     /**
@@ -216,7 +211,7 @@ public class EventBean implements Serializable{
     }
     
     /**
-     * This method takes the GET ip parameter and sets the current event
+     * This method takes the GET id parameter and sets the current event
      * @throws RuntimeException 
      */
     public void setEventByParam() throws RuntimeException {
@@ -284,7 +279,7 @@ public class EventBean implements Serializable{
     
     /**
      * This method returns the string representing the duration of the event
-     * @return duratin of the event, es 1.5 h
+     * @return duration of the event, es 1.5 h
      */
     public String eventDuration() {
         Float hours = (float) (this.event.getEndDate().getTime() - this.event.getBeginDate().getTime()) / (60*60*1000);
@@ -316,52 +311,7 @@ public class EventBean implements Serializable{
                 event.getCity().replaceAll(" ","+").replaceAll(" ","");
     }
     
-//    /**
-//     * This method handles requests to check list of invited users for create page
-//     */ 
-//    public void handleInvitedUsersForCreate() {
-//        if(this.invitedUsers!=null && !"".equals(this.invitedUsers)) {
-//            String foo = this.invitedUsers;
-//            String[] split = foo.split(",");
-//            List<String> tmpUsersList = new ArrayList<>();
-//            for (String splitted : split) {
-//                if(splitted.equals(userManager.getLoggedUser().getEmail())) {
-//                    MessageBean.addWarning("errorMsg","You can't invite yourself");
-//                } else if(!userManager.existsUser(splitted)) {
-//                    MessageBean.addWarning("errorMsg",splitted+" is not registered to MeteoCal");
-//                } else if(tmpUsersList.contains(splitted)) {
-//                    MessageBean.addWarning("errorMsg",splitted+" has been invited more than once");
-//                } else {
-//                    tmpUsersList.add(splitted);
-//                }
-//            }
-//        }
-//    }
-//    
-//    /**
-//     * This method handles requests to check list of invited users for edit page
-//     */
-//    public void handleInvitedUsersForEdit() {
-//        if(this.invitedUsers!=null && !"".equals(this.invitedUsers)) {
-//            this.handleInvitedUsersForCreate();
-//            String foo = this.invitedUsers;
-//            String[] split = foo.split(",");
-//            for (String splitted : split) {
-//                if(event.getInvitedUsers().contains(userManager.findByEmail(splitted)) || 
-//                            event.getUsers().contains(userManager.findByEmail(splitted))) {
-//                    MessageBean.addWarning("errorMsg",splitted+" has already been invited");
-//                }
-//            }
-//        }
-//    }
-    
-//    public void handleWeather2(){
-//        weatherString = handleWeather();
-//    }
-//    
-//    public String getWeatherString(){
-//        return weatherString;
-//    }
+
     /**
      * This method handles requests to search actual weather forecasts for the event's begin date/time and city
      * @return the string containing the weather
@@ -393,34 +343,19 @@ public class EventBean implements Serializable{
             if(weather!=null && weather.getBad()) {
                     Weather firstGood = this.searchFirstSunnyDay();
                     if(firstGood!=null) {
-                        MessageBean.addWarning("growlMsg","There is bad weather for the time and location you chose!\n"
+                        MessageUtility.addWarning("growlMsg","There is bad weather for the time and location you chose!\n"
                                 + "But MeteoCal found good weather on "+
                                 DateUtils.formatDate(firstGood.getForecastDate())+": "+
                                 firstGood.getWeather()+
                                 ", with high of "+Float.toString(firstGood.getMaxTemp())+
                                 "°C and low of "+Float.toString(firstGood.getMinTemp())+"°C");
                     } else {
-                        MessageBean.addError("growlMsg","There is bad weather for the time and location you chose!\n"
+                        MessageUtility.addError("growlMsg","There is bad weather for the time and location you chose!\n"
                                 + "Unfortunately MeteoCal did't find a close good day :(");
                     }
             }
         }
     }
-    
-//    public String getEventWeather(){
-//        if(this.event.getCity()!=null && this.event.getBeginDate()!=null) {
-//            Weather weather = this.event.getWeather();
-//            if(weather!=null){
-//                return "Forecast for "+weather.getCity()+
-//                        " on "+DateUtils.formatDate(weather.getForecastDate())+
-//                        ": "+weather.getWeather()+
-//                        ", with high of "+Float.toString(weather.getMaxTemp())+
-//                        "°C and low of "+Float.toString(weather.getMinTemp())+"°C";
-//            }
-//            return "Not available";
-//        }
-//        return "Please insert start date/time and city.";
-//    }
     
     /**
      * This method asks the controller to search for the closest good weather day in the specified begin time and location
@@ -435,22 +370,6 @@ public class EventBean implements Serializable{
         }
         return null;
     }
-
-//    /**
-//     * This method returns the invitedUsers string
-//     * @return invitedUsers
-//     */
-//    public String getInvitedUsers() {
-//        return invitedUsers;
-//    }
-//
-//    /**
-//     * This method sets the invitedUsers string
-//     * @param invitedUsers 
-//     */
-//    public void setInvitedUsers(String invitedUsers) {
-//        this.invitedUsers = invitedUsers;
-//    }
     
     /**
      * This method returns the invitedUsers list
@@ -559,7 +478,7 @@ public class EventBean implements Serializable{
     }
     
     /**
-     * This method says if the specified user is invited to the currnet event
+     * This method says if the specified user is invited to the current event
      * @param user to be checked as invited to current event
      * @return true if the user is invited
      */
@@ -690,6 +609,10 @@ public class EventBean implements Serializable{
         return "na";
     }
     
+    /**
+     * Get the current date
+     * @return the current date
+     */
     public Date getToday(){
         return DateUtils.getToday();
     }

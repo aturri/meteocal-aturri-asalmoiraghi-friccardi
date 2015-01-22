@@ -5,6 +5,7 @@
  */
 package it.polimi.meteocal.control;
 
+import it.polimi.meteocal.control.kind.KindOfNotification;
 import it.polimi.meteocal.entity.Event;
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entity.Weather;

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.polimi.meteocal.control;
+package it.polimi.meteocal.boundary.service;
 
 import it.polimi.meteocal.entity.User;
 import it.polimi.meteocal.entityManager.UserManager;
@@ -23,7 +23,7 @@ import javax.inject.Named;
 
 @Named
 @RequestScoped
-public class NavigationBean implements Serializable {
+public class NavigationService implements Serializable {
  
     private static final long serialVersionUID = 1520318172495977648L;
     
@@ -115,7 +115,10 @@ public class NavigationBean implements Serializable {
         return "/recoverPassword";
     }
 
-    
+    /**
+     * Redirect to recover password page.
+     * @return recover password page name.
+     */
     public static String redirectToSetNewPassword(String email,String code) {
         return "/setNewPassword?faces-redirect=true&email="+email+"&code="+code;
     }
@@ -130,14 +133,39 @@ public class NavigationBean implements Serializable {
     }
     
     /**
+     * Go to event create page.
+     * @return event create page name.
+     */
+    public static String toEventCreate(){
+        return "/event/create";
+    } 
+    
+    /**
+     * Go to event detail page.
+     * Pick the id of the event from faces parameter.
+     * @return event detail page name.
+     */
+    public static String toEventDetailsPage(){
+        String id = null;
+        if(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().containsKey("id"))
+            id = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id");
+        return "/event/detail?id="+id;
+    }
+    
+    /**
      * Go to event detail page.
      * @param id of the event
      * @return event detail page name.
      */
     public static String toEventDetailsPage(String id){
         return "/event/detail?id="+id;
-    }    
-        
+    } 
+      
+    /**
+     * Redirect to event detail page.
+     * @param id of the event
+     * @return event detail page name.
+     */
     public static String redirectToEventDetailsPage(String id){
         if(id==null)
             id = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id");
@@ -169,7 +197,7 @@ public class NavigationBean implements Serializable {
             return "http://localhost:8080/MeteoCal/setNewPassword.xhtml?faces-redirect=true&code="
                     + UserManager.getCodeFromUser(user) + "&email="+URLEncoder.encode(user.getEmail(), "UTF-8");
         } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(NavigationBean.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(NavigationService.class.getName()).log(Level.SEVERE, null, ex);
         }
         return "";
     }
@@ -180,5 +208,13 @@ public class NavigationBean implements Serializable {
      */
     public static String toContacts() {
         return "/user/favoriteUsers";
+    }
+    
+    /**
+     * Go to user settings page
+     * @return path to settings page
+     */
+    public static String toSettings() {
+        return "/user/settings";
     }
 }

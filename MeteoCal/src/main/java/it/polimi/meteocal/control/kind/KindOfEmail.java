@@ -1,4 +1,4 @@
-package it.polimi.meteocal.control;
+package it.polimi.meteocal.control.kind;
 
 /**
  * This ENUM contains the DEFAULT kind of email used in MeteoCal plus the GENERIC 

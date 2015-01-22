@@ -6,7 +6,7 @@
 package it.polimi.meteocal.exception;
 
 /**
- *
+ *This exception is thrown when try to invite a illegal user
  * @author Andrea
  */
 public class IllegalInvitedUserException extends Exception {

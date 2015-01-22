@@ -22,12 +22,8 @@
                 <h:form id="actionEventForm" rendered="#{eventBean.isCurrentUserParticipatingTo(eventBean.event.id)}">
                     <input type="hidden" name="id" value="#{eventBean.event.id}" />
                     <p:panel header="Actions for #{eventBean.event.title}">
-                        <!--                        <p:button value="Edit event" outcome="/event/edit"
-                                                          rendered="#{eventBean.isCurrentUserCreator() and eventBean.isEventAfterNow(eventBean.event.id)}">
-                                                    <f:param name="id" value="#{eventBean.event.id}" />                 
-                                                </p:button>-->
                         <p:splitButton id="btnEditEvent" value="Edit event"
-                                       action="#{navigationBean.redirectToEventEditPage(eventBean.event.id)}" icon="ui-icon-edit"
+                                       action="#{navigationService.redirectToEventEditPage(eventBean.event.id)}" icon="ui-icon-edit"
                                        rendered="#{eventBean.isCurrentUserCreator() and 
                                                    eventBean.isEventAfterNow(eventBean.event.id)}">
                             <p:menuitem value="Delete" action="#{eventBean.deleteEvent()}" icon="ui-icon-close" />
@@ -45,9 +41,9 @@
                              #{eventBean.event.creator.name} #{eventBean.event.creator.surname}">
                         <p:messages id="errorMsgId" for="errorMsg" />
                         <div style="text-align: center;">
-                        <p:commandButton value="Accept" action="#{eventBean.acceptInvitation()}"
-                                         update="errorMsgId" rendered="#{eventBean.isEventAfterNow(eventBean.event.id)}" />
-                        <p:commandButton value="Refuse" action="#{eventBean.refuseInvitation()}" />
+                            <p:commandButton value="Accept" action="#{eventBean.acceptInvitation()}"
+                                             update="errorMsgId" rendered="#{eventBean.isEventAfterNow(eventBean.event.id)}" />
+                            <p:commandButton value="Refuse" action="#{eventBean.refuseInvitation()}" />
                         </div>
                     </p:panel>
                 </h:form>
@@ -107,7 +103,7 @@
                     <p>Participating users:</p>
                     <ul>
                         <ui:repeat value="#{eventBean.participatingUsers}" var="user">
-                            <li>#{user.name} #{user.surname} 
+                            <li>#{user.name} #{user.surname}<br/> 
                                 <span class="mail">(#{user.email})</span> &nbsp;
                                 <h:form rendered="#{eventBean.canUserBeRemovedFromParticipants(user.email)}">
                                     <p:commandLink value="Remove" action="#{eventBean.removeParticipant(user.email)}" ajax="false">
@@ -119,16 +115,20 @@
                     </ul>
                     <p>Invited users:</p>
                     <ul>
-                        <ui:repeat value="#{eventBean.listInvitedUsers}" var="user">
-                            <li>#{user.name} #{user.surname} 
-                                <span class="mail">(#{user.email})</span> &nbsp;
-                                <h:form rendered="#{eventBean.isCurrentUserCreator()}">    
-                                    <p:commandLink value="Remove" action="#{eventBean.removeInvitation(user.email)}" ajax="false">
+                        <h:form rendered="#{eventBean.isCurrentUserCreator()}"> 
+                            <ui:repeat value="#{eventBean.listInvitedUsers}" var="user" class="invitedList">
+                                <li>#{user.name} #{user.surname}<br/>
+                                    <span class="mail">(#{user.email})</span> &nbsp;
+
+                                    <h:graphicImage library="images/icon" name="remove.png" class="addUserIcon"
+                                                    title="Remove user">
                                         <f:param name="id" value="#{eventBean.event.id}" />
-                                    </p:commandLink>
-                                </h:form>
-                            </li>
-                        </ui:repeat>
+                                        <p:ajax listener="#{eventBean.removeInvitation(user.email)}" event="click" update="@form"/>
+                                    </h:graphicImage>
+
+                                </li>
+                            </ui:repeat>
+                        </h:form>
                     </ul>
                 </h:panelGroup>
             </ui:define>

@@ -6,7 +6,7 @@
 package it.polimi.meteocal.exception;
 
 /**
- *
+ *This exception is thrown when a date of a event is illegal
  * @author Andrea
  */
 public class IllegalEventDateException extends Exception {

@@ -5,25 +5,28 @@
     xmlns:p="http://primefaces.org/ui"
     xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-    <p:panel  styleClass="contactsPanel">
-        <f:facet name="header">
-            <div>
-                Invitations
-                <h:graphicImage library="images/icon" name="calendar.png" class="iconInvitations"/>
-                <div class="searchBubblePanel">#{userBean.eventsInvitedTo.size()}</div>
-            </div>
-        </f:facet>
-        <p:dataList value="#{userBean.eventsInvitedTo}" var="invitation" type="none" class="searchData"
-                    emptyMessage="No pending invitations">
-            <h:link outcome="/event/detail" >
-                <f:param name="id" value="#{invitation.id}" />
-                <div class="notificationItem">
-                    <div style="vertical-align:middle; float:left; padding-top:5px;">
-                        #{invitation.title}
-                    </div>
+    <h:form>
+        <p:panel styleClass="pendingsPanel">
+            <f:facet name="header">
+                <div>
+                    Invitations
+                    <h:graphicImage library="images/icon" name="calendar.png" class="iconInvitations"/>
+                    <div class="searchBubblePanel">#{userBean.eventsInvitedTo.size()}</div>
                 </div>
-            </h:link>
-            <p:separator class="searchSeparator"/>
-        </p:dataList>
-    </p:panel>
+            </f:facet>
+            <p:dataList value="#{userBean.eventsInvitedTo}" var="invitation" type="none" class="searchData"
+                        emptyMessage="No pending invitations">
+                <h:link outcome="#{navigationService.toEventDetailsPage()}" >
+                    <f:param name="id" value="#{invitation.id}" />
+                    <div class="notificationItem">
+                        <div style="vertical-align:middle; float:left; padding-top:5px;">
+                            #{invitation.title}
+                        </div>
+                    </div>
+                </h:link>
+                <p:separator class="searchSeparator"/>
+            </p:dataList>
+        </p:panel>
+        
+    </h:form>
 </ui:composition>

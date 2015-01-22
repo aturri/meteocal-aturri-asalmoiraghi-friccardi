@@ -1,4 +1,4 @@
-package it.polimi.meteocal.control;
+package it.polimi.meteocal.boundary.service;
  
 import it.polimi.meteocal.entity.Theme;
 import it.polimi.meteocal.entityManager.UserManager;
@@ -15,14 +15,17 @@ public class ThemeService {
      
     private List<Theme> themes;
     
-    private static String DEFAULT_THEME = "delta";
+    private static final String DEFAULT_THEME = "delta";
     
     @EJB
     UserManager um;
      
+    /**
+     * Set the available theme
+     */
     @PostConstruct
     public void init() {
-        themes = new ArrayList<Theme>();
+        themes = new ArrayList<>();
         themes.add(new Theme(0, "Afterdark", "afterdark"));
         themes.add(new Theme(1, "Afternoon", "afternoon"));
         themes.add(new Theme(2, "Afterwork", "afterwork"));
@@ -64,10 +67,18 @@ public class ThemeService {
         themes.add(new Theme(38, "Vader", "vader"));
     }
      
+    /**
+     * Get the list of available themes
+     * @return list of themes
+     */
     public List<Theme> getThemes() {
         return themes;
     } 
     
+    /**
+     * Get the theme stored for the current loggedUser
+     * @return the theme of the user
+     */
     public String getUserTheme(){
         if(um.getLoggedUser()!=null)
             return um.getLoggedUser().getTheme();
