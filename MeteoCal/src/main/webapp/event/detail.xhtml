@@ -103,13 +103,13 @@
                     <p>Participating users:</p>
                     <ul>
                         <ui:repeat value="#{eventBean.participatingUsers}" var="user">
-                            <li>#{user.name} #{user.surname}<br/> 
-                                <span class="mail">(#{user.email})</span> &nbsp;
+                            <li>#{user.name} #{user.surname} &nbsp;
                                 <h:form rendered="#{eventBean.canUserBeRemovedFromParticipants(user.email)}">
                                     <p:commandLink value="Remove" action="#{eventBean.removeParticipant(user.email)}" ajax="false">
                                         <f:param name="id" value="#{eventBean.event.id}" />
                                     </p:commandLink>
-                                </h:form>
+                                </h:form><br/>
+                                <span class="mail">(#{user.email})</span>
                             </li>
                         </ui:repeat>
                     </ul>
@@ -117,15 +117,13 @@
                     <ul>
                         <h:form rendered="#{eventBean.isCurrentUserCreator()}"> 
                             <ui:repeat value="#{eventBean.listInvitedUsers}" var="user" class="invitedList">
-                                <li>#{user.name} #{user.surname}<br/>
-                                    <span class="mail">(#{user.email})</span> &nbsp;
-
+                                <li>#{user.name} #{user.surname}&nbsp;
                                     <h:graphicImage library="images/icon" name="remove.png" class="addUserIcon"
                                                     title="Remove user">
                                         <f:param name="id" value="#{eventBean.event.id}" />
                                         <p:ajax listener="#{eventBean.removeInvitation(user.email)}" event="click" update="@form"/>
-                                    </h:graphicImage>
-
+                                    </h:graphicImage><br/>
+                                    <span class="mail">(#{user.email})</span>
                                 </li>
                             </ui:repeat>
                         </h:form>

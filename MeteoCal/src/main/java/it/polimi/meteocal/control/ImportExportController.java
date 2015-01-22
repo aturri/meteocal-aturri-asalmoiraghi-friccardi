@@ -201,14 +201,14 @@ public class ImportExportController {
                     event.setPublicEvent(Boolean.FALSE);
                     event.setIndoor(Utility.stringToBoolean(element.getElementsByTagName("indoor").item(0).getTextContent()));
 
-                    if(!eventController.isLegalEvent(event, null)){
-                        controlAndDeleteFile(xmlFile);
-                        Logger.getLogger(SettingsBean.class.getName()).log(Level.INFO, "One or more events cannot be imported. Import aborted.");
-                        return null;
+                    if(event.getBeginDate().after(new Date())) {
+                        if(!eventController.isLegalEvent(event, null)){
+                            controlAndDeleteFile(xmlFile);
+                            Logger.getLogger(SettingsBean.class.getName()).log(Level.INFO, "One or more events cannot be imported. Import aborted.");
+                            return null;
+                        }
+                       importedEvents.add(event);                       
                     }
-                    
-                    if(event.getBeginDate().after(new Date()))
-                        importedEvents.add(event);
                 }
             }
             controlAndDeleteFile(xmlFile);
