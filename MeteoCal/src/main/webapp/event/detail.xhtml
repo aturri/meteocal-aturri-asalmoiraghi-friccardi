@@ -19,7 +19,7 @@
             </ui:define>
 
             <ui:define name="left">
-                <h:form id="actionEventForm" rendered="#{eventBean.isCurrentUserParticipatingTo(eventBean.event.id)}">
+                <h:form  styleClass="pollUpdate" id="actionEventForm" rendered="#{eventBean.isCurrentUserParticipatingTo(eventBean.event.id)}">
                     <input type="hidden" name="id" value="#{eventBean.event.id}" />
                     <p:panel header="Actions for #{eventBean.event.title}">
                         <p:splitButton id="btnEditEvent" value="Edit event"
@@ -35,7 +35,7 @@
 
                     </p:panel>
                 </h:form> 
-                <h:form id="editEventForm" rendered="#{eventBean.isCurrentUserInvitedTo(eventBean.event.id)}">
+                <h:form styleClass="pollUpdate" id="editEventForm" rendered="#{eventBean.isCurrentUserInvitedTo(eventBean.event.id)}">
                     <input type="hidden" name="id" value="#{eventBean.event.id}" />
                     <p:panel header="You received an invitation by 
                              #{eventBean.event.creator.name} #{eventBean.event.creator.surname}">
@@ -102,24 +102,27 @@
                         <br/><span class="mail">(#{eventBean.event.creator.email})</span></p>
                     <p>Participating users:</p>
                     <ul>
-                        <ui:repeat value="#{eventBean.participatingUsers}" var="user">
-                            <li>#{user.name} #{user.surname} &nbsp;
-                                <h:form rendered="#{eventBean.canUserBeRemovedFromParticipants(user.email)}">
-                                    <p:commandLink value="Remove" action="#{eventBean.removeParticipant(user.email)}" ajax="false">
+                        <h:form styleClass="pollUpdate"> 
+                            <ui:repeat value="#{eventBean.participatingUsers}" var="user" class="participatingList">
+                                <li>#{user.name} #{user.surname}&nbsp;
+                                    <h:graphicImage library="images/icon" name="remove.png" class="addUserIcon"
+                                                    title="Remove user" 
+                                                    rendered="#{eventBean.canUserBeRemovedFromParticipants(user.email)}">
                                         <f:param name="id" value="#{eventBean.event.id}" />
-                                    </p:commandLink>
-                                </h:form><br/>
-                                <span class="mail">(#{user.email})</span>
-                            </li>
-                        </ui:repeat>
+                                        <p:ajax listener="#{eventBean.removeParticipant(user.email)}" event="click" update="@form"/>
+                                    </h:graphicImage><br/>
+                                    <span class="mail">(#{user.email})</span>
+                                </li>
+                            </ui:repeat>
+                        </h:form>
                     </ul>
                     <p>Invited users:</p>
                     <ul>
-                        <h:form rendered="#{eventBean.isCurrentUserCreator()}"> 
+                        <h:form styleClass="pollUpdate"> 
                             <ui:repeat value="#{eventBean.listInvitedUsers}" var="user" class="invitedList">
                                 <li>#{user.name} #{user.surname}&nbsp;
                                     <h:graphicImage library="images/icon" name="remove.png" class="addUserIcon"
-                                                    title="Remove user">
+                                                    title="Remove user" rendered="#{eventBean.isCurrentUserCreator()}">
                                         <f:param name="id" value="#{eventBean.event.id}" />
                                         <p:ajax listener="#{eventBean.removeInvitation(user.email)}" event="click" update="@form"/>
                                     </h:graphicImage><br/>
