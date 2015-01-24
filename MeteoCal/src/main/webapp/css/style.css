@@ -467,3 +467,9 @@ a.searchLink:hover{
     font-size: small;
     font-style: oblique;
 }
+
+.element::-webkit-scrollbar { width: 0 !important }
+
+::-webkit-scrollbar { 
+ display: none; 
+}
